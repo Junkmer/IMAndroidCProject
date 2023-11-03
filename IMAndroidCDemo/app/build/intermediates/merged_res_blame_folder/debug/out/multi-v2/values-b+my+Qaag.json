@@ -1,0 +1,43 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\Users\\EDY\\junker_zhaofei\\MyWorkApplication\\AndroidStudioProjects\\GitObject\\IMAndroidCProject\\IMAndroidCDemo\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-b+my+Qaag\\values-b+my+Qaag.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\EDY\\.gradle\\caches\\transforms-2\\files-2.1\\c405142f485f3e0ec96298fb954e627a\\jetified-push-6.10.0.300\\res\\values-b+my+Qaag\\values-b+my+Qaag.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "72",
+                        "endOffsets": "123"
+                    },
+                    "to": {
+                        "startLines": "6",
+                        "startColumns": "4",
+                        "startOffsets": "891",
+                        "endColumns": "72",
+                        "endOffsets": "959"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\EDY\\.gradle\\caches\\transforms-2\\files-2.1\\ac1fc2060c7980753323a1b75ab9ce7d\\jetified-ui-6.8.0.300\\res\\values-b+my+Qaag\\values-b+my+Qaag.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6",
+                        "startColumns": "4,4,4,4,4",
+                        "startOffsets": "55,245,574,644,891",
+                        "endColumns": "189,328,69,246,68",
+                        "endOffsets": "240,569,639,886,955"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,7",
+                        "startColumns": "4,4,4,4,4",
+                        "startOffsets": "55,245,574,644,964",
+                        "endColumns": "189,328,69,246,68",
+                        "endOffsets": "240,569,639,886,1028"
+                    }
+                }
+            ]
+        }
+    ]
+}

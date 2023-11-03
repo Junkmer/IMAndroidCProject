@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tencent.qcloud.tuikit.tuisearch">
+
+    <application>
+
+        <!-- **************** Classic UI Activity Start **************** -->
+        <activity
+            android:name=".classicui.page.SearchMainActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".classicui.page.SearchMoreListActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".classicui.page.SearchMoreMsgListActivity"
+            android:screenOrientation="portrait" />
+        <provider
+            android:name=".classicui.ClassicUIExtensionObserver"
+            android:authorities="${applicationId}.TUISearch.ClassicUI.Init"
+            android:enabled="true"
+            android:exported="false" />
+        <!-- **************** Classic UI Activity End **************** -->
+
+
+
+
+        <!-- **************** Minimalist UI Activity Start **************** -->
+        <activity
+            android:name=".minimalistui.page.SearchMainMinimalistActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".minimalistui.page.SearchMoreListMinimalistActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".minimalistui.page.SearchMoreMsgListMinimalistActivity"
+            android:screenOrientation="portrait" />
+        <provider
+            android:name=".minimalistui.MinimalistUIExtensionObserver"
+            android:authorities="${applicationId}.TUISearch.Minimalist.Init"
+            android:enabled="true"
+            android:exported="false" />
+        <!-- **************** Minimalist UI Activity End **************** -->
+
+    </application>
+</manifest>

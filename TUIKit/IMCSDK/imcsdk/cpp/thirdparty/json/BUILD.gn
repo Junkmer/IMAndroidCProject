@@ -1,0 +1,20 @@
+if (current_cpu == "arm" || current_cpu == "arm64") {
+  import("//build/config/arm.gni")
+}
+
+source_set("json") {
+  include_dirs = [ "." ]
+
+  if (is_android) {
+    cflags = [
+      "-fno-c++-static-destructors",
+    ]
+  }
+
+  sources = [
+    "json.h",
+    "json.cpp",
+  ]
+
+  configs += [ "//src:precompiled_config" ]
+}
