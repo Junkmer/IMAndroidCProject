@@ -358,7 +358,7 @@ namespace tim {
             auto *env = scopedJEnv.GetEnv();
 
             for (auto &item: _listener_) {
-                env->CallVoidMethod(item.second, j_method_id_array_[MethodIDOnTotalUnreadMessageCountChanged], 5);
+                env->CallVoidMethod(item.second, j_method_id_array_[MethodIDOnTotalUnreadMessageCountChanged], totalUnreadCount);
             }
         }
 
