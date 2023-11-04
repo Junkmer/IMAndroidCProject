@@ -151,7 +151,7 @@ namespace tim {
             return true;
         }
 
-        bool FriendApplicationJni::Convert2CoreObject_Delete(jobject const &j_obj_application, json::Value &userid) {
+        bool FriendApplicationJni::Convert2CoreObject_Delete(jobject const &j_obj_application, std::string &userid) {
             ScopedJEnv scopedJEnv;
             auto *env = scopedJEnv.GetEnv();
 
@@ -162,7 +162,7 @@ namespace tim {
 
             jStr = (jstring) env->GetObjectField(j_obj_application, j_field_id_array_[FieldIDUserID]);
             if (jStr) {
-                userid = StringJni::Jstring2Cstring(env, jStr).c_str();
+                userid = StringJni::Jstring2Cstring(env, jStr);
                 env->DeleteLocalRef(jStr);
             }
             return true;

@@ -322,7 +322,7 @@ DEFINE_NATIVE_FUNC(void, NativeDeleteFriendApplication, jobject application, job
     json_delete_pendency_param[kTIMFriendshipDeletePendencyParamType] = FriendPendencyTypeComeIn;
 
     json::Array json_application_array;
-    json::Value userID;
+    std::string userID;
     tim::jni::FriendApplicationJni::Convert2CoreObject_Delete(application, userID);
     json_application_array.push_back(userID);
     json_delete_pendency_param[kTIMFriendshipDeletePendencyParamIdentifierArray] = json_application_array;

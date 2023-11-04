@@ -113,17 +113,17 @@ namespace tim {
         }
 
         void SimpleListenerJni::TIMAddRecvNewMsgCallbackImpl(const char *json_msg_array, const void *user_data) {
-            json::Value json_value_msg;
-            json_value_msg = json::Deserialize(json_msg_array);
-            json::Array elem_s = json_value_msg[kTIMMsgElemArray];
+            json::Object msg_json;
+            msg_json = json::Deserialize(json_msg_array);
+            json::Array elem_s = msg_json[kTIMMsgElemArray];
             json::Object elemObj = elem_s[0];
             int elem_type = elemObj[kTIMElemType];
-            int conv_type = json_value_msg[kTIMConvType];
+            int conv_type = msg_json[kTIMConvType];
             auto listener_map = (std::map<jobject, jobject> *) user_data;
 
-            std::string messageID = json_value_msg[kTIMMsgMsgId];
+            std::string messageID = msg_json[kTIMMsgMsgId];
             if (conv_type == TIMConvType::kTIMConv_C2C) {
-                json::Object sender_user_info_json = json_value_msg[kTIMMsgSenderProfile];
+                json::Object sender_user_info_json = msg_json[kTIMMsgSenderProfile];
                 if (elem_type == TIMElemType::kTIMElem_Text) {  // 文本
                     std::string text = elemObj[kTIMTextElemContent];
                     OnRecvC2CTextMessage(listener_map, messageID,sender_user_info_json,text);
@@ -132,8 +132,8 @@ namespace tim {
                     OnRecvC2CCustomMessage(listener_map, messageID,sender_user_info_json,customData);
                 }
             } else if (conv_type == TIMConvType::kTIMConv_Group) {
-                std::string groupID = json_value_msg[kTIMConvId];
-                json::Object sender_member_info_json = json_value_msg[kTIMMsgSenderGroupMemberInfo];
+                std::string groupID = msg_json[kTIMConvId];
+                json::Object sender_member_info_json = msg_json[kTIMMsgSenderGroupMemberInfo];
                 if (elem_type == TIMElemType::kTIMElem_Text) {  // 文本
                     std::string text = elemObj[kTIMTextElemContent];
                     OnRecvGroupTextMessage(listener_map, messageID,groupID,sender_member_info_json,text);

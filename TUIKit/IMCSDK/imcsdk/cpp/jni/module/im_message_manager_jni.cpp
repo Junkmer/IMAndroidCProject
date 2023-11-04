@@ -185,15 +185,15 @@ DEFINE_NATIVE_FUNC(void, NativeGetC2CHistoryMessageList, jstring userId, jint co
     std::string conv_id = tim::jni::StringJni::Jstring2Cstring(env, userId);
     TIMConvType conv_type = TIMConvType::kTIMConv_C2C;
 
-    json::Value json_get_msg_param;
+    json::Object json_get_msg_param;
     if (lastMsg) {
         std::unique_ptr<json::Object> json_msg = tim::jni::MessageJni::Convert2CoreObject(lastMsg);
         json_get_msg_param[kTIMMsgGetMsgListParamLastMsg] = *json_msg;
     }
     json_get_msg_param[kTIMMsgGetMsgListParamIsRamble] = true;
-    json_get_msg_param[kTIMMsgGetMsgListParamIsForward] = true;
+    json_get_msg_param[kTIMMsgGetMsgListParamIsForward] = false;
     json_get_msg_param[kTIMMsgGetMsgListParamCount] = count;
-    std::string paramStr = json::Serialize(paramStr);
+    std::string paramStr = json::Serialize(json_get_msg_param);
 
     tim::TIMEngine::GetInstance()->GetHistoryMessageList(conv_id.c_str(), conv_type, paramStr.c_str(),
                                                          [](int32_t code, const char *desc, const char *json_params, const void *user_data) {
@@ -225,15 +225,15 @@ DEFINE_NATIVE_FUNC(void, NativeGetGroupHistoryMessageList, jstring groupId, jint
     std::string conv_id = tim::jni::StringJni::Jstring2Cstring(env, groupId);
     TIMConvType conv_type = TIMConvType::kTIMConv_Group;
 
-    json::Value json_get_msg_param;
+    json::Object json_get_msg_param;
     if (lastMsg) {
         std::unique_ptr<json::Object> json_msg = tim::jni::MessageJni::Convert2CoreObject(lastMsg);
         json_get_msg_param[kTIMMsgGetMsgListParamLastMsg] = *json_msg;
     }
     json_get_msg_param[kTIMMsgGetMsgListParamIsRamble] = true;
-    json_get_msg_param[kTIMMsgGetMsgListParamIsForward] = true;
+    json_get_msg_param[kTIMMsgGetMsgListParamIsForward] = false;
     json_get_msg_param[kTIMMsgGetMsgListParamCount] = count;
-    std::string paramStr = json::Serialize(paramStr);
+    std::string paramStr = json::Serialize(json_get_msg_param);
     tim::TIMEngine::GetInstance()->GetHistoryMessageList(conv_id.c_str(), conv_type, paramStr.c_str(),
                                                          [](int32_t code, const char *desc, const char *json_params, const void *user_data) {
                                                              tim::jni::ScopedJEnv scopedJEnv;

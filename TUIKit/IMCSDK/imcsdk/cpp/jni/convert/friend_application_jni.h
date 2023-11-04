@@ -15,7 +15,7 @@ namespace tim {
             static bool InitIDs(JNIEnv *env);
             static jobject Convert2JObject(const json::Object &application_json);
             static bool Convert2CoreObject_Request(const jobject &j_obj_application,json::Object &application_json);
-            static bool Convert2CoreObject_Delete(const jobject &j_obj_application,json::Value &userid);
+            static bool Convert2CoreObject_Delete(const jobject &j_obj_application,std::string &userid);
 
         private:
             enum FieldID {

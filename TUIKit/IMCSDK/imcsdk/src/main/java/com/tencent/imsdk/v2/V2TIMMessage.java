@@ -132,8 +132,6 @@ public class V2TIMMessage implements Serializable {
                 return V2TIM_ELEM_TYPE_FACE;
             case 7:// 位置消息
                 return V2TIM_ELEM_TYPE_LOCATION;
-            case 8:// 群组system消息
-                return V2TIM_ELEM_TYPE_GROUP_TIPS;
             case 9:// 视频消息
                 return V2TIM_ELEM_TYPE_VIDEO;
             case 12:// 合并消息消息
