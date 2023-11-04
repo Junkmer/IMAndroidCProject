@@ -303,7 +303,7 @@ DEFINE_NATIVE_FUNC(void, NativeGetTotalUnreadMessageCount, jobject callback) {
         if (TIMErrCode::ERR_SUCC == code) {
             json::Object unReadTotal_json = json::Deserialize(json_params);
             int total = unReadTotal_json[kTIMConvGetTotalUnreadMessageCountResultUnreadCount];
-            tim::jni::IMCallbackJNI::Success(_callback, tim::jni::IntegerJni::NewIntegerObj(total));
+            tim::jni::IMCallbackJNI::Success(_callback, tim::jni::LongJni::NewLongObj(total));
         } else {
             tim::jni::IMCallbackJNI::Fail(_callback, code, desc);
         }
@@ -327,7 +327,7 @@ DEFINE_NATIVE_FUNC(void, NativeGetUnreadMessageCountByFilter, jobject filter, jo
         if (TIMErrCode::ERR_SUCC == code) {
             json::Object unReadTotal_json = json::Deserialize(json_params);
             int total = unReadTotal_json[kTIMConvGetTotalUnreadMessageCountResultUnreadCount];
-            tim::jni::IMCallbackJNI::Success(_callback, tim::jni::IntegerJni::NewIntegerObj(total));
+            tim::jni::IMCallbackJNI::Success(_callback, tim::jni::LongJni::NewLongObj(total));
         } else {
             tim::jni::IMCallbackJNI::Fail(_callback, code, desc);
         }
