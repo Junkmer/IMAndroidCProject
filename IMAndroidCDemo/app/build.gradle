@@ -45,6 +45,7 @@ android {
         }
         debug {
             minifyEnabled false
+            jniDebuggable true
         }
     }
     repositories {

@@ -33,9 +33,8 @@ namespace tim {
                 TIMSetExperimentalNotifyCallback(ImplTIMExperimentalNotifyCallback, &listener_imsdk_map);
             }
 
-            std::string path;
+            std::string path = StringJni::Jstring2Cstring(env, listenerPath);
             for (auto &item: listener_imsdk_map) {
-                path = StringJni::Jstring2Cstring(env, listenerPath);
                 if (path.empty() || path == item.first) {
                     return;
                 }
@@ -102,6 +101,10 @@ namespace tim {
             for (const auto &item : user_info_array){
                 jobject j_obj_info = UserFullInfoJni::Convert2JObject(item);
                 ArrayListJni::Add(infoList,j_obj_info);
+
+                ScopedJEnv scopedJEnv;
+                auto *env = scopedJEnv.GetEnv();
+                env->DeleteLocalRef(j_obj_info);
             }
             CallJavaMethod2Data(*(std::map<std::string, jobject> *) user_data, method2sig, infoList);
         }
@@ -113,6 +116,10 @@ namespace tim {
             for (const auto & i : status_array) {
                 jobject userStatus = tim::jni::UserStatusJni::Convert2JObject(i);
                 tim::jni::ArrayListJni::Add(userStatusList, userStatus);
+
+                ScopedJEnv scopedJEnv;
+                auto *env = scopedJEnv.GetEnv();
+                env->DeleteLocalRef(userStatus);
             }
             CallJavaMethod2Data(*(std::map<std::string, jobject> *) user_data, method2sig, userStatusList);
         }
@@ -247,13 +254,13 @@ namespace tim {
                 jmethodID method = env->GetMethodID(j_cls, method2sig[0], method2sig[1]);
                 if (nullptr != method) {
                     env->CallVoidMethod(item.second, method, data_obj);
-                    env->DeleteLocalRef(data_obj);
                 } else {
                     LOGE("get %s method failed", method2sig[0]);
                     return;
                 }
                 env->DeleteLocalRef(j_cls);
             }
+            env->DeleteLocalRef(data_obj);
         }
 
     }

@@ -44,6 +44,7 @@
 #include "friend_operation_result_jni.h"
 #include "friend_search_param_jni.h"
 #include "user_full_info_jni.h"
+#include "user_info_jni.h"
 #include "user_status_jni.h"
 
 //群组相关
@@ -73,8 +74,13 @@
 //消息相关
 #include "elem_processor_jni.h"
 #include "image_jni.h"
+#include "message_extension_jni.h"
+#include "message_extension_result_jni.h"
 #include "message_jni.h"
 #include "message_list_get_option_jni.h"
+#include "message_reaction_jni.h"
+#include "message_reaction_result_jni.h"
+#include "message_reaction_user_result_jni.h"
 #include "message_receipt_jni.h"
 #include "message_search_param_jni.h"
 #include "message_search_result_item_jni.h"
@@ -109,6 +115,9 @@ extern int RegisterNativeMethodsForV2TIMFileElem(JNIEnv *env);
 extern int RegisterNativeMethodsForV2TIMMergerElem(JNIEnv *env);
 
 static void InitJNI(JNIEnv *env) {
+//********************************************************************************************//
+//*********************************** Java 基础数据类型 ***************************************//
+//********************************************************************************************//
     // Java 基础数据类型
     bool success = tim::jni::IntegerJni::Init(env);
     CHECK_INITIDS_RESULT(success, "IntegerJni")
@@ -125,7 +134,9 @@ static void InitJNI(JNIEnv *env) {
     success = tim::jni::HashMapJni::Init(env);
     CHECK_INITIDS_RESULT(success, "HashMapJni")
 
-    // C++ 回调 Java 通用 Callback
+//********************************************************************************************//
+//******************************** C 回调 Java 通用 IMCallback ********************************//
+//********************************************************************************************//
     success = tim::jni::IMCallbackJNI::InitIDs(env);
     CHECK_INITIDS_RESULT(success, "IMCallbackJNI")
 
@@ -133,7 +144,9 @@ static void InitJNI(JNIEnv *env) {
     success = tim::jni::SDKConfigJni::InitIDs(env);
     CHECK_INITIDS_RESULT(success, "SDKConfigJni")
 
-    //监听相关
+//********************************************************************************************//
+//***************************************** 监听相关 ******************************************//
+//********************************************************************************************//
     success = tim::jni::AdvancedMsgListenerJni::InitIDs(env);
     CHECK_INITIDS_RESULT(success, "AdvancedMsgListenerJni")
 
@@ -155,8 +168,9 @@ static void InitJNI(JNIEnv *env) {
     success = tim::jni::SimpleListenerJni::InitIDs(env);
     CHECK_INITIDS_RESULT(success, "SimpleListenerJni")
 
-
-    //会话相关
+//********************************************************************************************//
+//***************************************** 会话相关 ******************************************//
+//********************************************************************************************//
     success = tim::jni::ConversationJni::InitIDs(env);
     CHECK_INITIDS_RESULT(success, "ConversationJni")
 
@@ -169,8 +183,9 @@ static void InitJNI(JNIEnv *env) {
     success = tim::jni::ConversationResultJni::InitIDs(env);
     CHECK_INITIDS_RESULT(success, "ConversationResultJni")
 
-
-    //资料关系链相关
+//********************************************************************************************//
+//************************************** 资料关系链相关 ****************************************//
+//********************************************************************************************//
     success = tim::jni::FriendAddApplicationJni::InitIDs(env);
     CHECK_INITIDS_RESULT(success, "FriendAddApplicationJni")
 
@@ -201,10 +216,15 @@ static void InitJNI(JNIEnv *env) {
     success = tim::jni::UserFullInfoJni::InitIDs(env);
     CHECK_INITIDS_RESULT(success, "UserFullInfoJni")
 
+    success = tim::jni::UserInfoJni::InitIDs(env);
+    CHECK_INITIDS_RESULT(success, "UserInfoJni")
+
     success = tim::jni::UserStatusJni::InitIDs(env);
     CHECK_INITIDS_RESULT(success, "UserStatusJni")
 
-    //群组相关
+//********************************************************************************************//
+//**************************************** 群组相关 *******************************************//
+//********************************************************************************************//
     success = tim::jni::CreateGroupMemberInfoJni::InitIDs(env);
     CHECK_INITIDS_RESULT(success, "CreateGroupMemberInfoJni")
 
@@ -259,22 +279,42 @@ static void InitJNI(JNIEnv *env) {
     success = tim::jni::TopicOperationResultJni::InitIDs(env);
     CHECK_INITIDS_RESULT(success, "TopicOperationResultJni")
 
-    //推送相关
+//********************************************************************************************//
+//**************************************** 推送相关 *******************************************//
+//********************************************************************************************//
     success = tim::jni::OfflinePushConfigJni::InitIDs(env);
     CHECK_INITIDS_RESULT(success, "OfflinePushConfigJni")
 
     success = tim::jni::OfflinePushInfoJni::InitIDs(env);
     CHECK_INITIDS_RESULT(success, "OfflinePushInfoJni")
 
-    //消息相关
+//********************************************************************************************//
+//**************************************** 消息相关 *******************************************//
+//********************************************************************************************//
+
     success = tim::jni::ImageJni::InitIDs(env);
-    CHECK_INITIDS_RESULT(success, "MessageJni")
+    CHECK_INITIDS_RESULT(success, "ImageJni")
+
+    success = tim::jni::MessageExtensionJni::InitIDs(env);
+    CHECK_INITIDS_RESULT(success, "MessageExtensionJni")
+
+    success = tim::jni::MessageExtensionResultJni::InitIDs(env);
+    CHECK_INITIDS_RESULT(success, "MessageExtensionResultJni")
 
     success = tim::jni::MessageJni::InitIDs(env);
     CHECK_INITIDS_RESULT(success, "MessageJni")
 
     success = tim::jni::MessageListGetOptionJni::InitIDs(env);
     CHECK_INITIDS_RESULT(success, "MessageListGetOptionJni")
+
+    success = tim::jni::MessageReactionJni::InitIDs(env);
+    CHECK_INITIDS_RESULT(success, "MessageReactionJni")
+
+    success = tim::jni::MessageReactionResultJni::InitIDs(env);
+    CHECK_INITIDS_RESULT(success, "MessageReactionResultJni")
+
+    success = tim::jni::MessageReactionUserResultJni::InitIDs(env);
+    CHECK_INITIDS_RESULT(success, "MessageReactionUserResultJni")
 
     success = tim::jni::MessageReceiptJni::InitIDs(env);
     CHECK_INITIDS_RESULT(success, "MessageReceiptJni")
@@ -292,6 +332,12 @@ static void InitJNI(JNIEnv *env) {
     CHECK_INITIDS_RESULT(success, "ReceiveMessageOptInfoJni")
 
     tim::jni::ElemProcessor::GetInstance().RegisterElemHandler();
+
+//********************************************************************************************//
+//**************************************** 信令相关 *******************************************//
+//********************************************************************************************//
+    success = tim::jni::SignalingInfoJni::InitIDs(env);
+    CHECK_INITIDS_RESULT(success, "SignalingInfoJni")
 }
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {

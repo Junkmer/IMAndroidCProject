@@ -81,7 +81,7 @@ DEFINE_NATIVE_FUNC(void, NativeGetConversation, jstring conversation_id, jobject
         json_obj[kTIMGetConversationListParamConvType] = kTIMConv_C2C;
         json_obj[kTIMGetConversationListParamConvId] = conversationID_str.substr(3);
     } else if (conversationID_str.find("group_") != std::string::npos) {//群聊会话 group_xxx
-        json_obj[kTIMGetConversationListParamConvType] = kTIMConv_C2C;
+        json_obj[kTIMGetConversationListParamConvType] = kTIMConv_Group;
         json_obj[kTIMGetConversationListParamConvId] = conversationID_str.substr(5);
     } else {
         json_obj[kTIMGetConversationListParamConvType] = kTIMConv_C2C;

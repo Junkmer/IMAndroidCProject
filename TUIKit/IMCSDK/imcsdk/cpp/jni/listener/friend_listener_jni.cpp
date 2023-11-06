@@ -33,9 +33,8 @@ namespace tim {
                 TIMSetFriendBlackListDeletedCallback(ImplTIMFriendBlackListDeletedCallback, &listener_friend_map);
 
             }
-            std::string path;
+            std::string path = StringJni::Jstring2Cstring(env,listenerPath);
             for (auto &item: listener_friend_map) {
-                path = StringJni::Jstring2Cstring(env,listenerPath);
                 if (path.empty() || path == item.first){
                     return;
                 }

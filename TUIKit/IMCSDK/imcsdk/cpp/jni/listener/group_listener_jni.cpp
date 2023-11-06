@@ -35,9 +35,8 @@ namespace tim {
                 TIMSetGroupTopicChangedCallback(ImplTIMGroupTopicChangedCallback, &listener_group_map);
             }
 
-            std::string path;
+            std::string path = StringJni::Jstring2Cstring(env, listenerPath);
             for (auto &item: listener_group_map) {
-                path = StringJni::Jstring2Cstring(env, listenerPath);
                 if (path.empty() || path == item.first) {
                     return;
                 }

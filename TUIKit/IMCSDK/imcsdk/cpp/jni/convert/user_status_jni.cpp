@@ -69,8 +69,8 @@ namespace tim {
 
             env->SetObjectField(userStatusObj, j_field_array_[FieldIDUserID], StringJni::Cstring2Jstring(env, userStatus_json[kTIMUserStatusIdentifier]));
             env->SetIntField(userStatusObj, j_field_array_[FieldIDStatusType], userStatus_json[kTIMUserStatusStatusType]);
-            std::string custom_state = userStatus_json[kTIMUserStatusCustomStatus];
-            if (!custom_state.empty()) {
+            if (userStatus_json.HasKey(kTIMUserStatusCustomStatus)){
+                std::string custom_state = userStatus_json[kTIMUserStatusCustomStatus];
                 env->SetObjectField(userStatusObj, j_field_array_[FieldIDCustomStatus],StringJni::Cstring2Jstring(env, custom_state));
             }
 

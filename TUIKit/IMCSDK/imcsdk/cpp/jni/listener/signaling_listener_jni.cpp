@@ -29,9 +29,8 @@ namespace tim {
                 TIMSetSignalingInvitationModifiedCallback(ImplTIMSignalingInvitationModifiedCallback, &listener_signaling_map);
             }
 
-            std::string path;
+            std::string path = StringJni::Jstring2Cstring(env, listenerPath);
             for (auto &item: listener_signaling_map) {
-                path = StringJni::Jstring2Cstring(env, listenerPath);
                 if (path.empty() || path == item.first) {
                     return;
                 }

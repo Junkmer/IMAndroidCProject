@@ -30,9 +30,8 @@ namespace tim {
                 TIMSetMsgUpdateCallback(ImplTIMMsgUpdateCallback, &listener_advanced_msg);
             }
 
-            std::string path;
+            std::string path = StringJni::Jstring2Cstring(env, listenerPath);
             for (auto &item: listener_advanced_msg_map) {
-                path = StringJni::Jstring2Cstring(env, listenerPath);
                 if (path.empty() || path == item.first) {
                     return;
                 }

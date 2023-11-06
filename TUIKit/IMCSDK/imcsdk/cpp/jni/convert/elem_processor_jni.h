@@ -21,9 +21,8 @@ namespace tim {
 
             static ElemProcessor &GetInstance();
             void RegisterElemHandler();
-//            jobject ParseElem(const json::Object &message_json, const int elemType,const int position);
-            jobject ParseElem(const std::string &convId,const std::string &msgId,const uint64_t &sequence, const int &elemType,const json::Object &elem_json);
-//            std::unique_ptr<const char *> BuildElem(int elemType, jobject elemObj);
+//            jobject ParseElem(const std::string &convId,const std::string &msgId,const uint64_t &sequence, const int &elemType,const json::Object &elem_json);
+            jobject ParseElem(const json::Object &elem_json);
             std::unique_ptr<json::Object> BuildElem(int elemType, jobject elemObj);
 
         protected:

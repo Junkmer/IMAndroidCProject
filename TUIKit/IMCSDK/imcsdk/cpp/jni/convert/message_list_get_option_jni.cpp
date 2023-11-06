@@ -107,7 +107,7 @@ namespace tim {
              */
             int getType = env->GetIntField(j_obj_getOption, j_field_array_[FieldIDGetType]);
             get_msg_param_json[kTIMMsgGetMsgListParamIsRamble] = getType < 2;
-            get_msg_param_json[kTIMMsgGetMsgListParamIsForward] = (getType % 2 == 1);
+            get_msg_param_json[kTIMMsgGetMsgListParamIsForward] = (getType % 2 == 0);
 
             jstring jStr = nullptr;
             jStr = (jstring) env->GetObjectField(j_obj_getOption, j_field_array_[FieldIDUserID]);

@@ -362,13 +362,12 @@ public class ConversationInfo implements Serializable, Comparable<ConversationIn
             }
         }
     }
-
+//
     @Override
     public String toString() {
-        return "";
-//        return "ConversationInfo{"
-//            + "type=" + type + ", unRead=" + unRead + ", conversationId='" + conversationId + '\'' + ", id='" + id + '\'' + ", iconUrl='" + iconUrlList.size()
-//            + '\'' + ", title='" + title + '\'' + ", iconPath=" + iconPath + ", isGroup=" + isGroup + ", top=" + top + ", lastMessageTime=" + lastMessageTime
-//            + ", lastMessage=" + lastMessage + ", draftText=" + draft + ", groupType=" + groupType + ", statusType=" + statusType + '}';
+        return "ConversationInfo{"
+            + "type=" + type + ", unRead=" + unRead + ", conversationId='" + conversationId + '\'' + ", id='" + id + '\'' + ", iconUrl='" + iconUrlList.size()
+            + '\'' + ", title='" + title + '\'' + ", iconPath=" + iconPath + ", isGroup=" + isGroup + ", top=" + top + ", lastMessageTime=" + lastMessageTime
+            + ", lastMessage=" + lastMessage + ", draftText=" + draft + ", groupType=" + groupType + ", statusType=" + statusType + '}';
     }
 }

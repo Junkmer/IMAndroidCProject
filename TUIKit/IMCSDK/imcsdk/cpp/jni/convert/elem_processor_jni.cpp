@@ -43,7 +43,7 @@ namespace tim {
             return elem;
         }
 
-        jobject ElemProcessor::ParseElem(const std::string &convId,const std::string &msgId,const uint64_t &sequence, const int &elemType,const json::Object &elem_json) {
+        jobject ElemProcessor::ParseElem(const json::Object &elem_json) {
             jobject obj = nullptr;
 
             for (auto &item: handlers_) {

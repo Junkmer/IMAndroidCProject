@@ -302,8 +302,9 @@ namespace tim {
                 int elem_type = elem_array[0][kTIMElemType];
                 env->SetIntField(j_obj_message, j_filed_id_array[FieldIDElemType], elem_type);
                 for (int i = 0; i < elem_array.size(); ++i) {
-                    auto *jElemObj = ElemProcessor::GetInstance().ParseElem(message_json_obj[kTIMMsgConvId], message_json_obj[kTIMMsgMsgId],
-                                                                            message_json_obj[kTIMMsgSeq].ToInt64(), elem_type, elem_array[i]);
+//                    auto *jElemObj = ElemProcessor::GetInstance().ParseElem(message_json_obj[kTIMMsgConvId], message_json_obj[kTIMMsgMsgId],
+//                                                                            message_json_obj[kTIMMsgSeq].ToInt64(), elem_type, elem_array[i]);
+                    auto *jElemObj = ElemProcessor::GetInstance().ParseElem(elem_array[i]);
                     if (jElemObj) {
                         env->CallVoidMethod(j_obj_message, j_method_id_array[MethodIDAddMessageElem], jElemObj);
                         env->DeleteLocalRef(jElemObj);
