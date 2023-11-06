@@ -106,9 +106,7 @@ DEFINE_NATIVE_FUNC(void, NativeReject, jstring invite_id, jstring data, jobject 
 //TODO::该实现存在问题，待优化
 DEFINE_NATIVE_FUNC(jobject, NativeGetSignalingInfo, jobject msg) {
     std::unique_ptr<json::Object> timMessage = tim::jni::MessageJni::Convert2CoreObject(msg);
-//    std::string timMessageStr = json::Serialize(timMessage.release());//方式一，待验证
-    std::string timMessageStr = json::Serialize(timMessage.get());//方式二
-    timMessage.release();// 释放局部变量指针 elem，让转成字符串的 timMessageStr 数据重新分配内存。
+    std::string timMessageStr = json::Serialize(*timMessage);
     jobject signalingInfoObj = nullptr;
     tim::TIMEngine::GetInstance()->GetSignalingInfo(timMessageStr.c_str(),
                                                     [](int32_t code, const char *desc, const char *json_params, const void *user_data) {

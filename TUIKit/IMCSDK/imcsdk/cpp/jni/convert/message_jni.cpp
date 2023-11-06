@@ -268,7 +268,7 @@ namespace tim {
                 }
             }
 
-            int convType = message_json_obj[kTIMConvType].ToInt();
+            int convType = message_json_obj[kTIMMsgConvType].ToInt();
             if (convType == TIMConvType::kTIMConv_C2C) {
                 env->SetObjectField(j_obj_message, j_filed_id_array[FieldIDGroupID], StringJni::Cstring2Jstring(env, ""));
                 env->SetObjectField(j_obj_message, j_filed_id_array[FieldIDUserID], StringJni::Cstring2Jstring(env, message_json_obj[kTIMMsgConvId]));
@@ -299,15 +299,17 @@ namespace tim {
             }
             if (message_json_obj.HasKey(kTIMMsgElemArray)){
                 json::Array elem_array = message_json_obj[kTIMMsgElemArray];
-                int elem_type = elem_array[0][kTIMElemType];
-                env->SetIntField(j_obj_message, j_filed_id_array[FieldIDElemType], elem_type);
-                for (int i = 0; i < elem_array.size(); ++i) {
+                if (elem_array.size() > 0){
+                    auto elemType = TIMElemType(elem_array[0][kTIMElemType].ToInt());
+                    env->SetIntField(j_obj_message, j_filed_id_array[FieldIDElemType], CElemType2JElemType(elemType));
+                    for (int i = 0; i < elem_array.size(); ++i) {
 //                    auto *jElemObj = ElemProcessor::GetInstance().ParseElem(message_json_obj[kTIMMsgConvId], message_json_obj[kTIMMsgMsgId],
 //                                                                            message_json_obj[kTIMMsgSeq].ToInt64(), elem_type, elem_array[i]);
-                    auto *jElemObj = ElemProcessor::GetInstance().ParseElem(elem_array[i]);
-                    if (jElemObj) {
-                        env->CallVoidMethod(j_obj_message, j_method_id_array[MethodIDAddMessageElem], jElemObj);
-                        env->DeleteLocalRef(jElemObj);
+                        auto *jElemObj = ElemProcessor::GetInstance().ParseElem(elem_array[i]);
+                        if (jElemObj) {
+                            env->CallVoidMethod(j_obj_message, j_method_id_array[MethodIDAddMessageElem], jElemObj);
+                            env->DeleteLocalRef(jElemObj);
+                        }
                     }
                 }
             }
@@ -449,6 +451,7 @@ namespace tim {
             int size;
             size = ArrayListJni::Size(elemListObj);
             if (size > 0) {
+                json::Array elem_array;
                 for (int i = 0; i < size; ++i) {
                     auto *jElemObj = ArrayListJni::Get(elemListObj, i);
                     if (nullptr == jElemObj) {
@@ -459,20 +462,24 @@ namespace tim {
                     if (!get_type) continue;
 
                     auto type = env->CallIntMethod(jElemObj, get_type);
-                    std::unique_ptr<json::Object> elem = ElemProcessor::GetInstance().BuildElem(type, jElemObj);
+                    std::unique_ptr<json::Object> elem = ElemProcessor::GetInstance().BuildElem(JElemType2CElemType(type), jElemObj);
                     if (elem) {
-                        message[kTIMMsgElemArray].ToArray().push_back(elem.get());
-                        elem.release();// 释放局部变量指针 elem，让传入 message->elemList 数据的elem重新分配内存。
+                        elem_array.push_back(*elem);
                     }
                 }
+                message[kTIMMsgElemArray] = elem_array;
             }
 
             jobject j_obj_atUserList = env->GetObjectField(messageObj, j_filed_id_array[FieldIDGroupAtUserList]);
             size = ArrayListJni::Size(j_obj_atUserList);
             if (size > 0) {
+                json::Array at_user_array;
                 for (int i = 0; i < size; ++i) {
                     auto atUserObj = (jstring) ArrayListJni::Get(j_obj_atUserList, i);
-                    message[kTIMMsgGroupAtUserArray].ToArray().push_back(StringJni::Jstring2Cstring(env, atUserObj).c_str());
+                    at_user_array.push_back(StringJni::Jstring2Cstring(env, atUserObj).c_str());
+                }
+                if (at_user_array.size() > 0){
+                    message[kTIMMsgGroupAtUserArray] = at_user_array;
                 }
             }
 
@@ -490,14 +497,74 @@ namespace tim {
             if (j_obj_TargetGroupMemberList){
                 size = ArrayListJni::Size(j_obj_TargetGroupMemberList);
                 if (size > 0) {
+                    json::Array member_array;
                     for (int i = 0; i < size; ++i) {
                         auto memberId = (jstring) ArrayListJni::Get(j_obj_TargetGroupMemberList, i);
-                        message[kTIMMsgTargetGroupMemberArray].ToArray().push_back(StringJni::Jstring2Cstring(env, memberId).c_str());
+                        member_array.push_back(StringJni::Jstring2Cstring(env, memberId).c_str());
+                    }
+                    if (member_array.size() > 0){
+                        message[kTIMMsgTargetGroupMemberArray] = member_array;
                     }
                 }
             }
 
             return std::make_unique<json::Object>(message);
+        }
+
+        int MessageJni::CElemType2JElemType(TIMElemType cElemType) {
+            //im c sdk中的消息类型 转换 im sdk java层消息类型
+            switch (cElemType){
+                case kTIMElem_Text:// 文本消息
+                    return JavaElemType::V2TIM_ELEM_TYPE_TEXT;
+                case kTIMElem_Image:// 图片消息
+                    return JavaElemType::V2TIM_ELEM_TYPE_IMAGE;
+                case kTIMElem_Sound:// 声音消息
+                    return JavaElemType::V2TIM_ELEM_TYPE_SOUND;
+                case kTIMElem_Custom:// 自定义消息
+                    return JavaElemType::V2TIM_ELEM_TYPE_CUSTOM;
+                case kTIMElem_File:// 文件消息
+                    return JavaElemType::V2TIM_ELEM_TYPE_FILE;
+                case kTIMElem_GroupTips:// 群组tip消息
+                    return JavaElemType::V2TIM_ELEM_TYPE_GROUP_TIPS;
+                case kTIMElem_Face:// 表情消息
+                    return JavaElemType::V2TIM_ELEM_TYPE_FACE;
+                case kTIMElem_Location:// 位置消息
+                    return JavaElemType::V2TIM_ELEM_TYPE_LOCATION;
+                case kTIMElem_Video:// 视频消息
+                    return JavaElemType::V2TIM_ELEM_TYPE_VIDEO;
+                case kTIMElem_Merge:// 合并消息消息
+                    return JavaElemType::V2TIM_ELEM_TYPE_MERGER;
+                default:
+                    return JavaElemType::V2TIM_ELEM_TYPE_NONE;
+            }
+        }
+
+        TIMElemType MessageJni::JElemType2CElemType(int jElemType) {
+            //im native sdk 中的消息类型 转换 im c sdk中的消息类型
+            switch (jElemType){
+                case JavaElemType::V2TIM_ELEM_TYPE_TEXT:// 文本消息
+                    return kTIMElem_Text;
+                case JavaElemType::V2TIM_ELEM_TYPE_IMAGE:// 图片消息
+                    return kTIMElem_Image;
+                case JavaElemType::V2TIM_ELEM_TYPE_SOUND:// 声音消息
+                    return kTIMElem_Sound;
+                case JavaElemType::V2TIM_ELEM_TYPE_CUSTOM:// 自定义消息
+                    return kTIMElem_Custom;
+                case JavaElemType::V2TIM_ELEM_TYPE_FILE:// 文件消息
+                    return kTIMElem_File;
+                case JavaElemType::V2TIM_ELEM_TYPE_GROUP_TIPS:// 群组tip消息
+                    return kTIMElem_GroupTips;
+                case JavaElemType::V2TIM_ELEM_TYPE_FACE:// 表情消息
+                    return kTIMElem_Face;
+                case JavaElemType::V2TIM_ELEM_TYPE_LOCATION:// 位置消息
+                    return kTIMElem_Location;
+                case JavaElemType::V2TIM_ELEM_TYPE_VIDEO:// 视频消息
+                    return kTIMElem_Video;
+                case JavaElemType::V2TIM_ELEM_TYPE_MERGER:// 合并消息消息
+                    return kTIMElem_Merge;
+                default:
+                    return kTIMElem_Invalid;
+            }
         }
 
     }

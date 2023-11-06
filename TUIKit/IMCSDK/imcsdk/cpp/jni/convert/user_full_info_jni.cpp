@@ -246,29 +246,38 @@ namespace tim {
             }
 
             jobject j_obj_customHashMap = env->GetObjectField(j_obj_userFullInfo, j_field_array_[FieldIDCustomHashMap]);
-            jobject entry_set = HashMapJni::entrySet(j_obj_customHashMap);
-            jobject iterator = HashMapJni::iterator(entry_set);
-            while (HashMapJni::hasNext(iterator)) {
-                jobject object = HashMapJni::next(iterator);
-                if (nullptr == object) {
-                    continue;
-                }
-                auto jStr_key = (jstring) HashMapJni::getKey(object);
-                if (nullptr != jStr_key) {
-                    auto jByte_value = (jbyteArray) HashMapJni::getValue(object);
-                    if (nullptr != jByte_value) {
+            if (j_obj_customHashMap){
+                jobject entry_set = HashMapJni::entrySet(j_obj_customHashMap);
+                jobject iterator = HashMapJni::iterator(entry_set);
+                int size = HashMapJni::Size(j_obj_customHashMap);
+                if (size > 0){
+                    json::Array custom_array;
+                    while (HashMapJni::hasNext(iterator)) {
+                        jobject object = HashMapJni::next(iterator);
+                        if (nullptr == object) {
+                            continue;
+                        }
+                        auto jStr_key = (jstring) HashMapJni::getKey(object);
+                        if (nullptr != jStr_key) {
+                            auto jByte_value = (jbyteArray) HashMapJni::getValue(object);
+                            if (nullptr != jByte_value) {
 
-                        json::Object custom_item;
-                        custom_item[kTIMFriendProfileCustomStringInfoKey] = StringJni::Jstring2Cstring(env, jStr_key);
-                        custom_item[kTIMFriendProfileCustomStringInfoValue] = StringJni::JbyteArray2Cstring(env, jByte_value);
-                        userFullInfo_json[kTIMUserProfileCustomStringArray].ToArray().push_back(custom_item);
+                                json::Object custom_item;
+                                custom_item[kTIMFriendProfileCustomStringInfoKey] = StringJni::Jstring2Cstring(env, jStr_key);
+                                custom_item[kTIMFriendProfileCustomStringInfoValue] = StringJni::JbyteArray2Cstring(env, jByte_value);
+                                custom_array.push_back(custom_item);
 
-                        env->DeleteLocalRef(jByte_value);
+                                env->DeleteLocalRef(jByte_value);
+                            }
+                            env->DeleteLocalRef(jStr_key);
+                        }
                     }
-                    env->DeleteLocalRef(jStr_key);
+                    if (custom_array.size() > 0){
+                        userFullInfo_json[kTIMUserProfileCustomStringArray] = custom_array;
+                    }
                 }
+                env->DeleteLocalRef(j_obj_customHashMap);
             }
-
             return true;
         }
 
@@ -324,28 +333,39 @@ namespace tim {
             }
 
             jobject j_obj_customHashMap = env->GetObjectField(j_obj_userFullInfo, j_field_array_[FieldIDCustomHashMap]);
-            jobject entry_set = HashMapJni::entrySet(j_obj_customHashMap);
-            jobject iterator = HashMapJni::iterator(entry_set);
-            while (HashMapJni::hasNext(iterator)) {
-                jobject object = HashMapJni::next(iterator);
-                if (nullptr == object) {
-                    continue;
-                }
-                auto jStr_key = (jstring) HashMapJni::getKey(object);
-                if (nullptr != jStr_key) {
-                    auto jByte_value = (jbyteArray) HashMapJni::getValue(object);
-                    if (nullptr != jByte_value) {
+            if (j_obj_customHashMap){
+                jobject entry_set = HashMapJni::entrySet(j_obj_customHashMap);
+                jobject iterator = HashMapJni::iterator(entry_set);
+                int size = HashMapJni::Size(j_obj_customHashMap);
+                if (size > 0){
+                    json::Array custom_array;
+                    while (HashMapJni::hasNext(iterator)) {
+                        jobject object = HashMapJni::next(iterator);
+                        if (nullptr == object) {
+                            continue;
+                        }
+                        auto jStr_key = (jstring) HashMapJni::getKey(object);
+                        if (nullptr != jStr_key) {
+                            auto jByte_value = (jbyteArray) HashMapJni::getValue(object);
+                            if (nullptr != jByte_value) {
 
-                        json::Object custom_item;
-                        custom_item[kTIMUserProfileCustomStringInfoKey] = StringJni::Jstring2Cstring(env, jStr_key);
-                        custom_item[kTIMUserProfileCustomStringInfoValue] = StringJni::JbyteArray2Cstring(env, jByte_value);
-                        userFullInfo_json[kTIMUserProfileItemCustomStringArray].ToArray().push_back(custom_item);
+                                json::Object custom_item;
+                                custom_item[kTIMUserProfileCustomStringInfoKey] = StringJni::Jstring2Cstring(env, jStr_key);
+                                custom_item[kTIMUserProfileCustomStringInfoValue] = StringJni::JbyteArray2Cstring(env, jByte_value);
+                                custom_array.push_back(custom_item);
 
-                        env->DeleteLocalRef(jByte_value);
+                                env->DeleteLocalRef(jByte_value);
+                            }
+                            env->DeleteLocalRef(jStr_key);
+                        }
                     }
-                    env->DeleteLocalRef(jStr_key);
+                    if (custom_array.size() > 0){
+                        userFullInfo_json[kTIMUserProfileItemCustomStringArray] = custom_array;
+                    }
                 }
+                env->DeleteLocalRef(j_obj_customHashMap);
             }
+
 
             return true;
         }

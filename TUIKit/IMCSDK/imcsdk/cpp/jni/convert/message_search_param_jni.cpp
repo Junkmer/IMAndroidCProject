@@ -104,36 +104,61 @@ namespace tim {
                 env->DeleteLocalRef(jStr);
             }
 
-            jobject j_obj_keywordList = env->GetObjectField(j_obj_searchParam, j_field_array_[FieldIDKeywordList]);
             int size;
-            size = ArrayListJni::Size(j_obj_keywordList);
-            for (int i = 0; i < size; ++i) {
-                auto j_str_keyword = (jstring) ArrayListJni::Get(j_obj_keywordList, i);
-                std::string keywordStr = StringJni::Jstring2Cstring(env, j_str_keyword);
-                searchParam_json[kTIMMsgSearchParamKeywordArray].ToArray().push_back(keywordStr);
-                env->DeleteLocalRef(j_str_keyword);
+
+            jobject j_obj_keywordList = env->GetObjectField(j_obj_searchParam, j_field_array_[FieldIDKeywordList]);
+            if (j_obj_keywordList){
+                size = ArrayListJni::Size(j_obj_keywordList);
+                if (size > 0){
+                    json::Array keyword_array;
+                    for (int i = 0; i < size; ++i) {
+                        auto j_str_keyword = (jstring) ArrayListJni::Get(j_obj_keywordList, i);
+                        std::string keywordStr = StringJni::Jstring2Cstring(env, j_str_keyword);
+                        keyword_array.push_back(keywordStr);
+                        env->DeleteLocalRef(j_str_keyword);
+                    }
+                    if (keyword_array.size() > 0){
+                        searchParam_json[kTIMMsgSearchParamKeywordArray] = keyword_array;
+                    }
+                }
+                env->DeleteLocalRef(j_obj_keywordList);
             }
-            env->DeleteLocalRef(j_obj_keywordList);
 
             searchParam_json[kTIMMsgSearchParamKeywordListMatchType] = TIMKeywordListMatchType(env->GetIntField(j_obj_searchParam, j_field_array_[FieldIDType]));
 
             jobject j_obj_userIDList = env->GetObjectField(j_obj_searchParam, j_field_array_[FieldIDUserIDList]);
-            size = ArrayListJni::Size(j_obj_userIDList);
-            for (int i = 0; i < size; ++i) {
-                auto j_str_userID = (jstring) ArrayListJni::Get(j_obj_keywordList, i);
-                std::string keywordStr = StringJni::Jstring2Cstring(env, j_str_userID);
-                searchParam_json[kTIMMsgSearchParamSenderIdentifierArray].ToArray().push_back(keywordStr);
-                env->DeleteLocalRef(j_str_userID);
+            if (j_obj_userIDList){
+                size = ArrayListJni::Size(j_obj_userIDList);
+                if (size > 0){
+                    json::Array identifier_array;
+                    for (int i = 0; i < size; ++i) {
+                        auto j_str_userID = (jstring) ArrayListJni::Get(j_obj_keywordList, i);
+                        std::string keywordStr = StringJni::Jstring2Cstring(env, j_str_userID);
+                        identifier_array.push_back(keywordStr);
+                        env->DeleteLocalRef(j_str_userID);
+                    }
+                    if (identifier_array.size() > 0){
+                        searchParam_json[kTIMMsgSearchParamSenderIdentifierArray] = identifier_array;
+                    }
+                }
+                env->DeleteLocalRef(j_obj_userIDList);
             }
-            env->DeleteLocalRef(j_obj_userIDList);
 
             jobject j_obj_messageTypeList = env->GetObjectField(j_obj_searchParam, j_field_array_[FieldIDMessageTypeList]);
-            size = ArrayListJni::Size(j_obj_messageTypeList);
-            for (int i = 0; i < size; ++i) {
-                int messageType = IntegerJni::IntValue(ArrayListJni::Get(j_obj_messageTypeList, i));
-                searchParam_json[kTIMMsgSearchParamMessageTypeArray].ToArray().push_back(messageType);
+            if (j_obj_messageTypeList){
+                size = ArrayListJni::Size(j_obj_messageTypeList);
+                if (size > 0){
+                    json::Array msg_type_array;
+                    for (int i = 0; i < size; ++i) {
+                        int messageType = IntegerJni::IntValue(ArrayListJni::Get(j_obj_messageTypeList, i));
+                        msg_type_array.push_back(messageType);
+                    }
+                    if (msg_type_array.size() > 0){
+                        searchParam_json[kTIMMsgSearchParamMessageTypeArray] = msg_type_array;
+                    }
+                }
+                env->DeleteLocalRef(j_obj_messageTypeList);
             }
-            env->DeleteLocalRef(j_obj_messageTypeList);
 
             searchParam_json[kTIMMsgSearchParamSearchTimePosition] = (long long) env->GetLongField(j_obj_searchParam, j_field_array_[FieldIDSearchTimePosition]);
             searchParam_json[kTIMMsgSearchParamSearchTimePeriod] = (long long) env->GetLongField(j_obj_searchParam, j_field_array_[FieldIDSearchTimePeriod]);

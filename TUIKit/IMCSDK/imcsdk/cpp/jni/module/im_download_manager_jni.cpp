@@ -86,9 +86,12 @@ DEFINE_NATIVE_FUNC(void, NativeDownloadFile, jstring file_id, jstring uuid, jstr
 
 DEFINE_NATIVE_FUNC(void, NativeDownloadMergerMessage, jobject elem, jobject callback) {
     jobject jni_callback = env->NewGlobalRef(callback);
+    json::Array elem_array;
     std::unique_ptr<json::Object> elem_json = tim::jni::ElemProcessor::GetInstance().BuildElem(TIMElemType::kTIMElem_Merge, elem);
+    elem_array.push_back(*elem_json);
+
     json::Object message_json;
-    message_json[kTIMMsgElemArray].ToArray().push_back(*elem_json);
+    message_json[kTIMMsgElemArray] = elem_array;
     std::string messageStr = json::Serialize(message_json);
 
     tim::TIMEngine::GetInstance()->DownloadMergerMessage(messageStr.c_str(),[](int32_t code, const char* desc, const char* json_params, const void* user_data){

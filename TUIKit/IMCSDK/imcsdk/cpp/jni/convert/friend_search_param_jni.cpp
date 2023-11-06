@@ -68,14 +68,18 @@ namespace tim {
 
             jobject keywordListObj = env->GetObjectField(j_obj_searchParam,j_field_array_[FieldIDKeywordList]);
             int size = ArrayListJni::Size(keywordListObj);
-            for (int i = 0; i < size; ++i) {
-                auto keywordJStr = (jstring) ArrayListJni::Get(keywordListObj,i);
-                if (keywordJStr){
-                    searchParam_json[kTIMFriendshipSearchParamKeywordList].ToArray().push_back(StringJni::Jstring2Cstring(env,keywordJStr).c_str());
-                    env->DeleteLocalRef(keywordJStr);
+            if (size > 0){
+                json::Array keyword_array;
+                for (int i = 0; i < size; ++i) {
+                    auto keywordJStr = (jstring) ArrayListJni::Get(keywordListObj,i);
+                    if (keywordJStr){
+                        keyword_array.push_back(StringJni::Jstring2Cstring(env,keywordJStr).c_str());
+                        env->DeleteLocalRef(keywordJStr);
+                    }
                 }
+                env->DeleteLocalRef(keywordListObj);
+                searchParam_json[kTIMFriendshipSearchParamKeywordList] = keyword_array;
             }
-            env->DeleteLocalRef(keywordListObj);
 
             json::Array search_field_array;
             bool isSearchUserID = env->GetBooleanField(j_obj_searchParam,j_field_array_[FieldIDIsSearchUserID]);

@@ -274,22 +274,29 @@ namespace tim {
             j_obj = env->GetObjectField(object, j_field_id_array_[FieldIDLastMessage]);
             if (j_obj) {
                 std::unique_ptr<json::Object> timMessage = tim::jni::MessageJni::Convert2CoreObject(j_obj);
-                topicInfo_json[kTIMGroupTopicInfoLastMessage] = timMessage.release();
+                topicInfo_json[kTIMGroupTopicInfoLastMessage] = *timMessage;
                 env->DeleteLocalRef(j_obj);
             }
 
             j_obj = env->GetObjectField(object, j_field_id_array_[FieldIDGroupAtInfoList]);
             if (j_obj) {
                 int size = ArrayListJni::Size(j_obj);
-                for (int i = 0; i < size; ++i) {
-                    jobject item_obj = ArrayListJni::Get(j_obj,i);
-                    json::Object group_at_json;
-                    bool flag = GroupAtInfoJni::Convert2CoreObject(item_obj,group_at_json);
-                    if (flag){
-                        topicInfo_json[kTIMGroupTopicInfoGroupAtInfoArray].ToArray().push_back(group_at_json);
+                if (size > 0){
+                    json::Array at_info_array;
+                    for (int i = 0; i < size; ++i) {
+                        jobject item_obj = ArrayListJni::Get(j_obj,i);
+                        json::Object group_at_json;
+                        bool flag = GroupAtInfoJni::Convert2CoreObject(item_obj,group_at_json);
+                        if (flag){
+                            at_info_array.push_back(group_at_json);
+                        }
+                    }
+
+                    if (at_info_array.size() > 0){
+                        topicInfo_json[kTIMGroupTopicInfoGroupAtInfoArray] = at_info_array;
                     }
                 }
-                env->DeleteLocalRef(jStr);
+                env->DeleteLocalRef(j_obj);
             }
 
             return true;

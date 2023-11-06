@@ -8,6 +8,7 @@
 #include <jni.h>
 #include <memory>
 #include "json.h"
+#include "TIMCloudDef.h"
 
 namespace tim {
     namespace jni {
@@ -16,6 +17,10 @@ namespace tim {
             static bool InitIDs(JNIEnv *env);
             static jobject Convert2JObject(const json::Object &message_json_obj);
             static std::unique_ptr<json::Object> Convert2CoreObject(jobject &messageObj);
+
+        private:
+            static int CElemType2JElemType(TIMElemType cElemType);
+            static TIMElemType JElemType2CElemType(int jElemType);
 
         private:
             enum FieldID {
@@ -63,6 +68,20 @@ namespace tim {
                 MethodIDAddMessageElem,
 
                 MethodIDMax
+            };
+            
+            enum JavaElemType{
+                V2TIM_ELEM_TYPE_NONE = 0,
+                V2TIM_ELEM_TYPE_TEXT = 1,
+                V2TIM_ELEM_TYPE_CUSTOM = 2,
+                V2TIM_ELEM_TYPE_IMAGE = 3,
+                V2TIM_ELEM_TYPE_SOUND = 4,
+                V2TIM_ELEM_TYPE_VIDEO = 5,
+                V2TIM_ELEM_TYPE_FILE = 6,
+                V2TIM_ELEM_TYPE_LOCATION = 7,
+                V2TIM_ELEM_TYPE_FACE = 8,
+                V2TIM_ELEM_TYPE_GROUP_TIPS = 9,
+                V2TIM_ELEM_TYPE_MERGER = 10,
             };
 
             static jclass j_cls_;

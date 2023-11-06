@@ -108,17 +108,6 @@ namespace tim {
         void AdvancedMsgListenerJni::ImplTIMRecvNewMsgCallback(const char *json_msg_array, const void *user_data) {
             json::Array msg_array = json::Deserialize(json_msg_array);
             for (const auto &item: msg_array) {
-                if (item[kTIMMsgIsOnlineMsg].ToBool()){
-                    json::Array elem_array = item[kTIMMsgElemArray];
-                    if (item.HasKey(kTIMMsgElemArray) && elem_array.size() == 1) {
-                        json::Object elem_json = elem_array[0];
-                        int elem_type = elem_json[kTIMElemType];
-                        if (elem_type == TIMElemType::kTIMElem_GroupTips || elem_type == TIMElemType::kTIMElem_GroupReport) {
-                            //TODO::当群tip消息配置成了 “下发/不存漫游” 则不触发新消息回调，跟原生sdk设计保持一致。
-                            return;
-                        }
-                    }
-                }
                 OnRecvNewMessage(*(std::map<std::string, jobject> *) user_data, item);
             }
         }

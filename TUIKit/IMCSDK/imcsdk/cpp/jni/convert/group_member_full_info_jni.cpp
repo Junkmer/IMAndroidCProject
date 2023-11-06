@@ -160,29 +160,37 @@ namespace tim {
 
             jobject j_obj_customHashMap = env->GetObjectField(member_info_obj, j_field_array_[FieldIDCustomInfo]);
             if (j_obj_customHashMap){
-                modifyFlag = modifyFlag | TIMGroupMemberModifyInfoFlag::kTIMGroupMemberModifyFlag_Custom;
-
                 jobject entry_set = HashMapJni::entrySet(j_obj_customHashMap);
                 jobject iterator = HashMapJni::iterator(entry_set);
-                while (HashMapJni::hasNext(iterator)) {
-                    jobject object = HashMapJni::next(iterator);
-                    if (nullptr == object) {
-                        continue;
+                int size = HashMapJni::Size(j_obj_customHashMap);
+                if (size > 0){
+                    json::Array custom_array;
+                    while (HashMapJni::hasNext(iterator)) {
+                        jobject object = HashMapJni::next(iterator);
+                        if (nullptr == object) {
+                            continue;
+                        }
+                        auto jStr_key = (jstring) HashMapJni::getKey(object);
+                        if (nullptr != jStr_key) {
+                            json::Object item;
+
+                            auto jByte_value = (jbyteArray) HashMapJni::getValue(object);
+
+                            item[kTIMGroupMemberInfoCustomStringInfoKey] = StringJni::Jstring2Cstring(env, jStr_key).c_str();
+                            item[kTIMGroupMemberInfoCustomStringInfoValue] = StringJni::JbyteArray2Cstring(env, jByte_value);
+                            custom_array.push_back(item);
+
+                            env->DeleteLocalRef(jByte_value);
+                            env->DeleteLocalRef(jStr_key);
+                        }
                     }
-                    auto jStr_key = (jstring) HashMapJni::getKey(object);
-                    if (nullptr != jStr_key) {
-                        json::Object item;
 
-                        auto jByte_value = (jbyteArray) HashMapJni::getValue(object);
-
-                        item[kTIMGroupMemberInfoCustomStringInfoKey] = StringJni::Jstring2Cstring(env, jStr_key).c_str();
-                        item[kTIMGroupMemberInfoCustomStringInfoValue] = StringJni::JbyteArray2Cstring(env, jByte_value);
-                        memberFullInfo_json[kTIMGroupModifyMemberInfoParamCustomInfo].ToArray().push_back(item);
-
-                        env->DeleteLocalRef(jByte_value);
-                        env->DeleteLocalRef(jStr_key);
+                    if (custom_array.size() > 0){
+                        modifyFlag = modifyFlag | TIMGroupMemberModifyInfoFlag::kTIMGroupMemberModifyFlag_Custom;
+                        memberFullInfo_json[kTIMGroupModifyMemberInfoParamCustomInfo] = custom_array;
                     }
                 }
+
             }
 
             //修改群成员资料标记位

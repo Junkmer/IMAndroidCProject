@@ -146,11 +146,13 @@ namespace tim {
 
             jobject j_obj_messageTypeList = env->GetObjectField(j_obj_getOption,j_field_array_[FieldIDMessageTypeList]);
             if (j_obj_messageTypeList){
+                json::Array msg_type_array;
                 int size = ArrayListJni::Size(j_obj_messageTypeList);
                 for (int i = 0; i < size; ++i) {
                     int messageType = IntegerJni::IntValue(ArrayListJni::Get(j_obj_messageTypeList,i));
-                    get_msg_param_json[kTIMMsgGetMsgListMessageTypeArray].ToArray().push_back(messageType);
+                    msg_type_array.push_back(messageType);
                 }
+                get_msg_param_json[kTIMMsgGetMsgListMessageTypeArray] = msg_type_array;
                 env->DeleteLocalRef(j_obj_messageTypeList);
             }
             return true;

@@ -292,23 +292,29 @@ namespace tim {
             jobject j_obj_customHashMap = env->GetObjectField(j_obj_groupInfo,j_field_array_[FieldIDCustomInfo]);
             jobject entry_set = HashMapJni::entrySet(j_obj_customHashMap);
             jobject iterator = HashMapJni::iterator(entry_set);
-            while (HashMapJni::hasNext(iterator)) {
-                jobject object = HashMapJni::next(iterator);
-                if (nullptr == object) {
-                    continue;
-                }
-                auto jStr_key = (jstring) HashMapJni::getKey(object);
-                if (nullptr != jStr_key) {
-                    auto jByte_value = (jbyteArray) HashMapJni::getValue(object);
-                    json::Object item;
-                    item[kTIMGroupInfoCustomStringInfoKey] = StringJni::Jstring2Cstring(env, jStr_key).c_str();
-                    item[kTIMGroupInfoCustomStringInfoValue] = StringJni::JbyteArray2Cstring(env, jByte_value);
-                    create_group_info_json[kTIMCreateGroupParamCustomInfo].ToArray().push_back(item);
+            int size = HashMapJni::Size(j_obj_customHashMap);
+            if (size > 0){
+                json::Array custom_array;
+                while (HashMapJni::hasNext(iterator)) {
+                    jobject object = HashMapJni::next(iterator);
+                    if (nullptr == object) {
+                        continue;
+                    }
+                    auto jStr_key = (jstring) HashMapJni::getKey(object);
+                    if (nullptr != jStr_key) {
+                        auto jByte_value = (jbyteArray) HashMapJni::getValue(object);
+                        json::Object item;
+                        item[kTIMGroupInfoCustomStringInfoKey] = StringJni::Jstring2Cstring(env, jStr_key).c_str();
+                        item[kTIMGroupInfoCustomStringInfoValue] = StringJni::JbyteArray2Cstring(env, jByte_value);
+                        custom_array.push_back(item);
 
-                    env->DeleteLocalRef(jByte_value);
-                    env->DeleteLocalRef(jStr_key);
+                        env->DeleteLocalRef(jByte_value);
+                        env->DeleteLocalRef(jStr_key);
+                    }
                 }
+                create_group_info_json[kTIMCreateGroupParamCustomInfo] = custom_array;
             }
+
 
             create_group_info_json[kTIMCreateGroupParamMaxMemberCount] = (long long) env->GetLongField(j_obj_groupInfo, j_field_array_[FieldIDMemberMaxCount]);
             return true;
@@ -379,28 +385,32 @@ namespace tim {
             jobject j_obj_customHashMap = env->GetObjectField(j_obj_groupInfo,j_field_array_[FieldIDCustomInfo]);
             jobject entry_set = HashMapJni::entrySet(j_obj_customHashMap);
             jobject iterator = HashMapJni::iterator(entry_set);
-            bool updateCustomFlag;
-            while (HashMapJni::hasNext(iterator)) {
-                jobject object = HashMapJni::next(iterator);
-                if (nullptr == object) {
-                    continue;
-                }
-                updateCustomFlag = true;
-                auto jStr_key = (jstring) HashMapJni::getKey(object);
-                if (nullptr != jStr_key) {
-                    auto jByte_value = (jbyteArray) HashMapJni::getValue(object);
-                    json::Object item;
-                    item[kTIMGroupInfoCustomStringInfoKey] = StringJni::Jstring2Cstring(env, jStr_key).c_str();
-                    item[kTIMGroupInfoCustomStringInfoValue] = StringJni::JbyteArray2Cstring(env, jByte_value);
-                    update_group_info_json[kTIMGroupModifyInfoParamCustomInfo].ToArray().push_back(item);
+            int size = HashMapJni::Size(j_obj_customHashMap);
+            if (size > 0){
+                json::Array custom_array;
+                while (HashMapJni::hasNext(iterator)) {
+                    jobject object = HashMapJni::next(iterator);
+                    if (nullptr == object) {
+                        continue;
+                    }
+                    auto jStr_key = (jstring) HashMapJni::getKey(object);
+                    if (nullptr != jStr_key) {
+                        auto jByte_value = (jbyteArray) HashMapJni::getValue(object);
+                        json::Object item;
+                        item[kTIMGroupInfoCustomStringInfoKey] = StringJni::Jstring2Cstring(env, jStr_key).c_str();
+                        item[kTIMGroupInfoCustomStringInfoValue] = StringJni::JbyteArray2Cstring(env, jByte_value);
+                        custom_array.push_back(item);
 
-                    env->DeleteLocalRef(jByte_value);
-                    env->DeleteLocalRef(jStr_key);
+                        env->DeleteLocalRef(jByte_value);
+                        env->DeleteLocalRef(jStr_key);
+                    }
                 }
-            }
 
-            if (updateCustomFlag){
-                modifyFlag = modifyFlag | TIMGroupModifyInfoFlag::kTIMGroupModifyInfoFlag_Custom;
+                if (custom_array.size() > 0){
+                    update_group_info_json[kTIMGroupModifyInfoParamCustomInfo] = custom_array;
+                    modifyFlag = modifyFlag | TIMGroupModifyInfoFlag::kTIMGroupModifyInfoFlag_Custom;
+                }
+
             }
 
             long memberMaxCount = env->GetLongField(j_obj_groupInfo, j_field_array_[FieldIDMemberMaxCount]);

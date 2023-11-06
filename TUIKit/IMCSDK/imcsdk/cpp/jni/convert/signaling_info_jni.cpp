@@ -170,10 +170,16 @@ namespace tim {
             jobject inviteeListObj = env->GetObjectField(j_obj_signalingInfo,j_field_array_[FieldIDInviteeList]);
             if (inviteeListObj){
                 int size = ArrayListJni::Size(inviteeListObj);
-                for (int i = 0; i < size; ++i) {
-                    auto inviteeStr = (jstring)ArrayListJni::Get(inviteeListObj,i);
-                    signalingInfo_json[kTIMSignalingInfoInviteeList].ToArray().push_back(StringJni::Jstring2Cstring(env,inviteeStr));
-                    env->DeleteLocalRef(inviteeStr);
+                if (size > 0){
+                    json::Array invitee_array;
+                    for (int i = 0; i < size; ++i) {
+                        auto inviteeStr = (jstring)ArrayListJni::Get(inviteeListObj,i);
+                        invitee_array.push_back(StringJni::Jstring2Cstring(env,inviteeStr));
+                        env->DeleteLocalRef(inviteeStr);
+                    }
+                    if (invitee_array.size() > 0){
+                        signalingInfo_json[kTIMSignalingInfoInviteeList] = invitee_array;
+                    }
                 }
                 env->DeleteLocalRef(inviteeListObj);
             }

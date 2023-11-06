@@ -1212,21 +1212,30 @@ namespace tim {
 
             jobject messageListObj = env->GetObjectField(jElemObj,j_field_array_[MergerFieldMessageList]);
             size_t msg_size = ArrayListJni::Size(messageListObj);
-            for (int i = 0; i < msg_size; ++i){
-                auto item = (jobject) ArrayListJni::Get(messageListObj, i);
-                std::unique_ptr<json::Object> timMessage = tim::jni::MessageJni::Convert2CoreObject(item);
-                mergerElem[kTIMMergerElemMsgArray].ToArray().push_back(timMessage.release());
-                env->DeleteLocalRef(item);
+            if (msg_size > 0){
+                json::Array msg_array;
+                for (int i = 0; i < msg_size; ++i){
+                    auto item = (jobject) ArrayListJni::Get(messageListObj, i);
+                    std::unique_ptr<json::Object> timMessage = tim::jni::MessageJni::Convert2CoreObject(item);
+                    msg_array.push_back(*timMessage);
+                    env->DeleteLocalRef(item);
+                }
+                env->DeleteLocalRef(messageListObj);
+                mergerElem[kTIMMergerElemMsgArray] = msg_array;
             }
 
             jobject abstractListObj = env->GetObjectField(jElemObj, j_field_array_[MergerFieldAbstractList]);
             size_t len = ArrayListJni::Size(abstractListObj);
-            for (int i = 0; i < len; ++i) {
-                auto item = (jstring) ArrayListJni::Get(abstractListObj, i);
-                mergerElem[kTIMMergerElemAbstractArray].ToArray().push_back(StringJni::Jstring2Cstring(env, item).c_str());
-                env->DeleteLocalRef(item);
+            if (len > 0){
+                json::Array abstract_array;
+                for (int i = 0; i < len; ++i) {
+                    auto item = (jstring) ArrayListJni::Get(abstractListObj, i);
+                    abstract_array.push_back(StringJni::Jstring2Cstring(env, item).c_str());
+                    env->DeleteLocalRef(item);
+                }
+                env->DeleteLocalRef(abstractListObj);
+                mergerElem[kTIMMergerElemAbstractArray] = abstract_array;
             }
-            env->DeleteLocalRef(abstractListObj);
 
             jStr = (jstring) env->GetObjectField(jElemObj, j_field_array_[MergerFieldCompatibleText]);
             if (jStr) {

@@ -104,31 +104,7 @@ public class V2TIMElem implements Serializable {
     }
 
     private int getElementType() {
-        //对 im c sdk中的消息类型进行转换
-        switch (elementType){
-            case V2TIMMessage.V2TIM_ELEM_TYPE_TEXT:// 文本消息
-                return 0;
-            case V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE:// 图片消息
-                return 1;
-            case V2TIMMessage.V2TIM_ELEM_TYPE_SOUND:// 声音消息
-                return 2;
-            case V2TIMMessage.V2TIM_ELEM_TYPE_CUSTOM:// 自定义消息
-                return 3;
-            case V2TIMMessage.V2TIM_ELEM_TYPE_FILE:// 文件消息
-                return 4;
-            case V2TIMMessage.V2TIM_ELEM_TYPE_GROUP_TIPS:// 群组tip消息
-                return 5;
-            case V2TIMMessage.V2TIM_ELEM_TYPE_FACE:// 表情消息
-                return 6;
-            case V2TIMMessage.V2TIM_ELEM_TYPE_LOCATION:// 位置消息
-                return 7;
-            case V2TIMMessage.V2TIM_ELEM_TYPE_VIDEO:// 视频消息
-                return 9;
-            case V2TIMMessage.V2TIM_ELEM_TYPE_MERGER:// 合并消息消息
-                return 12;
-            default:
-                return -1;
-        }
+        return elementType;
     }
 
     public void setElementType(int elementType) {

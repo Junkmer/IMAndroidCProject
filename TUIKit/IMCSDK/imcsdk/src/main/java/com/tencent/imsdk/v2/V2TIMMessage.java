@@ -111,34 +111,11 @@ public class V2TIMMessage implements Serializable {
 
     public int getStatus() {
         return status;
+//        return this.message == null ? status : this.message.getMessageStatus();
     }
 
     public int getElemType() {
-        //对 im c sdk中的消息类型进行转换
-        switch (elemType){
-            case 0:// 文本消息
-                return V2TIM_ELEM_TYPE_TEXT;
-            case 1:// 图片消息
-                return V2TIM_ELEM_TYPE_IMAGE;
-            case 2:// 声音消息
-                return V2TIM_ELEM_TYPE_SOUND;
-            case 3:// 自定义消息
-                return V2TIM_ELEM_TYPE_CUSTOM;
-            case 4:// 文件消息
-                return V2TIM_ELEM_TYPE_FILE;
-            case 5:// 群组tip消息
-                return V2TIM_ELEM_TYPE_GROUP_TIPS;
-            case 6:// 表情消息
-                return V2TIM_ELEM_TYPE_FACE;
-            case 7:// 位置消息
-                return V2TIM_ELEM_TYPE_LOCATION;
-            case 9:// 视频消息
-                return V2TIM_ELEM_TYPE_VIDEO;
-            case 12:// 合并消息消息
-                return V2TIM_ELEM_TYPE_MERGER;
-            default:
-                return V2TIM_ELEM_TYPE_NONE;
-        }
+        return elemType;
     }
 
     public V2TIMTextElem getTextElem() {
@@ -386,114 +363,152 @@ public class V2TIMMessage implements Serializable {
         return elemList;
     }
 
+//    @Override
+//    public String toString() {
+//        StringBuilder stringBuilder = new StringBuilder();
+//        stringBuilder.append("V2TIMMessage--->");
+//
+//        V2TIMElem v2TIMElem = null;
+//        StringBuilder elemDescStringBuilder = new StringBuilder();
+//        for (int i = 0; i < elemList.size(); i++) {
+//            V2TIMElem baseElement = elemList.get(i);
+//            if (baseElement instanceof V2TIMTextElem) {
+//                if (v2TIMElem == null) {
+//                    v2TIMElem = getTextElem();
+//                } else {
+//                    v2TIMElem = v2TIMElem.getNextElem();
+//                }
+//                V2TIMTextElem textElement = (V2TIMTextElem) v2TIMElem;
+//                elemDescStringBuilder.append(textElement.toString());
+//            } else if (baseElement instanceof V2TIMCustomElem) {
+//                if (v2TIMElem == null) {
+//                    v2TIMElem = getCustomElem();
+//                } else {
+//                    v2TIMElem = v2TIMElem.getNextElem();
+//                }
+//                V2TIMCustomElem customElement = (V2TIMCustomElem) v2TIMElem;
+//                elemDescStringBuilder.append(customElement.toString());
+//            } else if (baseElement instanceof V2TIMImageElem) {
+//                if (v2TIMElem == null) {
+//                    v2TIMElem = getImageElem();
+//                } else {
+//                    v2TIMElem = v2TIMElem.getNextElem();
+//                }
+//                V2TIMImageElem imageElement = (V2TIMImageElem) v2TIMElem;
+//                elemDescStringBuilder.append(imageElement.toString());
+//            } else if (baseElement instanceof V2TIMSoundElem) {
+//                if (v2TIMElem == null) {
+//                    v2TIMElem = getSoundElem();
+//                } else {
+//                    v2TIMElem = v2TIMElem.getNextElem();
+//                }
+//                V2TIMSoundElem soundElement = (V2TIMSoundElem) v2TIMElem;
+//                elemDescStringBuilder.append(soundElement.toString());
+//            } else if (baseElement instanceof V2TIMVideoElem) {
+//                if (v2TIMElem == null) {
+//                    v2TIMElem = getVideoElem();
+//                } else {
+//                    v2TIMElem = v2TIMElem.getNextElem();
+//                }
+//                V2TIMVideoElem videoElement = (V2TIMVideoElem) v2TIMElem;
+//                elemDescStringBuilder.append(videoElement.toString());
+//            } else if (baseElement instanceof V2TIMFileElem) {
+//                if (v2TIMElem == null) {
+//                    v2TIMElem = getFileElem();
+//                } else {
+//                    v2TIMElem = v2TIMElem.getNextElem();
+//                }
+//                V2TIMFileElem fileElem = (V2TIMFileElem) v2TIMElem;
+//                elemDescStringBuilder.append(fileElem.toString());
+//            } else if (baseElement instanceof V2TIMLocationElem) {
+//                if (v2TIMElem == null) {
+//                    v2TIMElem = getLocationElem();
+//                } else {
+//                    v2TIMElem = v2TIMElem.getNextElem();
+//                }
+//                V2TIMLocationElem locationElement = (V2TIMLocationElem) v2TIMElem;
+//                elemDescStringBuilder.append(locationElement.toString());
+//            } else if (baseElement instanceof V2TIMFaceElem) {
+//                if (v2TIMElem == null) {
+//                    v2TIMElem = getFaceElem();
+//                } else {
+//                    v2TIMElem = v2TIMElem.getNextElem();
+//                }
+//                V2TIMFaceElem faceElement = (V2TIMFaceElem) v2TIMElem;
+//                elemDescStringBuilder.append(faceElement.toString());
+//            } else if (baseElement instanceof V2TIMMergerElem) {
+//                if (v2TIMElem == null) {
+//                    v2TIMElem = getMergerElem();
+//                } else {
+//                    v2TIMElem = v2TIMElem.getNextElem();
+//                }
+//                V2TIMMergerElem mergerElem = (V2TIMMergerElem) v2TIMElem;
+//                elemDescStringBuilder.append(mergerElem.toString());
+//            } else if (baseElement instanceof V2TIMGroupTipsElem) {
+//                if (v2TIMElem == null) {
+//                    v2TIMElem = getGroupTipsElem();
+//                } else {
+//                    v2TIMElem = v2TIMElem.getNextElem();
+//                }
+//                V2TIMGroupTipsElem groupTipsElement = (V2TIMGroupTipsElem) v2TIMElem;
+//                elemDescStringBuilder.append(groupTipsElement.toString());
+//            }
+//            elemDescStringBuilder.append("|");
+//        }
+//
+//        stringBuilder.append("msgID:").append(getMsgID()).append(", timestamp:").append(getTimestamp()).
+//                append(", sender:").append(getSender()).append(", nickname:").append(getNickName()).
+//                append(", faceUrl:").append(getFaceUrl()).append(", friendRemark:").append(getFriendRemark()).
+//                append(", friendRemark:").append(getFriendRemark()).append(", nameCard:").append(getNameCard()).
+//                append(", groupID:").append(getGroupID()).append(", userID:").append(getUserID()).
+//                append(", seq:").append(getSeq()).append(", random:").append(getRandom()).
+//                append(", status:").append(getStatus()).append(", isSelf:").append(isSelf()).
+//                append(", isRead:").append(isRead()).append(", isPeerRead:").append(isPeerRead()).
+//                append(", needReadReceipt:").append(isNeedReadReceipt()).append(", priority:").append(getPriority()).
+//                append(", groupAtUserList:").append(getGroupAtUserList()).append(", elemType:").append(getElemType()).
+//                append(", localCustomData:").append(getLocalCustomData()).append(", localCustomInt:").append(getLocalCustomInt()).
+//                append(", cloudCustomData:").append(getCloudCustomData()).append(", isExcludeFromUnreadCount:").append(isExcludedFromUnreadCount()).
+//                append(", isExcludeFromLastMessage:").append(isExcludedFromLastMessage()).append(", offlinePushInfo:").append(getOfflinePushInfo()).
+//                append(", isBroadcastMessage:").append(isBroadcastMessage()).
+//                append(", elemDesc:").append(elemDescStringBuilder);
+//        return stringBuilder.toString();
+//    }
+
+
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("V2TIMMessage--->");
-
-        V2TIMElem v2TIMElem = null;
-        StringBuilder elemDescStringBuilder = new StringBuilder();
-        for (int i = 0; i < elemList.size(); i++) {
-            V2TIMElem baseElement = elemList.get(i);
-            if (baseElement instanceof V2TIMTextElem) {
-                if (v2TIMElem == null) {
-                    v2TIMElem = getTextElem();
-                } else {
-                    v2TIMElem = v2TIMElem.getNextElem();
-                }
-                V2TIMTextElem textElement = (V2TIMTextElem) v2TIMElem;
-                elemDescStringBuilder.append(textElement.toString());
-            } else if (baseElement instanceof V2TIMCustomElem) {
-                if (v2TIMElem == null) {
-                    v2TIMElem = getCustomElem();
-                } else {
-                    v2TIMElem = v2TIMElem.getNextElem();
-                }
-                V2TIMCustomElem customElement = (V2TIMCustomElem) v2TIMElem;
-                elemDescStringBuilder.append(customElement.toString());
-            } else if (baseElement instanceof V2TIMImageElem) {
-                if (v2TIMElem == null) {
-                    v2TIMElem = getImageElem();
-                } else {
-                    v2TIMElem = v2TIMElem.getNextElem();
-                }
-                V2TIMImageElem imageElement = (V2TIMImageElem) v2TIMElem;
-                elemDescStringBuilder.append(imageElement.toString());
-            } else if (baseElement instanceof V2TIMSoundElem) {
-                if (v2TIMElem == null) {
-                    v2TIMElem = getSoundElem();
-                } else {
-                    v2TIMElem = v2TIMElem.getNextElem();
-                }
-                V2TIMSoundElem soundElement = (V2TIMSoundElem) v2TIMElem;
-                elemDescStringBuilder.append(soundElement.toString());
-            } else if (baseElement instanceof V2TIMVideoElem) {
-                if (v2TIMElem == null) {
-                    v2TIMElem = getVideoElem();
-                } else {
-                    v2TIMElem = v2TIMElem.getNextElem();
-                }
-                V2TIMVideoElem videoElement = (V2TIMVideoElem) v2TIMElem;
-                elemDescStringBuilder.append(videoElement.toString());
-            } else if (baseElement instanceof V2TIMFileElem) {
-                if (v2TIMElem == null) {
-                    v2TIMElem = getFileElem();
-                } else {
-                    v2TIMElem = v2TIMElem.getNextElem();
-                }
-                V2TIMFileElem fileElem = (V2TIMFileElem) v2TIMElem;
-                elemDescStringBuilder.append(fileElem.toString());
-            } else if (baseElement instanceof V2TIMLocationElem) {
-                if (v2TIMElem == null) {
-                    v2TIMElem = getLocationElem();
-                } else {
-                    v2TIMElem = v2TIMElem.getNextElem();
-                }
-                V2TIMLocationElem locationElement = (V2TIMLocationElem) v2TIMElem;
-                elemDescStringBuilder.append(locationElement.toString());
-            } else if (baseElement instanceof V2TIMFaceElem) {
-                if (v2TIMElem == null) {
-                    v2TIMElem = getFaceElem();
-                } else {
-                    v2TIMElem = v2TIMElem.getNextElem();
-                }
-                V2TIMFaceElem faceElement = (V2TIMFaceElem) v2TIMElem;
-                elemDescStringBuilder.append(faceElement.toString());
-            } else if (baseElement instanceof V2TIMMergerElem) {
-                if (v2TIMElem == null) {
-                    v2TIMElem = getMergerElem();
-                } else {
-                    v2TIMElem = v2TIMElem.getNextElem();
-                }
-                V2TIMMergerElem mergerElem = (V2TIMMergerElem) v2TIMElem;
-                elemDescStringBuilder.append(mergerElem.toString());
-            } else if (baseElement instanceof V2TIMGroupTipsElem) {
-                if (v2TIMElem == null) {
-                    v2TIMElem = getGroupTipsElem();
-                } else {
-                    v2TIMElem = v2TIMElem.getNextElem();
-                }
-                V2TIMGroupTipsElem groupTipsElement = (V2TIMGroupTipsElem) v2TIMElem;
-                elemDescStringBuilder.append(groupTipsElement.toString());
-            }
-            elemDescStringBuilder.append("|");
-        }
-
-        stringBuilder.append("msgID:").append(getMsgID()).append(", timestamp:").append(getTimestamp()).
-                append(", sender:").append(getSender()).append(", nickname:").append(getNickName()).
-                append(", faceUrl:").append(getFaceUrl()).append(", friendRemark:").append(getFriendRemark()).
-                append(", friendRemark:").append(getFriendRemark()).append(", nameCard:").append(getNameCard()).
-                append(", groupID:").append(getGroupID()).append(", userID:").append(getUserID()).
-                append(", seq:").append(getSeq()).append(", random:").append(getRandom()).
-                append(", status:").append(getStatus()).append(", isSelf:").append(isSelf()).
-                append(", isRead:").append(isRead()).append(", isPeerRead:").append(isPeerRead()).
-                append(", needReadReceipt:").append(isNeedReadReceipt()).append(", priority:").append(getPriority()).
-                append(", groupAtUserList:").append(getGroupAtUserList()).append(", elemType:").append(getElemType()).
-                append(", localCustomData:").append(getLocalCustomData()).append(", localCustomInt:").append(getLocalCustomInt()).
-                append(", cloudCustomData:").append(getCloudCustomData()).append(", isExcludeFromUnreadCount:").append(isExcludedFromUnreadCount()).
-                append(", isExcludeFromLastMessage:").append(isExcludedFromLastMessage()).append(", offlinePushInfo:").append(getOfflinePushInfo()).
-                append(", isBroadcastMessage:").append(isBroadcastMessage()).
-                append(", elemDesc:").append(elemDescStringBuilder);
-        return stringBuilder.toString();
+        return "V2TIMMessage{" +
+                "msgID='" + msgID + '\'' +
+                ", timestamp=" + timestamp +
+                ", sender='" + sender + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", friendRemark='" + friendRemark + '\'' +
+                ", faceUrl='" + faceUrl + '\'' +
+                ", nameCard='" + nameCard + '\'' +
+                ", groupID='" + groupID + '\'' +
+                ", userID='" + userID + '\'' +
+                ", status=" + status +
+                ", elemType=" + elemType +
+                ", elemList=" + elemList +
+                ", localCustomInt=" + localCustomInt +
+                ", localCustomData='" + localCustomData + '\'' +
+                ", cloudCustomData='" + cloudCustomData + '\'' +
+                ", isSelf=" + isSelf +
+                ", isRead=" + isRead +
+                ", isPeerRead=" + isPeerRead +
+                ", needReadReceipt=" + needReadReceipt +
+                ", isBroadcastMessage=" + isBroadcastMessage +
+                ", priority=" + priority +
+                ", offlinePushInfo=" + offlinePushInfo +
+                ", groupAtUserList=" + groupAtUserList +
+                ", seq=" + seq +
+                ", random=" + random +
+                ", isOnlineMsg=" + isOnlineMsg +
+                ", isExcludedFromUnreadCount=" + isExcludedFromUnreadCount +
+                ", isExcludedFromLastMessage=" + isExcludedFromLastMessage +
+                ", isSupportMessageExtension=" + isSupportMessageExtension +
+                ", isForwardMessage=" + isForwardMessage +
+                ", targetGroupMemberList=" + targetGroupMemberList +
+                '}';
     }
 }
