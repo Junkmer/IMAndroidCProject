@@ -79,10 +79,10 @@ DEFINE_NATIVE_FUNC(void, NativeGetConversation, jstring conversation_id, jobject
     std::string conversationID_str = tim::jni::StringJni::Jstring2Cstring(env, conversation_id);
     if (conversationID_str.find("c2c_") != std::string::npos) {//单聊会话 c2c_
         json_obj[kTIMGetConversationListParamConvType] = kTIMConv_C2C;
-        json_obj[kTIMGetConversationListParamConvId] = conversationID_str.substr(3);
+        json_obj[kTIMGetConversationListParamConvId] = conversationID_str.substr(4);
     } else if (conversationID_str.find("group_") != std::string::npos) {//群聊会话 group_xxx
         json_obj[kTIMGetConversationListParamConvType] = kTIMConv_Group;
-        json_obj[kTIMGetConversationListParamConvId] = conversationID_str.substr(5);
+        json_obj[kTIMGetConversationListParamConvId] = conversationID_str.substr(6);
     } else {
         json_obj[kTIMGetConversationListParamConvType] = kTIMConv_C2C;
         json_obj[kTIMGetConversationListParamConvId] = conversationID_str;
@@ -177,10 +177,10 @@ DEFINE_NATIVE_FUNC(void, NativeDeleteConversation, jstring conversation_id, jobj
     TIMConvType convType;
     if (conversationID_str.find("c2c_") != std::string::npos) {//单聊会话 c2c_
         convType = kTIMConv_C2C;
-        convID = conversationID_str.substr(3);
+        convID = conversationID_str.substr(4);
     } else {//群聊会话 group_xxx
         convType = kTIMConv_Group;
-        convID = conversationID_str.substr(5);
+        convID = conversationID_str.substr(6);
     }
     tim::TIMEngine::GetInstance()->DeleteConversation(convID.c_str(), convType, new tim::TIMCallbackIMpl(callback));
 }
@@ -191,10 +191,10 @@ DEFINE_NATIVE_FUNC(void, NativeSetConversationDraft, jstring conversation_id, js
     TIMConvType convType;
     if (conversationID_str.find("c2c_") != std::string::npos) {//单聊会话 c2c_
         convType = kTIMConv_C2C;
-        convID = conversationID_str.substr(3);
+        convID = conversationID_str.substr(4);
     } else {//群聊会话 group_xxx
         convType = kTIMConv_Group;
-        convID = conversationID_str.substr(5);
+        convID = conversationID_str.substr(6);
     }
     std::string draftText = tim::jni::StringJni::Jstring2Cstring(env, draft_text);
 
@@ -246,10 +246,10 @@ DEFINE_NATIVE_FUNC(void, NativePinConversation, jstring conversation_id, jboolea
     TIMConvType convType;
     if (conversationID_str.find("c2c_") != std::string::npos) {//单聊会话 c2c_
         convType = kTIMConv_C2C;
-        convID = conversationID_str.substr(3);
+        convID = conversationID_str.substr(4);
     } else {//群聊会话 group_xxx
         convType = kTIMConv_Group;
-        convID = conversationID_str.substr(5);
+        convID = conversationID_str.substr(6);
     }
     tim::TIMEngine::GetInstance()->PinConversation(convID.c_str(), convType, (bool) is_pinned, new tim::TIMCallbackIMpl(callback));
 }

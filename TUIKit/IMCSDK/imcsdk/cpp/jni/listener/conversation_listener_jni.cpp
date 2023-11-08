@@ -334,7 +334,7 @@ namespace tim {
 
             jobject conversationObjList = ArrayListJni::NewArrayList();
             for (const auto &item: conversationIDList) {
-                jobject conversationObj = ConversationJni::Convert2JObject(item);
+                jobject conversationObj = StringJni::Cstring2Jstring(env,item);
                 if (conversationObj) {
                     ArrayListJni::Add(conversationObjList, conversationObj);
                     env->DeleteLocalRef(conversationObj);
