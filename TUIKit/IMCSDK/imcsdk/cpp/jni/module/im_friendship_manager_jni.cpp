@@ -177,7 +177,7 @@ DEFINE_NATIVE_FUNC(void, NativeDeleteFromFriendList, jobject user_idlist, jint d
     jobject jni_callback = env->NewGlobalRef(callback);
 
     json::Object json_delete_friend_param;
-    json_delete_friend_param[kTIMFriendshipDeleteFriendParamFriendType] = TIMFriendType(delete_type);
+    json_delete_friend_param[kTIMFriendshipDeleteFriendParamFriendType] = TIMFriendType(delete_type == 1?FriendTypeSingle:FriendTypeBoth);//java层和c层类型值不一致需要转换
     json::Array json_friend_array;
 
     int size = tim::jni::ArrayListJni::Size(user_idlist);
