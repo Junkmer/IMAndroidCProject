@@ -96,6 +96,7 @@ namespace tim {
             }
 
             json::Object textElem;
+            textElem[kTIMElemType] = TIMElemType::kTIMElem_Text;
 
             auto jstr = (jstring) env->GetObjectField(jElemObj, j_field_array_[TextFieldText]);
             if (jstr) {
@@ -210,6 +211,7 @@ namespace tim {
             }
 
             json::Object customElem;
+            customElem[kTIMElemType] = TIMElemType::kTIMElem_Custom;
 
             auto byteArr = (jbyteArray) env->GetObjectField(jElemObj, j_field_array_[CustomFieldData]);
             if (byteArr) {
@@ -354,6 +356,7 @@ namespace tim {
             }
 
             json::Object imageElem;
+            imageElem[kTIMElemType] = TIMElemType::kTIMElem_Image;
 
             auto pathStr = (jstring) env->GetObjectField(jElemObj, j_field_array_[ImageFieldPath]);
             if (pathStr) {
@@ -489,6 +492,7 @@ namespace tim {
             }
 
             json::Object soundElem;
+            soundElem[kTIMElemType] = TIMElemType::kTIMElem_Sound;
 
             jstring jStr = nullptr;
             jStr = (jstring) env->GetObjectField(jElemObj, j_field_array_[SoundFieldPath]);
@@ -677,6 +681,7 @@ namespace tim {
             }
 
             json::Object videoElem;
+            videoElem[kTIMElemType] = TIMElemType::kTIMElem_Video;
 
             jstring jStr = nullptr;
 
@@ -823,6 +828,7 @@ namespace tim {
             }
 
             json::Object fileElem;
+            fileElem[kTIMElemType] = TIMElemType::kTIMElem_File;
 
             jstring jStr = nullptr;
 
@@ -933,6 +939,7 @@ namespace tim {
             }
 
             json::Object locationElem;
+            locationElem[kTIMElemType] = TIMElemType::kTIMElem_Location;
 
             jstring jStr;
             jStr = (jstring) env->GetObjectField(jElemObj, j_field_array_[LocationFieldDesc]);
@@ -1028,6 +1035,7 @@ namespace tim {
             }
 
             json::Object faceElem;
+            faceElem[kTIMElemType] = TIMElemType::kTIMElem_Face;
 
             faceElem[kTIMFaceElemIndex] = env->GetIntField(jElemObj, j_field_array_[FaceFieldIndex]);
             auto byteArr = (jbyteArray) env->GetObjectField(jElemObj, j_field_array_[FaceFieldData]);
@@ -1201,6 +1209,7 @@ namespace tim {
             }
 
             json::Object mergerElem;
+            mergerElem[kTIMElemType] = TIMElemType::kTIMElem_Merge;
 
             mergerElem[kTIMMergerElemLayersOverLimit] = env->GetBooleanField(jElemObj, j_field_array_[MergerFieldLayersOverLimit]);
             jstring jStr;
