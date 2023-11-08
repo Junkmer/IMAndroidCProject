@@ -109,7 +109,7 @@ namespace tim {
                 env->DeleteLocalRef(jStr);
             }
 
-            env->SetBooleanField(messageReceiptObj, j_field_array_[FieldIDPeerRead], messageReceipt_json[kTIMMsgReceiptPeerRead].ToBool());
+            env->SetBooleanField(messageReceiptObj, j_field_array_[FieldIDPeerRead], messageReceipt_json[kTIMMsgReceiptIsPeerRead].ToBool());
             env->SetLongField(messageReceiptObj, j_field_array_[FieldIDTimestamp], messageReceipt_json[kTIMMsgReceiptTimeStamp].ToInt64());
             env->SetLongField(messageReceiptObj, j_field_array_[FieldIDReadCount], messageReceipt_json[kTIMMsgReceiptReadCount].ToInt64());
             env->SetLongField(messageReceiptObj, j_field_array_[FieldIDUnreadCount], messageReceipt_json[kTIMMsgReceiptUnreadCount].ToInt64());

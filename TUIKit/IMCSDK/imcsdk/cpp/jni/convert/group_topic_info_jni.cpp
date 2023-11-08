@@ -249,7 +249,7 @@ namespace tim {
                 env->DeleteLocalRef(jStr);
             }
 
-            topicInfo_json[kTIMGroupTopicInfoIsAllMuted] = env->GetBooleanField(object,j_field_id_array_[FieldIDAllMute]);
+            topicInfo_json[kTIMGroupTopicInfoIsAllMuted] = (bool) env->GetBooleanField(object,j_field_id_array_[FieldIDAllMute]);
             topicInfo_json[kTIMGroupTopicInfoSelfMuteTime] = (long long )env->GetLongField(object,j_field_id_array_[FieldIDSelfMuteTime]);
 
 

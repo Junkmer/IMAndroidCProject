@@ -109,8 +109,8 @@ namespace tim {
                 env->DeleteLocalRef(jStr);
             }
             filter_json_obj[kTIMConversationListFilterMarkType] = (long long)(env->GetLongField(filterObj, j_field_array_[FieldIDMarkType]));
-            filter_json_obj[kTIMConversationListFilterHasUnreadCount] = env->GetBooleanField(filterObj,j_field_array_[FieldIDHasUnreadCount]);
-            filter_json_obj[kTIMConversationListFilterHasGroupAtInfo] = env->GetBooleanField(filterObj, j_field_array_[FieldIDHasGroupAtInfo]);
+            filter_json_obj[kTIMConversationListFilterHasUnreadCount] = (bool) env->GetBooleanField(filterObj,j_field_array_[FieldIDHasUnreadCount]);
+            filter_json_obj[kTIMConversationListFilterHasGroupAtInfo] = (bool) env->GetBooleanField(filterObj, j_field_array_[FieldIDHasGroupAtInfo]);
 
             return true;
         }

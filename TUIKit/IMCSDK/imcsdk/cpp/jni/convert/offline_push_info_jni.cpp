@@ -216,7 +216,7 @@ namespace tim {
                 env->DeleteLocalRef(byteArr);
             }
 
-            offlinePushInfo_json[kTIMOfflinePushConfigFlag] = env->GetBooleanField(object, j_field_array_[FieldIDDisable]);
+            offlinePushInfo_json[kTIMOfflinePushConfigFlag] = (bool) env->GetBooleanField(object, j_field_array_[FieldIDDisable]);
 
             jStr = (jstring) env->GetObjectField(object, j_field_array_[FieldIDIOSSound]);
             if (jStr) {
@@ -230,7 +230,7 @@ namespace tim {
                 env->DeleteLocalRef(jStr);
             }
 
-            offlinePushInfo_json[kTIMIOSOfflinePushConfigIgnoreBadge] = env->GetBooleanField(object, j_field_array_[FieldIDIgnoreIOSBadge]);
+            offlinePushInfo_json[kTIMIOSOfflinePushConfigIgnoreBadge] = (bool) env->GetBooleanField(object, j_field_array_[FieldIDIgnoreIOSBadge]);
 
             jStr = (jstring) env->GetObjectField(object, j_field_array_[FieldIDOppoChannelID]);
             if (jStr) {

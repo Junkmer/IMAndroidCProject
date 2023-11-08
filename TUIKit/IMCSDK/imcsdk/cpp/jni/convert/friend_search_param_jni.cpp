@@ -82,15 +82,15 @@ namespace tim {
             }
 
             json::Array search_field_array;
-            bool isSearchUserID = env->GetBooleanField(j_obj_searchParam,j_field_array_[FieldIDIsSearchUserID]);
+            bool isSearchUserID = (bool) env->GetBooleanField(j_obj_searchParam,j_field_array_[FieldIDIsSearchUserID]);
             if (isSearchUserID){
                 search_field_array.push_back(TIMFriendshipSearchFieldKey::kTIMFriendshipSearchFieldKey_Identifier);
             }
-            bool isSearchNickName = env->GetBooleanField(j_obj_searchParam,j_field_array_[FieldIDIsSearchNickName]);
+            bool isSearchNickName = (bool) env->GetBooleanField(j_obj_searchParam,j_field_array_[FieldIDIsSearchNickName]);
             if (isSearchNickName){
                 search_field_array.push_back(TIMFriendshipSearchFieldKey::kTIMFriendshipSearchFieldKey_NickName);
             }
-            bool isSearchRemark = env->GetBooleanField(j_obj_searchParam,j_field_array_[FieldIDIsSearchRemark]);
+            bool isSearchRemark = (bool) env->GetBooleanField(j_obj_searchParam,j_field_array_[FieldIDIsSearchRemark]);
             if (isSearchRemark){
                 search_field_array.push_back(TIMFriendshipSearchFieldKey::kTIMFriendshipSearchFieldKey_Remark);
             }

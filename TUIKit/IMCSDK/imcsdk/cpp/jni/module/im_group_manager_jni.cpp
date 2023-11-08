@@ -618,7 +618,7 @@ DEFINE_NATIVE_FUNC(void, NativeMuteAllGroupMembers, jstring group_id, jboolean i
     json::Object all_mute_json;
     all_mute_json[kTIMGroupModifyInfoParamGroupId] = tim::jni::StringJni::Jstring2Cstring(env,group_id);
     all_mute_json[kTIMGroupModifyInfoParamModifyFlag] = TIMGroupModifyInfoFlag::kTIMGroupModifyInfoFlag_ShutupAll;
-    all_mute_json[kTIMGroupModifyInfoParamIsShutupAll] = is_mute;
+    all_mute_json[kTIMGroupModifyInfoParamIsShutupAll] = (bool) is_mute;
     std::string paramStr = json::Serialize(all_mute_json);
     tim::TIMEngine::GetInstance()->SetGroupInfo(paramStr.c_str(),new tim::TIMCallbackIMpl(callback));
 }

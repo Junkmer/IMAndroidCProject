@@ -76,11 +76,11 @@ namespace tim {
             }
 
             json::Array field_array;
-            bool isSearchID = env->GetBooleanField(j_obj_groupSearchParam, j_field_array_[FieldIDIsSearchGroupID]);
+            bool isSearchID = (bool) env->GetBooleanField(j_obj_groupSearchParam, j_field_array_[FieldIDIsSearchGroupID]);
             if (isSearchID){
                 field_array.push_back(kTIMGroupSearchFieldKey_GroupId);
             }
-            bool isSearchName = env->GetBooleanField(j_obj_groupSearchParam, j_field_array_[FieldIDIsSearchGroupName]);
+            bool isSearchName = (bool) env->GetBooleanField(j_obj_groupSearchParam, j_field_array_[FieldIDIsSearchGroupName]);
             if (isSearchName){
                 field_array.push_back(kTIMGroupSearchFieldKey_GroupName);
             }

@@ -210,14 +210,14 @@ namespace tim {
             }
             j_filed_id_array[FieldIDIsSupportMessageExtension] = jfield;
 
-            jfield = env->GetFieldID(j_cls_,"isForwardMessage", "Z");
-            if (nullptr == jfield){
+            jfield = env->GetFieldID(j_cls_, "isForwardMessage", "Z");
+            if (nullptr == jfield) {
                 return false;
             }
             j_filed_id_array[FieldIDIsForwardMessage] = jfield;
 
-            jfield = env->GetFieldID(j_cls_,"targetGroupMemberList", "Ljava/util/List;");
-            if (nullptr == jfield){
+            jfield = env->GetFieldID(j_cls_, "targetGroupMemberList", "Ljava/util/List;");
+            if (nullptr == jfield) {
                 return false;
             }
             j_filed_id_array[FieldIDTargetGroupMemberList] = jfield;
@@ -244,7 +244,7 @@ namespace tim {
             env->SetObjectField(j_obj_message, j_filed_id_array[FieldIDSender],
                                 StringJni::Cstring2Jstring(env, message_json_obj[kTIMMsgSender].ToString()));
 
-            if (message_json_obj.HasKey(kTIMMsgSenderProfile)){
+            if (message_json_obj.HasKey(kTIMMsgSenderProfile)) {
                 json::Object sender_profile = message_json_obj[kTIMMsgSenderProfile];
                 env->SetObjectField(j_obj_message, j_filed_id_array[FieldIDNickName],
                                     StringJni::Cstring2Jstring(env, sender_profile[kTIMUserProfileNickName].ToString()));
@@ -254,7 +254,7 @@ namespace tim {
                                     StringJni::Cstring2Jstring(env, sender_profile[kTIMUserProfileFaceUrl]));
             }
 
-            if (message_json_obj.HasKey(kTIMMsgSenderGroupMemberInfo)){
+            if (message_json_obj.HasKey(kTIMMsgSenderGroupMemberInfo)) {
                 json::Object sender_member_info = message_json_obj[kTIMMsgSenderGroupMemberInfo];
                 if (sender_member_info.size() > 0) {
                     env->SetObjectField(j_obj_message, j_filed_id_array[FieldIDNameCard],
@@ -291,9 +291,9 @@ namespace tim {
                 env->SetObjectField(j_obj_message, j_filed_id_array[FieldIDOfflinePushInfo], offlinePushObj);
                 env->DeleteLocalRef(offlinePushObj);
             }
-            if (message_json_obj.HasKey(kTIMMsgElemArray)){
+            if (message_json_obj.HasKey(kTIMMsgElemArray)) {
                 json::Array elem_array = message_json_obj[kTIMMsgElemArray];
-                if (elem_array.size() > 0){
+                if (elem_array.size() > 0) {
                     for (int i = 0; i < elem_array.size(); ++i) {
                         auto *jElemObj = ElemProcessor::GetInstance().ParseElem(elem_array[i]);
                         if (jElemObj) {
@@ -304,7 +304,7 @@ namespace tim {
                 }
             }
 
-            if (message_json_obj.HasKey(kTIMMsgGroupAtUserArray)){
+            if (message_json_obj.HasKey(kTIMMsgGroupAtUserArray)) {
                 jobject arrayList = ArrayListJni::NewArrayList();
                 json::Array groupAtList_json = message_json_obj[kTIMMsgGroupAtUserArray];
                 for (const auto &i: groupAtList_json) {
@@ -468,23 +468,23 @@ namespace tim {
                     auto atUserObj = (jstring) ArrayListJni::Get(j_obj_atUserList, i);
                     at_user_array.push_back(StringJni::Jstring2Cstring(env, atUserObj).c_str());
                 }
-                if (at_user_array.size() > 0){
+                if (at_user_array.size() > 0) {
                     message[kTIMMsgGroupAtUserArray] = at_user_array;
                 }
             }
 
             message[kTIMMsgSeq] = (long long) env->GetLongField(messageObj, j_filed_id_array[FieldIDSeq]);
             message[kTIMMsgRand] = (long long) env->GetLongField(messageObj, j_filed_id_array[FieldIDRandom]);
-            message[kTIMMsgIsExcludedFromUnreadCount] = env->GetBooleanField(messageObj, j_filed_id_array[FieldIDIsExcludedFromUnreadCount]);
-            message[kTIMMsgExcludedFromLastMessage] = env->GetBooleanField(messageObj, j_filed_id_array[FieldIDIsExcludedFromLastMessage]);
-            message[kTIMMsgSupportMessageExtension] = env->GetBooleanField(messageObj, j_filed_id_array[FieldIDIsSupportMessageExtension]);
+            message[kTIMMsgIsExcludedFromUnreadCount] = (bool) env->GetBooleanField(messageObj, j_filed_id_array[FieldIDIsExcludedFromUnreadCount]);
+            message[kTIMMsgExcludedFromLastMessage] = (bool) env->GetBooleanField(messageObj, j_filed_id_array[FieldIDIsExcludedFromLastMessage]);
+            message[kTIMMsgSupportMessageExtension] = (bool) env->GetBooleanField(messageObj, j_filed_id_array[FieldIDIsSupportMessageExtension]);
 
             //转发消息时需要设置
-            message[kTIMMsgIsForwardMessage] = env->GetBooleanField(messageObj,j_filed_id_array[FieldIDIsForwardMessage]);
+            message[kTIMMsgIsForwardMessage] = (bool) env->GetBooleanField(messageObj, j_filed_id_array[FieldIDIsForwardMessage]);
 
             //发送群定向消息时设置
             jobject j_obj_TargetGroupMemberList = env->GetObjectField(messageObj, j_filed_id_array[FieldIDTargetGroupMemberList]);
-            if (j_obj_TargetGroupMemberList){
+            if (j_obj_TargetGroupMemberList) {
                 size = ArrayListJni::Size(j_obj_TargetGroupMemberList);
                 if (size > 0) {
                     json::Array member_array;
@@ -492,7 +492,7 @@ namespace tim {
                         auto memberId = (jstring) ArrayListJni::Get(j_obj_TargetGroupMemberList, i);
                         member_array.push_back(StringJni::Jstring2Cstring(env, memberId).c_str());
                     }
-                    if (member_array.size() > 0){
+                    if (member_array.size() > 0) {
                         message[kTIMMsgTargetGroupMemberArray] = member_array;
                     }
                 }
@@ -503,7 +503,7 @@ namespace tim {
 
         TIMElemType MessageJni::JElemType2CElemType(int jElemType) {
             //im native sdk 中的消息类型 转换 im c sdk中的消息类型
-            switch (jElemType){
+            switch (jElemType) {
                 case JavaElemType::V2TIM_ELEM_TYPE_TEXT:// 文本消息
                     return kTIMElem_Text;
                 case JavaElemType::V2TIM_ELEM_TYPE_IMAGE:// 图片消息

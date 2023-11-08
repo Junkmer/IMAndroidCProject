@@ -260,7 +260,7 @@ namespace tim {
                 env->DeleteLocalRef(jStr);
             }
 
-            create_group_info_json[kTIMCreateGroupIsSupportTopic] = env->GetBooleanField(j_obj_groupInfo, j_field_array_[FieldIDSupportTopic]);
+            create_group_info_json[kTIMCreateGroupIsSupportTopic] = (bool) env->GetBooleanField(j_obj_groupInfo, j_field_array_[FieldIDSupportTopic]);
 
             jStr = (jstring) env->GetObjectField(j_obj_groupInfo, j_field_array_[FieldIDGroupName]);
             if (jStr) {
@@ -367,7 +367,7 @@ namespace tim {
                 env->DeleteLocalRef(jStr);
             }
 
-            update_group_info_json[kTIMGroupModifyInfoParamIsShutupAll] = env->GetBooleanField(j_obj_groupInfo, j_field_array_[FieldIDIsAllMuted]);
+            update_group_info_json[kTIMGroupModifyInfoParamIsShutupAll] = (bool) env->GetBooleanField(j_obj_groupInfo, j_field_array_[FieldIDIsAllMuted]);
             modifyFlag = modifyFlag | TIMGroupModifyInfoFlag::kTIMGroupModifyInfoFlag_ShutupAll;
 
             int addOptType = TIMGroupAddOption(env->GetIntField(j_obj_groupInfo, j_field_array_[FieldIDGroupAddOpt]));

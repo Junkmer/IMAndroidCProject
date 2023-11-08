@@ -1,6 +1,6 @@
-//
-// Created by EDY on 2022/8/22.
-//
+/**
+ * Created by EDY on 2022/8/22.
+ */
 
 #include <jni.h>
 #include "jni_util.h"
@@ -69,7 +69,7 @@ DEFINE_NATIVE_FUNC(jstring, NativeSendMessage, jobject message, jstring receiver
     }
     std::unique_ptr<json::Object> message_json = tim::jni::MessageJni::Convert2CoreObject(message);
     (*message_json)[kTIMMsgPriority] = priority;
-    (*message_json)[kTIMMsgIsOnlineMsg] = onlineUserOnly;
+    (*message_json)[kTIMMsgIsOnlineMsg] = (bool) onlineUserOnly;
     json::Object offline_push_info_json;
     if (offlinePushInfo) {
         tim::jni::OfflinePushInfoJni::Convert2CoreObject(offlinePushInfo, offline_push_info_json);
@@ -717,8 +717,8 @@ DEFINE_NATIVE_FUNC(void, NativeGetMessageReactions, jobject message_list, jint m
         if (TIMErrCode::ERR_SUCC == code) {
             json::Array reactionsResult_array = json::Deserialize(json_params);
             jobject reactionsResultObjList = tim::jni::ArrayListJni::NewArrayList();
-            for (int i = 0; i < reactionsResult_array.size(); ++i) {
-                jobject reactionsResultObj = tim::jni::MessageReactionResultJni::Convert2JObject(reactionsResult_array[i]);
+            for (const auto & i : reactionsResult_array) {
+                jobject reactionsResultObj = tim::jni::MessageReactionResultJni::Convert2JObject(i);
                 tim::jni::ArrayListJni::Add(reactionsResultObjList, reactionsResultObj);
                 _env->DeleteLocalRef(reactionsResultObj);
             }

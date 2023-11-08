@@ -238,7 +238,9 @@ namespace tim {
 
             env->SetIntField(conversationObj, j_field_id_array_[FieldIDUnreadCount], conv_obj_json[kTIMConvUnReadNum]);
 
-            if (conv_obj_json.HasKey(kTIMConvLastMsg)) {
+
+            bool isHasLastMsgFlag = conv_obj_json[kTIMConvIsHasLastMsg];
+            if (isHasLastMsgFlag && conv_obj_json.HasKey(kTIMConvLastMsg)) {
                 jobject lastMessageObj = MessageJni::Convert2JObject(conv_obj_json[kTIMConvLastMsg]);
                 if (lastMessageObj) {
                     env->SetObjectField(conversationObj, j_field_id_array_[FieldIDLastMessage], lastMessageObj);

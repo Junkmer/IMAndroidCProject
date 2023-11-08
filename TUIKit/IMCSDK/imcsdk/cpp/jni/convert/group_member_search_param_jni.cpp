@@ -106,19 +106,19 @@ namespace tim {
             }
 
             json::Array field_key_array;
-            bool isSearchUserID = env->GetBooleanField(j_obj_memberSearchParam, j_field_array_[FieldIDIsSearchMemberUserID]);
+            bool isSearchUserID = (bool) env->GetBooleanField(j_obj_memberSearchParam, j_field_array_[FieldIDIsSearchMemberUserID]);
             if (isSearchUserID){
                 field_key_array.push_back(kTIMGroupMemberSearchFieldKey_Identifier);
             }
-            bool isSearchNickName  = env->GetBooleanField(j_obj_memberSearchParam, j_field_array_[FieldIDIsSearchMemberNickName]);
+            bool isSearchNickName  = (bool) env->GetBooleanField(j_obj_memberSearchParam, j_field_array_[FieldIDIsSearchMemberNickName]);
             if (isSearchNickName){
                 field_key_array.push_back(kTIMGroupMemberSearchFieldKey_NickName);
             }
-            bool isSearchRemark  = env->GetBooleanField(j_obj_memberSearchParam, j_field_array_[FieldIDIsSearchMemberRemark]);
+            bool isSearchRemark  = (bool) env->GetBooleanField(j_obj_memberSearchParam, j_field_array_[FieldIDIsSearchMemberRemark]);
             if (isSearchRemark){
                 field_key_array.push_back(kTIMGroupMemberSearchFieldKey_Remark);
             }
-            bool isSearchNameCard  = env->GetBooleanField(j_obj_memberSearchParam, j_field_array_[FieldIDIsSearchMemberNameCard]);
+            bool isSearchNameCard  = (bool) env->GetBooleanField(j_obj_memberSearchParam, j_field_array_[FieldIDIsSearchMemberNameCard]);
             if (isSearchNameCard){
                 field_key_array.push_back(kTIMGroupMemberSearchFieldKey_NameCard);
             }

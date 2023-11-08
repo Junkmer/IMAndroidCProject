@@ -1211,7 +1211,7 @@ namespace tim {
             json::Object mergerElem;
             mergerElem[kTIMElemType] = TIMElemType::kTIMElem_Merge;
 
-            mergerElem[kTIMMergerElemLayersOverLimit] = env->GetBooleanField(jElemObj, j_field_array_[MergerFieldLayersOverLimit]);
+            mergerElem[kTIMMergerElemLayersOverLimit] = (bool) env->GetBooleanField(jElemObj, j_field_array_[MergerFieldLayersOverLimit]);
             jstring jStr;
             jStr = (jstring) env->GetObjectField(jElemObj, j_field_array_[MergerFieldTitle]);
             if (jStr){
