@@ -19,7 +19,6 @@ namespace tim {
             static std::unique_ptr<json::Object> Convert2CoreObject(jobject &messageObj);
 
         private:
-            static int CElemType2JElemType(TIMElemType cElemType);
             static TIMElemType JElemType2CElemType(int jElemType);
 
         private:
@@ -34,7 +33,6 @@ namespace tim {
                 FieldIDGroupID,
                 FieldIDUserID,
                 FieldIDStatus,
-                FieldIDElemType,
                 FieldIDElemList,
 
                 FieldIDLocalCustomInt,

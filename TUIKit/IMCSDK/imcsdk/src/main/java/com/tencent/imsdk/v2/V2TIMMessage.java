@@ -111,11 +111,39 @@ public class V2TIMMessage implements Serializable {
 
     public int getStatus() {
         return status;
-//        return this.message == null ? status : this.message.getMessageStatus();
     }
 
     public int getElemType() {
-        return elemType;
+        int elemType = 0;
+        if (this.elemList == null) {
+            return elemType;
+        } else if (this.elemList.size() == 0) {
+            return elemType;
+        } else {
+            V2TIMElem v2TIMElem = elemList.get(0);
+            if (v2TIMElem instanceof V2TIMTextElem) {
+                elemType = V2TIM_ELEM_TYPE_TEXT;
+            } else if (v2TIMElem instanceof V2TIMImageElem) {
+                elemType = V2TIM_ELEM_TYPE_IMAGE;
+            } else if (v2TIMElem instanceof V2TIMVideoElem) {
+                elemType = V2TIM_ELEM_TYPE_VIDEO;
+            } else if (v2TIMElem instanceof V2TIMSoundElem) {
+                elemType = V2TIM_ELEM_TYPE_SOUND;
+            } else if (v2TIMElem instanceof V2TIMCustomElem) {
+                elemType = V2TIM_ELEM_TYPE_CUSTOM;
+            } else if (v2TIMElem instanceof V2TIMGroupTipsElem) {
+                elemType = V2TIM_ELEM_TYPE_GROUP_TIPS;
+            }  else if (v2TIMElem instanceof V2TIMFaceElem) {
+                elemType = V2TIM_ELEM_TYPE_FACE;
+            } else if (v2TIMElem instanceof V2TIMFileElem) {
+                elemType = V2TIM_ELEM_TYPE_FILE;
+            } else if (v2TIMElem instanceof V2TIMLocationElem) {
+                elemType = V2TIM_ELEM_TYPE_LOCATION;
+            }else if (v2TIMElem instanceof V2TIMMergerElem) {
+                elemType = V2TIM_ELEM_TYPE_MERGER;
+            }
+            return elemType;
+        }
     }
 
     public V2TIMTextElem getTextElem() {
@@ -488,7 +516,6 @@ public class V2TIMMessage implements Serializable {
                 ", groupID='" + groupID + '\'' +
                 ", userID='" + userID + '\'' +
                 ", status=" + status +
-                ", elemType=" + elemType +
                 ", elemList=" + elemList +
                 ", localCustomInt=" + localCustomInt +
                 ", localCustomData='" + localCustomData + '\'' +

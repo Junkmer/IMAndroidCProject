@@ -14,7 +14,6 @@ public class V2TIMCustomElem extends V2TIMElem {
         setElementType(V2TIMMessage.V2TIM_ELEM_TYPE_CUSTOM);
     }
 
-
     public byte[] getData() {
         return data;
     }

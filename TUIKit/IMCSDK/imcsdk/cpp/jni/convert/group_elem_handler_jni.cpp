@@ -67,6 +67,12 @@ namespace tim {
             }
             j_field_array_[FieldIDType] = jfield;
 
+            jfield = env->GetFieldID(j_cls_, "elementType", "I");
+            if (nullptr == jfield) {
+                return false;
+            }
+            j_field_array_[FieldIDElemType] = jfield;
+
             jfield = env->GetFieldID(j_cls_, "opMember", "Lcom/tencent/imsdk/v2/V2TIMGroupMemberInfo;");
             if (nullptr == jfield) {
                 return false;
@@ -117,6 +123,7 @@ namespace tim {
                 return nullptr;
             }
 
+            env->SetIntField(jElemObj, j_field_array_[FieldIDElemType], elem_json[kTIMElemType]);
             env->SetObjectField(jElemObj, j_field_array_[FieldIDGroupID], StringJni::Cstring2Jstring(env, elem_json[kTIMGroupTipsElemGroupId]));
             env->SetIntField(jElemObj, j_field_array_[FieldIDType], elem_json[kTIMGroupTipsElemTipType]);
 

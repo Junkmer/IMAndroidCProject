@@ -25,6 +25,10 @@ public class V2TIMGroupTipsElem extends V2TIMElem {
     private List<V2TIMGroupMemberChangeInfo> memberChangeInfoList = new ArrayList<>();
     private int memberCount;
 
+    public V2TIMGroupTipsElem(){
+        setElementType(V2TIMMessage.V2TIM_ELEM_TYPE_GROUP_TIPS);
+    }
+
     public String getGroupID() {
         return groupID;
     }

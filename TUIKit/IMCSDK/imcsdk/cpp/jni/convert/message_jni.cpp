@@ -102,12 +102,6 @@ namespace tim {
             }
             j_filed_id_array[FieldIDStatus] = jfield;
 
-            jfield = env->GetFieldID(j_cls_, "elemType", "I");
-            if (nullptr == jfield) {
-                return false;
-            }
-            j_filed_id_array[FieldIDElemType] = jfield;
-
             jfield = env->GetFieldID(j_cls_, "elemList", "Ljava/util/List;");
             if (nullptr == jfield) {
                 return false;
@@ -300,11 +294,7 @@ namespace tim {
             if (message_json_obj.HasKey(kTIMMsgElemArray)){
                 json::Array elem_array = message_json_obj[kTIMMsgElemArray];
                 if (elem_array.size() > 0){
-                    auto elemType = TIMElemType(elem_array[0][kTIMElemType].ToInt());
-                    env->SetIntField(j_obj_message, j_filed_id_array[FieldIDElemType], CElemType2JElemType(elemType));
                     for (int i = 0; i < elem_array.size(); ++i) {
-//                    auto *jElemObj = ElemProcessor::GetInstance().ParseElem(message_json_obj[kTIMMsgConvId], message_json_obj[kTIMMsgMsgId],
-//                                                                            message_json_obj[kTIMMsgSeq].ToInt64(), elem_type, elem_array[i]);
                         auto *jElemObj = ElemProcessor::GetInstance().ParseElem(elem_array[i]);
                         if (jElemObj) {
                             env->CallVoidMethod(j_obj_message, j_method_id_array[MethodIDAddMessageElem], jElemObj);
@@ -509,34 +499,6 @@ namespace tim {
             }
 
             return std::make_unique<json::Object>(message);
-        }
-
-        int MessageJni::CElemType2JElemType(TIMElemType cElemType) {
-            //im c sdk中的消息类型 转换 im sdk java层消息类型
-            switch (cElemType){
-                case kTIMElem_Text:// 文本消息
-                    return JavaElemType::V2TIM_ELEM_TYPE_TEXT;
-                case kTIMElem_Image:// 图片消息
-                    return JavaElemType::V2TIM_ELEM_TYPE_IMAGE;
-                case kTIMElem_Sound:// 声音消息
-                    return JavaElemType::V2TIM_ELEM_TYPE_SOUND;
-                case kTIMElem_Custom:// 自定义消息
-                    return JavaElemType::V2TIM_ELEM_TYPE_CUSTOM;
-                case kTIMElem_File:// 文件消息
-                    return JavaElemType::V2TIM_ELEM_TYPE_FILE;
-                case kTIMElem_GroupTips:// 群组tip消息
-                    return JavaElemType::V2TIM_ELEM_TYPE_GROUP_TIPS;
-                case kTIMElem_Face:// 表情消息
-                    return JavaElemType::V2TIM_ELEM_TYPE_FACE;
-                case kTIMElem_Location:// 位置消息
-                    return JavaElemType::V2TIM_ELEM_TYPE_LOCATION;
-                case kTIMElem_Video:// 视频消息
-                    return JavaElemType::V2TIM_ELEM_TYPE_VIDEO;
-                case kTIMElem_Merge:// 合并消息消息
-                    return JavaElemType::V2TIM_ELEM_TYPE_MERGER;
-                default:
-                    return JavaElemType::V2TIM_ELEM_TYPE_NONE;
-            }
         }
 
         TIMElemType MessageJni::JElemType2CElemType(int jElemType) {

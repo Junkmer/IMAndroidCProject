@@ -20,7 +20,8 @@ namespace tim {
 
         private:
             enum FieldID{
-                FieldIDGroupID = 0,
+                FieldIDElemType = 0,
+                FieldIDGroupID,
                 FieldIDType,
                 FieldIDOpMember,
                 FieldIDMemberList,
