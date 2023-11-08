@@ -212,7 +212,10 @@ public class V2TIMMessageManagerImpl extends V2TIMMessageManager {
 
     @Override
     public String sendMessage(V2TIMMessage message, String receiver, String groupID, int priority, boolean onlineUserOnly, V2TIMOfflinePushInfo offlinePushInfo, V2TIMSendCallback<V2TIMMessage> _callback_) {
-
+        if (message != null){
+            message.setSelf(true);
+            message.setRead(true);
+        }
         return nativeSendMessage(message, receiver, groupID, priority, onlineUserOnly, offlinePushInfo, new IMCallback<V2TIMMessage>(_callback_) {
             @Override
             public void progress(int progress) {

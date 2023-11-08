@@ -183,7 +183,29 @@ namespace tim {
             }
 
             env->SetObjectField(jObj, j_field_array_[FieldIDGroupID], StringJni::Cstring2Jstring(env, groupInfo_json[kTIMGroupDetailInfoGroupId]));
-            env->SetObjectField(jObj, j_field_array_[FieldIDGroupType], StringJni::Cstring2Jstring(env, groupInfo_json[kTIMGroupDetailInfoGroupType]));
+            auto groupType = TIMGroupType(groupInfo_json[kTIMGroupDetailInfoGroupType].ToInt());
+            std::string groupTypeStr;
+            switch (groupType) {
+                case TIMGroupType::kTIMGroup_Private:
+                    groupTypeStr = "Work";
+                    break;
+                case TIMGroupType::kTIMGroup_Public:
+                    groupTypeStr = "Public";
+                    break;
+                case TIMGroupType::kTIMGroup_ChatRoom:
+                    groupTypeStr = "Meeting";
+                    break;
+                case TIMGroupType::kTIMGroup_AVChatRoom:
+                    groupTypeStr = "AVChatRoom";
+                    break;
+                case TIMGroupType::kTIMGroup_Community:
+                    groupTypeStr = "Community";
+                    break;
+                default:
+                    groupTypeStr = "invite group type";
+                    break;
+            }
+            env->SetObjectField(jObj, j_field_array_[FieldIDGroupType], StringJni::Cstring2Jstring(env, groupTypeStr));
             env->SetBooleanField(jObj, j_field_array_[FieldIDSupportTopic], groupInfo_json[kTIMGroupDetailInfoIsSupportTopic].ToBool());
             env->SetObjectField(jObj, j_field_array_[FieldIDGroupName], StringJni::Cstring2Jstring(env, groupInfo_json[kTIMGroupDetailInfoGroupName]));
             env->SetObjectField(jObj, j_field_array_[FieldIDNotification], StringJni::Cstring2Jstring(env, groupInfo_json[kTIMGroupDetailInfoNotification]));

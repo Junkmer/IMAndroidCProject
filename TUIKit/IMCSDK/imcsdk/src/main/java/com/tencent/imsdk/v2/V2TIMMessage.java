@@ -300,8 +300,16 @@ public class V2TIMMessage implements Serializable {
         this.cloudCustomData = cloudCustomData;
     }
 
+    protected void setSelf(boolean self) {
+        isSelf = self;
+    }
+
     public boolean isSelf() {
         return isSelf;
+    }
+
+    protected void setRead(boolean read) {
+        isRead = read;
     }
 
     public boolean isRead() {
