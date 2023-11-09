@@ -108,6 +108,18 @@ namespace tim {
             }
             j_method_id_array_[MethodIDOnMemberInfoChanged] = jmethod;
 
+            jmethod = env->GetMethodID(j_cls_, "onAllGroupMembersMuted", "(Ljava/lang/String;Z)V");
+            if (jmethod == nullptr) {
+                return false;
+            }
+            j_method_id_array_[MethodIDOnAllGroupMembersMuted] = jmethod;
+
+            jmethod = env->GetMethodID(j_cls_, "onMemberMarkChanged", "(Ljava/lang/String;Ljava/util/List;IZ)V");
+            if (jmethod == nullptr) {
+                return false;
+            }
+            j_method_id_array_[MethodIDOnMemberMarkChanged] = jmethod;
+
             jmethod = env->GetMethodID(j_cls_, "onGroupCreated", "(Ljava/lang/String;)V");
             if (jmethod == nullptr) {
                 return false;
@@ -281,8 +293,8 @@ namespace tim {
                 /**
                  * TODO::注：由于目前此回调暂时无法区分进群成员具体是被邀请进群还是主动申请进群，暂通过新消息回调实现。
                  */
-//                member_array = tip_json[kTIMGroupTipsElemChangedGroupMemberInfoArray];
-//                OnMemberEnter(*_listener, groupID, member_array);
+                member_array = tip_json[kTIMGroupTipsElemChangedGroupMemberInfoArray];
+                OnMemberEnter(*_listener, groupID, member_array);
 //
 //                op_user_json = tip_json[kTIMGroupTipsElemOpGroupMemberInfo];
 //                OnMemberInvited(*_listener, groupID, op_user_json, member_array);
@@ -306,9 +318,26 @@ namespace tim {
             } else if (tipType == TIMGroupTipType::kTIMGroupTip_GroupInfoChange) {// 群信息修改提示
                 json::Array group_change_info_array = tip_json[kTIMGroupTipsElemGroupChangeInfoArray];
                 OnGroupInfoChanged(*_listener, groupID, group_change_info_array);
+
+                for (const auto &item: group_change_info_array){
+                    auto flag = TIMGroupTipGroupChangeFlag(item[kTIMGroupTipGroupChangeInfoFlag].ToInt());
+                    if (flag == TIMGroupTipGroupChangeFlag::kTIMGroupTipChangeFlag_ShutupAll){
+                        bool isAllMute = item[kTIMGroupTipGroupChangeInfoBoolValue];
+                        onAllGroupMembersMuted(*_listener,groupID,isAllMute);
+                    }
+                }
+
             } else if (tipType == TIMGroupTipType::kTIMGroupTip_MemberInfoChange) {// 群成员信息修改提示
                 json::Array member_change_info_array = tip_json[kTIMGroupTipsElemMemberChangeInfoArray];
                 OnMemberInfoChanged(*_listener, groupID, member_change_info_array);
+            } else if(tipType == TIMGroupTipType::kTIMGroupTip_MemberMarkChange){// 群成员标记修改提示
+                json::Array member_mark_array = tip_json[kTIMGroupTipsElemMemberMarkInfoArray];
+                for (const auto &item: member_mark_array){
+                    json::Array member_id_array = item[kTIMGroupTipMemberMarkChangeInfoUserIDList];
+                    int markType = item[kTIMGroupTipMemberMarkChangeInfoMarkType];
+                    bool enableMark = item[kTIMGroupTipMemberChangeInfoEnableMark];
+                    onMemberMarkChanged(*_listener,groupID,member_array,markType,enableMark);
+                }
             }
         }
 
@@ -344,8 +373,8 @@ namespace tim {
             jstring groupIDStr = StringJni::Cstring2Jstring(env, groupID);
 
             jobject j_memberList = ArrayListJni::NewArrayList();
-            for (int i = 0; i < memberList.size(); ++i) {
-                jobject memberObj = GroupMemberInfoJni::Convert2JObject(memberList[i]);
+            for (const auto & i : memberList) {
+                jobject memberObj = GroupMemberInfoJni::Convert2JObject(i);
                 ArrayListJni::Add(j_memberList, memberObj);
                 env->DeleteLocalRef(memberObj);
             }
@@ -389,8 +418,8 @@ namespace tim {
 
             jobject j_obj_memberList = ArrayListJni::NewArrayList();
 
-            for (int i = 0; i < memberList.size(); ++i) {
-                jobject j_member = GroupMemberInfoJni::Convert2JObject(memberList[i]);
+            for (const auto & i : memberList) {
+                jobject j_member = GroupMemberInfoJni::Convert2JObject(i);
                 ArrayListJni::Add(j_obj_memberList, j_member);
                 env->DeleteLocalRef(j_member);
             }
@@ -418,8 +447,8 @@ namespace tim {
             jobject j_opUser = GroupMemberInfoJni::Convert2JObject(opUser);
 
             jobject j_obj_memberList = ArrayListJni::NewArrayList();
-            for (int i = 0; i < memberList.size(); ++i) {
-                jobject j_obj_member = GroupMemberInfoJni::Convert2JObject(memberList[i]);
+            for (const auto & i : memberList) {
+                jobject j_obj_member = GroupMemberInfoJni::Convert2JObject(i);
                 ArrayListJni::Add(j_obj_memberList, j_obj_member);
                 env->DeleteLocalRef(j_obj_member);
             }
@@ -445,8 +474,8 @@ namespace tim {
             jstring groupIDStr = StringJni::Cstring2Jstring(env, groupID);
 
             jobject j_obj_groupMemberChangeInfoList = ArrayListJni::NewArrayList();
-            for (int i = 0; i < v2TIMGroupMemberChangeInfoList.size(); ++i) {
-                jobject j_obj_groupMemberChangeInfo = GroupMemberChangeInfoJni::Convert2JObject(v2TIMGroupMemberChangeInfoList[i]);
+            for (const auto & i : v2TIMGroupMemberChangeInfoList) {
+                jobject j_obj_groupMemberChangeInfo = GroupMemberChangeInfoJni::Convert2JObject(i);
                 ArrayListJni::Add(j_obj_groupMemberChangeInfoList, j_obj_groupMemberChangeInfo);
                 env->DeleteLocalRef(j_obj_groupMemberChangeInfo);
             }
@@ -456,6 +485,47 @@ namespace tim {
             }
 
             env->DeleteLocalRef(groupIDStr);
+            env->DeleteLocalRef(groupIDStr);
+        }
+
+        void GroupListenerJni::onAllGroupMembersMuted(const std::map<std::string, jobject> &_listener_,const std::string &groupID, bool isMute){
+            if (_listener_.empty()) {
+                return;
+            }
+
+            ScopedJEnv scopedJEnv;
+            auto *env = scopedJEnv.GetEnv();
+
+            jstring groupIDStr = StringJni::Cstring2Jstring(env, groupID);
+
+            for (const auto & item_listener : _listener_) {
+                env->CallVoidMethod(item_listener.second, j_method_id_array_[MethodIDOnAllGroupMembersMuted], groupIDStr, isMute);
+            }
+
+            env->DeleteLocalRef(groupIDStr);
+        }
+
+        void GroupListenerJni::onMemberMarkChanged(const std::map<std::string, jobject> &_listener_,const std::string &groupID, const json::Array &memberIDList, int markType, bool enableMark){
+            if (_listener_.empty()) {
+                return;
+            }
+
+            ScopedJEnv scopedJEnv;
+            auto *env = scopedJEnv.GetEnv();
+
+            jstring groupIDStr = StringJni::Cstring2Jstring(env, groupID);
+
+            jobject j_obj_memberIDList = ArrayListJni::NewArrayList();
+            for (const auto &item: memberIDList){
+                jobject j_obj_memberID = StringJni::Cstring2Jstring(env,item);
+                ArrayListJni::Add(j_obj_memberIDList, j_obj_memberID);
+                env->DeleteLocalRef(j_obj_memberID);
+            }
+
+            for (const auto & item_listener : _listener_) {
+                env->CallVoidMethod(item_listener.second, j_method_id_array_[MethodIDOnMemberMarkChanged], groupIDStr,markType,enableMark);
+            }
+
             env->DeleteLocalRef(groupIDStr);
         }
 
@@ -469,8 +539,8 @@ namespace tim {
 
             jstring groupIDStr = StringJni::Cstring2Jstring(env, groupID);
 
-            for (auto item_listener = _listener_.begin(); item_listener != _listener_.end(); item_listener++) {
-                env->CallVoidMethod(item_listener->second, j_method_id_array_[MethodIDOnGroupCreated], groupIDStr);
+            for (const auto & item_listener : _listener_) {
+                env->CallVoidMethod(item_listener.second, j_method_id_array_[MethodIDOnGroupCreated], groupIDStr);
             }
 
             env->DeleteLocalRef(groupIDStr);
@@ -488,8 +558,8 @@ namespace tim {
 
             jobject j_obj_opUser = GroupMemberInfoJni::Convert2JObject(opUser);
 
-            for (auto item_listener = _listener_.begin(); item_listener != _listener_.end(); item_listener++) {
-                env->CallVoidMethod(item_listener->second, j_method_id_array_[MethodIDOnMemberKicked], groupIDStr, j_obj_opUser);
+            for (const auto & item_listener : _listener_) {
+                env->CallVoidMethod(item_listener.second, j_method_id_array_[MethodIDOnMemberKicked], groupIDStr, j_obj_opUser);
             }
 
             env->DeleteLocalRef(groupIDStr);
@@ -507,8 +577,8 @@ namespace tim {
             jstring groupIDStr = StringJni::Cstring2Jstring(env, groupID);
             jobject j_obj_opUser = GroupMemberInfoJni::Convert2JObject(opUser);
 
-            for (auto item_listener = _listener_.begin(); item_listener != _listener_.end(); item_listener++) {
-                env->CallVoidMethod(item_listener->second, j_method_id_array_[MethodIDOnGroupRecycled], groupIDStr, j_obj_opUser);
+            for (const auto & item_listener : _listener_) {
+                env->CallVoidMethod(item_listener.second, j_method_id_array_[MethodIDOnGroupRecycled], groupIDStr, j_obj_opUser);
             }
 
             env->DeleteLocalRef(groupIDStr);
@@ -527,15 +597,14 @@ namespace tim {
 
             jobject j_obj_changeInfoList = ArrayListJni::NewArrayList();
 
-            for (int i = 0; i < changeInfos.size(); ++i) {
-                jobject j_obj_changeInfo = GroupChangeInfoJni::Convert2JObject(changeInfos[i]);
+            for (const auto & changeInfo : changeInfos) {
+                jobject j_obj_changeInfo = GroupChangeInfoJni::Convert2JObject(changeInfo);
                 ArrayListJni::Add(j_obj_changeInfoList, j_obj_changeInfo);
                 env->DeleteLocalRef(j_obj_changeInfo);
             }
 
-
-            for (auto item_listener = _listener_.begin(); item_listener != _listener_.end(); item_listener++) {
-                env->CallVoidMethod(item_listener->second, j_method_id_array_[MethodIDOnGroupInfoChanged], groupIDStr, j_obj_changeInfoList);
+            for (const auto & item_listener : _listener_) {
+                env->CallVoidMethod(item_listener.second, j_method_id_array_[MethodIDOnGroupInfoChanged], groupIDStr, j_obj_changeInfoList);
             }
 
             env->DeleteLocalRef(groupIDStr);
@@ -629,8 +698,8 @@ namespace tim {
             jobject j_obj_opUser = GroupMemberInfoJni::Convert2JObject(opUser);
             jobject j_obj_memberList = ArrayListJni::NewArrayList();
 
-            for (int i = 0; i < memberList.size(); ++i) {
-                jobject j_obj_member = GroupMemberInfoJni::Convert2JObject(memberList[i]);
+            for (const auto & i : memberList) {
+                jobject j_obj_member = GroupMemberInfoJni::Convert2JObject(i);
                 ArrayListJni::Add(j_obj_memberList, j_obj_member);
                 env->DeleteLocalRef(j_obj_member);
             }
@@ -656,8 +725,8 @@ namespace tim {
             jstring groupIDStr = StringJni::Cstring2Jstring(env, groupID);
             jobject j_obj_opUser = GroupMemberInfoJni::Convert2JObject(opUser);
             jobject j_obj_memberList = ArrayListJni::NewArrayList();
-            for (int i = 0; i < memberList.size(); ++i) {
-                jobject j_obj_member = GroupMemberInfoJni::Convert2JObject(memberList[i]);
+            for (const auto & i : memberList) {
+                jobject j_obj_member = GroupMemberInfoJni::Convert2JObject(i);
                 ArrayListJni::Add(j_obj_memberList, j_obj_member);
                 env->DeleteLocalRef(j_obj_member);
             }
@@ -736,8 +805,8 @@ namespace tim {
             jstring communityIDStr = StringJni::Cstring2Jstring(env, groupID);
 
             jobject j_obj_topicIDList = ArrayListJni::NewArrayList();
-            for (int i = 0; i < topicIDList.size(); ++i) {
-                jstring j_obj_topicID = StringJni::Cstring2Jstring(env, topicIDList[i]);
+            for (const auto & i : topicIDList) {
+                jstring j_obj_topicID = StringJni::Cstring2Jstring(env, i);
                 ArrayListJni::Add(j_obj_topicIDList, j_obj_topicID);
                 env->DeleteLocalRef(j_obj_topicID);
             }

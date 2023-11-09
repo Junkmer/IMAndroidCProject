@@ -18,6 +18,10 @@ public abstract class V2TIMGroupListener {
 
     public void onMemberInfoChanged(String groupID, List<V2TIMGroupMemberChangeInfo> v2TIMGroupMemberChangeInfoList){}
 
+    public void onAllGroupMembersMuted(String groupID, boolean isMute){}
+
+    public void onMemberMarkChanged(String groupID, List<String> memberIDList, int markType, boolean enableMark){}
+
     public void onGroupCreated(String groupID){}
 
     public void onGroupDismissed(String groupID, V2TIMGroupMemberInfo opUser){}

@@ -56,6 +56,10 @@ namespace tim {
             static void
             OnMemberInfoChanged(const std::map<std::string, jobject> &_listener_, const std::string &groupID, const json::Array &v2TIMGroupMemberChangeInfoList);
 
+            static void onAllGroupMembersMuted(const std::map<std::string, jobject> &_listener_,const std::string &groupID, bool isMute);
+
+            static void onMemberMarkChanged(const std::map<std::string, jobject> &_listener_,const std::string &groupID, const json::Array &memberIDList, int markType, bool enableMark);
+
             static void OnGroupCreated(const std::map<std::string, jobject> &_listener_, const std::string &groupID);
 
             static void OnGroupDismissed(const std::map<std::string, jobject> &_listener_, const std::string &groupID, const json::Object &opUser);
@@ -97,6 +101,8 @@ namespace tim {
                 MethodIDOnMemberInvited,
                 MethodIDOnMemberKicked,
                 MethodIDOnMemberInfoChanged,
+                MethodIDOnAllGroupMembersMuted,
+                MethodIDOnMemberMarkChanged,
                 MethodIDOnGroupCreated,
                 MethodIDOnGroupDismissed,
                 MethodIDOnGroupRecycled,
