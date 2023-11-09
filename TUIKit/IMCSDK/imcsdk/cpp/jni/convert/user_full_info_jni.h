@@ -15,7 +15,6 @@ namespace tim {
             static bool InitIDs(JNIEnv *env);
             static jobject Convert2JObject(const json::Object &userFullInfo_json_obj);
             static jobject Convert2JObject_UpdateCallback(const json::Object &friend_info_item_json);
-            static bool Convert2CoreObject(const jobject &j_obj_userFullInfo,json::Object &userFullInfo_json);
             static bool Convert2CoreObject_SetSelfInfo(const jobject &j_obj_userFullInfo,json::Object &userFullInfo_json);
 
         private:

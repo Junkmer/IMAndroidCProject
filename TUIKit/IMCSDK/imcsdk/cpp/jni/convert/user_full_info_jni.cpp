@@ -122,7 +122,20 @@ namespace tim {
             env->SetIntField(juserFullInfoObj, j_field_array_[FieldIDGender], userFullInfo_json_obj[kTIMUserProfileGender]);
             env->SetIntField(juserFullInfoObj, j_field_array_[FieldIDRole], userFullInfo_json_obj[kTIMUserProfileRole]);
             env->SetIntField(juserFullInfoObj, j_field_array_[FieldIDLevel], userFullInfo_json_obj[kTIMUserProfileLevel]);
-            env->SetIntField(juserFullInfoObj, j_field_array_[FieldIDAllowType], userFullInfo_json_obj[kTIMUserProfileAddPermission]);
+            int allowType;
+            auto addPermission = TIMProfileAddPermission(userFullInfo_json_obj[kTIMUserProfileAddPermission].ToInt());
+            switch (addPermission) {
+                case TIMProfileAddPermission::kTIMProfileAddPermission_NeedConfirm:
+                    allowType = 1;
+                    break;
+                case TIMProfileAddPermission::kTIMProfileAddPermission_DenyAny:
+                    allowType = 2;
+                    break;
+                default:
+                    allowType = 0;
+                    break;
+            }
+            env->SetIntField(juserFullInfoObj, j_field_array_[FieldIDAllowType], allowType);
             env->SetLongField(juserFullInfoObj, j_field_array_[FieldIDBirthday], userFullInfo_json_obj[kTIMUserProfileBirthDay].ToInt64());
 
             if (userFullInfo_json_obj.HasKey(kTIMUserProfileCustomStringArray)){
@@ -189,99 +202,6 @@ namespace tim {
             return juserFullInfoObj;
         }
 
-        bool UserFullInfoJni::Convert2CoreObject(const jobject &j_obj_userFullInfo,json::Object &userFullInfo_json) {
-            ScopedJEnv scopedJEnv;
-            auto *env = scopedJEnv.GetEnv();
-
-            if (!InitIDs(env)) {
-                return false;
-            }
-
-            auto userID_jStr = (jstring) env->GetObjectField(j_obj_userFullInfo, j_field_array_[FieldIDUserID]);
-            if (userID_jStr) {
-                userFullInfo_json[kTIMUserProfileIdentifier] = StringJni::Jstring2Cstring(env, userID_jStr).c_str();
-                env->DeleteLocalRef(userID_jStr);
-            }
-
-            auto nickName_jStr = (jstring) env->GetObjectField(j_obj_userFullInfo, j_field_array_[FieldIDNickname]);
-            if (nickName_jStr) {
-                userFullInfo_json[kTIMUserProfileNickName] = StringJni::Jstring2Cstring(env, nickName_jStr).c_str();
-                env->DeleteLocalRef(nickName_jStr);
-            }
-
-            auto faceUrl_jStr = (jstring) env->GetObjectField(j_obj_userFullInfo, j_field_array_[FieldIDFaceUrl]);
-            if (faceUrl_jStr) {
-                userFullInfo_json[kTIMUserProfileFaceUrl] = StringJni::Jstring2Cstring(env, faceUrl_jStr).c_str();
-                env->DeleteLocalRef(faceUrl_jStr);
-            }
-
-            auto selfSignature_jStr = (jstring) env->GetObjectField(j_obj_userFullInfo, j_field_array_[FieldIDSelfSignature]);
-            if (selfSignature_jStr) {
-                userFullInfo_json[kTIMUserProfileSelfSignature] = StringJni::Jstring2Cstring(env, selfSignature_jStr).c_str();
-                env->DeleteLocalRef(selfSignature_jStr);
-            }
-
-            int genderInt = env->GetIntField(j_obj_userFullInfo, j_field_array_[FieldIDGender]);
-            if (genderInt != IntegerJni::MIN_VALUE()){
-                userFullInfo_json[kTIMUserProfileGender] = TIMGenderType(genderInt);
-            }
-
-            int roleInt = env->GetIntField(j_obj_userFullInfo, j_field_array_[FieldIDRole]);
-            if (roleInt != IntegerJni::MIN_VALUE()){
-                userFullInfo_json[kTIMUserProfileRole] = roleInt;
-            }
-
-            int levelInt = env->GetIntField(j_obj_userFullInfo, j_field_array_[FieldIDLevel]);
-            if (levelInt != IntegerJni::MIN_VALUE()){
-                userFullInfo_json[kTIMUserProfileLevel] = levelInt;
-            }
-
-            int allowTypeInt = env->GetIntField(j_obj_userFullInfo, j_field_array_[FieldIDAllowType]);
-            if (allowTypeInt != IntegerJni::MIN_VALUE()){
-                userFullInfo_json[kTIMUserProfileAddPermission] = TIMProfileAddPermission(allowTypeInt);
-            }
-
-            long long birthdayLong = env->GetLongField(j_obj_userFullInfo, j_field_array_[FieldIDBirthday]);
-            if (birthdayLong != LongJni::MIN_VALUE()){
-                userFullInfo_json[kTIMUserProfileBirthDay] = birthdayLong;
-            }
-
-            jobject j_obj_customHashMap = env->GetObjectField(j_obj_userFullInfo, j_field_array_[FieldIDCustomHashMap]);
-            if (j_obj_customHashMap){
-                jobject entry_set = HashMapJni::entrySet(j_obj_customHashMap);
-                jobject iterator = HashMapJni::iterator(entry_set);
-                int size = HashMapJni::Size(j_obj_customHashMap);
-                if (size > 0){
-                    json::Array custom_array;
-                    while (HashMapJni::hasNext(iterator)) {
-                        jobject object = HashMapJni::next(iterator);
-                        if (nullptr == object) {
-                            continue;
-                        }
-                        auto jStr_key = (jstring) HashMapJni::getKey(object);
-                        if (nullptr != jStr_key) {
-                            auto jByte_value = (jbyteArray) HashMapJni::getValue(object);
-                            if (nullptr != jByte_value) {
-
-                                json::Object custom_item;
-                                custom_item[kTIMFriendProfileCustomStringInfoKey] = StringJni::Jstring2Cstring(env, jStr_key);
-                                custom_item[kTIMFriendProfileCustomStringInfoValue] = StringJni::JbyteArray2Cstring(env, jByte_value);
-                                custom_array.push_back(custom_item);
-
-                                env->DeleteLocalRef(jByte_value);
-                            }
-                            env->DeleteLocalRef(jStr_key);
-                        }
-                    }
-                    if (custom_array.size() > 0){
-                        userFullInfo_json[kTIMUserProfileCustomStringArray] = custom_array;
-                    }
-                }
-                env->DeleteLocalRef(j_obj_customHashMap);
-            }
-            return true;
-        }
-
         bool UserFullInfoJni::Convert2CoreObject_SetSelfInfo(jobject const &j_obj_userFullInfo, json::Object &userFullInfo_json) {
             ScopedJEnv scopedJEnv;
             auto *env = scopedJEnv.GetEnv();
@@ -324,8 +244,20 @@ namespace tim {
             }
 
             int allowTypeInt = env->GetIntField(j_obj_userFullInfo, j_field_array_[FieldIDAllowType]);
+            TIMProfileAddPermission addPermission;
             if (allowTypeInt != IntegerJni::MIN_VALUE()){
-                userFullInfo_json[kTIMUserProfileItemAddPermission] = TIMProfileAddPermission(allowTypeInt);
+                switch (allowTypeInt) {
+                    case 1:
+                        addPermission = TIMProfileAddPermission::kTIMProfileAddPermission_NeedConfirm;
+                        break;
+                    case 2:
+                        addPermission = TIMProfileAddPermission::kTIMProfileAddPermission_DenyAny;
+                        break;
+                    default:
+                        addPermission = TIMProfileAddPermission::kTIMProfileAddPermission_AllowAny;
+                        break;
+                }
+                userFullInfo_json[kTIMUserProfileItemAddPermission] = addPermission;
             }
 
             long long birthdayLong = env->GetLongField(j_obj_userFullInfo, j_field_array_[FieldIDBirthday]);
