@@ -5,7 +5,7 @@
 #include <jni_helper.h>
 #include "conversation_operation_result_jni.h"
 #include "java_basic_jni.h"
-#include "TIMCloudDef.h"
+#include "TIMConversationManager.h"
 
 namespace tim {
     namespace jni {

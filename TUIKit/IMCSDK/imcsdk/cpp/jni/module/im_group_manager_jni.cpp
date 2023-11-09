@@ -26,6 +26,7 @@
 #include "group_search_param.h"
 #include "topic_operation_result_jni.h"
 #include "topic_info_result_jni.h"
+#include "TIMGroupManager.h"
 
 #define DEFINE_NATIVE_FUNC(RETURN_TYPE, NAME, ...) \
     RETURN_TYPE NAME(JNIEnv *env, jobject thiz, ##__VA_ARGS__)

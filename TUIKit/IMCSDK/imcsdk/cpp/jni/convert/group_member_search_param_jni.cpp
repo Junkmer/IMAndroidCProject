@@ -5,7 +5,7 @@
 #include "group_member_search_param_jni.h"
 #include "jni_helper.h"
 #include "java_basic_jni.h"
-#include "TIMCloudDef.h"
+#include "TIMGroupManager.h"
 
 namespace tim {
     namespace jni {

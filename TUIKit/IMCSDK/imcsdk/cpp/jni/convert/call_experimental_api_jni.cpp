@@ -4,7 +4,7 @@
 
 #include "call_experimental_api_jni.h"
 #include "java_basic_jni.h"
-#include "TIMCloudDef.h"
+#include "TIMExperimentalAPI.h"
 #include "jni_util.h"
 
 namespace tim {

@@ -5,7 +5,7 @@
 #include <jni_helper.h>
 #include "signaling_info_jni.h"
 #include "java_basic_jni.h"
-#include "TIMCloudDef.h"
+#include "TIMSignalingManager.h"
 
 namespace tim {
     namespace jni {

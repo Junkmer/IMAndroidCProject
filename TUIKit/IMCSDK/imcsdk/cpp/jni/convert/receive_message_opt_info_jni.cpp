@@ -5,7 +5,7 @@
 #include "receive_message_opt_info_jni.h"
 #include "jni_helper.h"
 #include "java_basic_jni.h"
-#include "TIMCloudDef.h"
+#include "TIMMessageManager.h"
 
 namespace tim {
     namespace jni {

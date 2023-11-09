@@ -3,7 +3,7 @@
 //
 
 #include "friend_search_param_jni.h"
-#include "TIMCloudDef.h"
+#include "TIMFriendshipManager.h"
 
 namespace tim {
     namespace jni {

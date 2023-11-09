@@ -21,8 +21,6 @@
 #include "group_listener_jni.h"
 #include "user_full_info_jni.h"
 #include "user_status_jni.h"
-#include "TIMCloudDef.h"
-#include "TIMCloud.h"
 #include "tim_callback_impl.h"
 #include "call_experimental_api_jni.h"
 

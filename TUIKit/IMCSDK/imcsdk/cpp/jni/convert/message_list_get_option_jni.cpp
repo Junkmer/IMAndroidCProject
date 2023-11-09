@@ -7,7 +7,7 @@
 #include "java_basic_jni.h"
 #include "message_jni.h"
 #include "LogUtil.h"
-#include "TIMCloudDef.h"
+#include "TIMMessageManager.h"
 
 namespace tim {
     namespace jni {

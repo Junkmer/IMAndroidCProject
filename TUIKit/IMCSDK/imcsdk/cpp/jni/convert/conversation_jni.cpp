@@ -8,7 +8,7 @@
 #include "conversation_jni.h"
 #include "message_jni.h"
 #include "group_at_info_jni.h"
-#include "TIMCloudDef.h"
+#include "TIMConversationManager.h"
 #include "json.h"
 
 namespace tim {

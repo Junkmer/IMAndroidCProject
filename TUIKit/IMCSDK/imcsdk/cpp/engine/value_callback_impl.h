@@ -7,7 +7,7 @@
 
 #include <functional>
 #include <jni.h>
-#include "TIMCloudDef.h"
+#include "TIMErrorCode.h"
 #include "functional"
 #include "tim_common.h"
 

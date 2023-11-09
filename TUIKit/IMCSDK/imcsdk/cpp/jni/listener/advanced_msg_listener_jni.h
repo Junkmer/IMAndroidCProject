@@ -8,7 +8,6 @@
 #include <jni.h>
 #include <memory>
 #include <map>
-#include "TIMCloudCallback.h"
 #include "json.h"
 
 namespace tim {

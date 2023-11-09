@@ -8,7 +8,8 @@
 #include "group_member_info_jni.h"
 #include "group_change_info_jni.h"
 #include "group_member_change_info_jni.h"
-#include "TIMCloudDef.h"
+#include "TIMGroupManager.h"
+#include "TIMMessageManager.h"
 
 namespace tim {
     namespace jni {

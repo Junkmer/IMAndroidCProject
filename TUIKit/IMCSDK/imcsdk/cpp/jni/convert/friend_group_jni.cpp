@@ -5,7 +5,7 @@
 #include "friend_group_jni.h"
 #include <jni_helper.h>
 #include "java_basic_jni.h"
-#include "TIMCloudDef.h"
+#include "TIMFriendshipManager.h"
 
 namespace tim {
     namespace jni {

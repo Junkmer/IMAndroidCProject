@@ -6,7 +6,7 @@
 #include "jni_helper.h"
 #include "conversation_jni.h"
 #include "json.h"
-#include "TIMCloudDef.h"
+#include "TIMConversationManager.h"
 
 namespace tim {
     namespace jni {

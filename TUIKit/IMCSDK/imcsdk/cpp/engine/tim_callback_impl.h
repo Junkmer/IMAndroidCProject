@@ -7,7 +7,6 @@
 
 #include <functional>
 #include <jni.h>
-#include <TIMCloudCallback.h>
 
 namespace tim {
     class TIMCallbackIMpl final {

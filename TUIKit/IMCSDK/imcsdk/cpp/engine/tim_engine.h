@@ -11,6 +11,9 @@
 #include "tim_callback_impl.h"
 #include "send_callback_impl.h"
 #include "download_callback_impl.h"
+#include "TIMCloudDef.h"
+#include "TIMManager.h"
+#include "TIMMessageManager.h"
 #include <vector>
 #include "json.h"
 

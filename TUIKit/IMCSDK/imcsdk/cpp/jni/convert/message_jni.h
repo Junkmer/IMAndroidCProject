@@ -8,7 +8,7 @@
 #include <jni.h>
 #include <memory>
 #include "json.h"
-#include "TIMCloudDef.h"
+#include "TIMMessageManager.h"
 
 namespace tim {
     namespace jni {

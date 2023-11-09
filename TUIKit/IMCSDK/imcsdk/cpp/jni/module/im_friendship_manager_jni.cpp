@@ -20,6 +20,7 @@
 #include "friend_add_application_jni.h"
 #include "friend_check_result_jni.h"
 #include "friend_group_jni.h"
+#include "TIMFriendshipManager.h"
 #include "LogUtil.h"
 #include "json.h"
 

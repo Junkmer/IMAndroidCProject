@@ -6,7 +6,8 @@
 #include "jni_helper.h"
 #include "java_basic_jni.h"
 #include "user_full_info_jni.h"
-#include "TIMCloudDef.h"
+#include "TIMFriendshipManager.h"
+#include "TIMManager.h"
 #include "LogUtil.h"
 
 namespace tim {

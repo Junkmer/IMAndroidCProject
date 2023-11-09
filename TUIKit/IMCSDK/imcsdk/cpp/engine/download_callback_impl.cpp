@@ -8,6 +8,8 @@
 #include "download_callback_impl.h"
 #include "im_callbak_jni.h"
 #include "json.h"
+#include "TIMErrorCode.h"
+#include "TIMMessageManager.h"
 #include "LogUtil.h"
 
 namespace tim {

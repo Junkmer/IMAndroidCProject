@@ -4,7 +4,8 @@
 
 #include <jni_helper.h>
 #include "group_at_info_jni.h"
-#include "TIMCloudDef.h"
+#include "TIMGroupManager.h"
+#include "TIMConversationManager.h"
 
 namespace tim {
     namespace jni {

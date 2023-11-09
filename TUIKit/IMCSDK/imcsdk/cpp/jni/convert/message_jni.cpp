@@ -8,7 +8,9 @@
 #include "java_basic_jni.h"
 #include "elem_processor_jni.h"
 #include "offline_push_info_jni.h"
-#include "TIMCloudDef.h"
+#include "TIMMessageManager.h"
+#include "TIMManager.h"
+#include "TIMGroupManager.h"
 
 namespace tim {
     namespace jni {

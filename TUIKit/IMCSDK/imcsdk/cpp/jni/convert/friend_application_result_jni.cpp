@@ -6,7 +6,7 @@
 #include <jni_helper.h>
 #include "java_basic_jni.h"
 #include "friend_application_jni.h"
-#include "TIMCloudDef.h"
+#include "TIMFriendshipManager.h"
 
 namespace tim {
     namespace jni {
