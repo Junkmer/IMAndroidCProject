@@ -217,22 +217,22 @@ namespace tim {
             env->SetIntField(jObj, j_field_array_[FieldIDGroupAddOpt], groupInfo_json[kTIMGroupDetailInfoAddOption]);
             env->SetIntField(jObj, j_field_array_[FieldIDGroupApproveOpt], groupInfo_json[kTIMGroupDetailInfoApproveOption]);
 
-            if (groupInfo_json.HasKey(kTIMGroupDetailInfoCustomInfo)){
+            if (groupInfo_json.HasKey(kTIMGroupDetailInfoCustomInfo)) {
                 jobject mapObj = HashMapJni::NewHashMap();
                 json::Array custom_array = groupInfo_json[kTIMGroupDetailInfoCustomInfo];
                 for (int i = 0; i < custom_array.size(); ++i) {
                     json::Object item = custom_array[i];
                     jstring keyStr = StringJni::Cstring2Jstring(env, item[kTIMGroupInfoCustomStringInfoKey].ToString());
-                    if (keyStr){
-                        jobject valueByte = StringJni::Cstring2JbyteArray(env,item[kTIMGroupInfoCustomStringInfoValue].ToString());
-                        if (valueByte){
-                            HashMapJni::Put(mapObj,keyStr,valueByte);
+                    if (keyStr) {
+                        jobject valueByte = StringJni::Cstring2JbyteArray(env, item[kTIMGroupInfoCustomStringInfoValue].ToString());
+                        if (valueByte) {
+                            HashMapJni::Put(mapObj, keyStr, valueByte);
                             env->DeleteLocalRef(valueByte);
                         }
                         env->DeleteLocalRef(keyStr);
                     }
                 }
-                env->SetObjectField(jObj,j_field_array_[FieldIDCustomInfo],mapObj);
+                env->SetObjectField(jObj, j_field_array_[FieldIDCustomInfo], mapObj);
                 env->DeleteLocalRef(mapObj);
             }
 
@@ -311,11 +311,11 @@ namespace tim {
             create_group_info_json[kTIMCreateGroupParamAddOption] = TIMGroupAddOption(env->GetIntField(j_obj_groupInfo, j_field_array_[FieldIDGroupAddOpt]));
             create_group_info_json[kTIMCreateGroupParamApproveOption] = TIMGroupAddOption(env->GetIntField(j_obj_groupInfo, j_field_array_[FieldIDGroupAddOpt]));
 
-            jobject j_obj_customHashMap = env->GetObjectField(j_obj_groupInfo,j_field_array_[FieldIDCustomInfo]);
+            jobject j_obj_customHashMap = env->GetObjectField(j_obj_groupInfo, j_field_array_[FieldIDCustomInfo]);
             jobject entry_set = HashMapJni::entrySet(j_obj_customHashMap);
             jobject iterator = HashMapJni::iterator(entry_set);
             int size = HashMapJni::Size(j_obj_customHashMap);
-            if (size > 0){
+            if (size > 0) {
                 json::Array custom_array;
                 while (HashMapJni::hasNext(iterator)) {
                     jobject object = HashMapJni::next(iterator);
@@ -337,8 +337,10 @@ namespace tim {
                 create_group_info_json[kTIMCreateGroupParamCustomInfo] = custom_array;
             }
 
-
-            create_group_info_json[kTIMCreateGroupParamMaxMemberCount] = (long long) env->GetLongField(j_obj_groupInfo, j_field_array_[FieldIDMemberMaxCount]);
+            int maxMemberCount = (int) env->GetLongField(j_obj_groupInfo, j_field_array_[FieldIDMemberMaxCount]);
+            if (maxMemberCount != -1) {
+                create_group_info_json[kTIMCreateGroupParamMaxMemberCount] = maxMemberCount;
+            }
             return true;
         }
 
@@ -356,16 +358,18 @@ namespace tim {
 
             jStr = (jstring) env->GetObjectField(j_obj_groupInfo, j_field_array_[FieldIDGroupID]);
             if (jStr) {
-                modifyFlag = modifyFlag | TIMGroupModifyInfoFlag::kTIMGroupModifyInfoFlag_Name;
-                update_group_info_json[kTIMGroupModifyInfoParamGroupId] = StringJni::Jstring2Cstring(env, jStr).c_str();
+                update_group_info_json[kTIMGroupModifyInfoParamGroupId] =  StringJni::Jstring2Cstring(env, jStr);;
                 env->DeleteLocalRef(jStr);
             }
 
             jStr = (jstring) env->GetObjectField(j_obj_groupInfo, j_field_array_[FieldIDGroupName]);
             if (jStr) {
-                modifyFlag = modifyFlag | TIMGroupModifyInfoFlag::kTIMGroupModifyInfoFlag_Name;
-                update_group_info_json[kTIMGroupModifyInfoParamGroupName] = StringJni::Jstring2Cstring(env, jStr).c_str();
-                env->DeleteLocalRef(jStr);
+                std::string groupName = StringJni::Jstring2Cstring(env, jStr);
+                if (!groupName.empty()) {
+                    modifyFlag = modifyFlag | TIMGroupModifyInfoFlag::kTIMGroupModifyInfoFlag_Name;
+                    update_group_info_json[kTIMGroupModifyInfoParamGroupName] = groupName;
+                    env->DeleteLocalRef(jStr);
+                }
             }
 
             jStr = (jstring) env->GetObjectField(j_obj_groupInfo, j_field_array_[FieldIDNotification]);
@@ -393,22 +397,22 @@ namespace tim {
             modifyFlag = modifyFlag | TIMGroupModifyInfoFlag::kTIMGroupModifyInfoFlag_ShutupAll;
 
             int addOptType = TIMGroupAddOption(env->GetIntField(j_obj_groupInfo, j_field_array_[FieldIDGroupAddOpt]));
-            if (addOptType != -1){
+            if (addOptType != -1) {
                 update_group_info_json[kTIMGroupModifyInfoParamAddOption] = addOptType;
                 modifyFlag = modifyFlag | TIMGroupModifyInfoFlag::kTIMGroupModifyInfoFlag_AddOption;
             }
 
             int approveOptType = TIMGroupAddOption(env->GetIntField(j_obj_groupInfo, j_field_array_[FieldIDGroupApproveOpt]));
-            if (approveOptType != -1){
+            if (approveOptType != -1) {
                 update_group_info_json[kTIMGroupModifyInfoParamApproveOption] = approveOptType;
                 modifyFlag = modifyFlag | TIMGroupModifyInfoFlag::kTIMGroupModifyInfoFlag_ApproveOption;
             }
 
-            jobject j_obj_customHashMap = env->GetObjectField(j_obj_groupInfo,j_field_array_[FieldIDCustomInfo]);
+            jobject j_obj_customHashMap = env->GetObjectField(j_obj_groupInfo, j_field_array_[FieldIDCustomInfo]);
             jobject entry_set = HashMapJni::entrySet(j_obj_customHashMap);
             jobject iterator = HashMapJni::iterator(entry_set);
             int size = HashMapJni::Size(j_obj_customHashMap);
-            if (size > 0){
+            if (size > 0) {
                 json::Array custom_array;
                 while (HashMapJni::hasNext(iterator)) {
                     jobject object = HashMapJni::next(iterator);
@@ -428,7 +432,7 @@ namespace tim {
                     }
                 }
 
-                if (custom_array.size() > 0){
+                if (custom_array.size() > 0) {
                     update_group_info_json[kTIMGroupModifyInfoParamCustomInfo] = custom_array;
                     modifyFlag = modifyFlag | TIMGroupModifyInfoFlag::kTIMGroupModifyInfoFlag_Custom;
                 }
@@ -436,7 +440,7 @@ namespace tim {
             }
 
             long memberMaxCount = env->GetLongField(j_obj_groupInfo, j_field_array_[FieldIDMemberMaxCount]);
-            if (memberMaxCount != -1){
+            if (memberMaxCount != -1) {
                 update_group_info_json[kTIMGroupModifyInfoParamMaxMemberNum] = (long long) memberMaxCount;
                 modifyFlag = modifyFlag | TIMGroupModifyInfoFlag::kTIMGroupModifyInfoFlag_MaxMemberNum;
             }
