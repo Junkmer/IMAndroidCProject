@@ -481,11 +481,11 @@ namespace tim {
             }
 
             for (auto &item_listener: _listener_) {
-                env->CallVoidMethod(item_listener.second, j_method_id_array_[MethodIDOnMemberInfoChanged], groupIDStr, groupIDStr);
+                env->CallVoidMethod(item_listener.second, j_method_id_array_[MethodIDOnMemberInfoChanged], groupIDStr, j_obj_groupMemberChangeInfoList);
             }
 
             env->DeleteLocalRef(groupIDStr);
-            env->DeleteLocalRef(groupIDStr);
+            env->DeleteLocalRef(j_obj_groupMemberChangeInfoList);
         }
 
         void GroupListenerJni::onAllGroupMembersMuted(const std::map<std::string, jobject> &_listener_,const std::string &groupID, bool isMute){
@@ -523,10 +523,11 @@ namespace tim {
             }
 
             for (const auto & item_listener : _listener_) {
-                env->CallVoidMethod(item_listener.second, j_method_id_array_[MethodIDOnMemberMarkChanged], groupIDStr,markType,enableMark);
+                env->CallVoidMethod(item_listener.second, j_method_id_array_[MethodIDOnMemberMarkChanged], groupIDStr,j_obj_memberIDList,markType,enableMark);
             }
 
             env->DeleteLocalRef(groupIDStr);
+            env->DeleteLocalRef(j_obj_memberIDList);
         }
 
         void GroupListenerJni::OnGroupCreated(const std::map<std::string, jobject> &_listener_, const std::string &groupID) {
@@ -596,7 +597,6 @@ namespace tim {
             jstring groupIDStr = StringJni::Cstring2Jstring(env, groupID);
 
             jobject j_obj_changeInfoList = ArrayListJni::NewArrayList();
-
             for (const auto & changeInfo : changeInfos) {
                 jobject j_obj_changeInfo = GroupChangeInfoJni::Convert2JObject(changeInfo);
                 ArrayListJni::Add(j_obj_changeInfoList, j_obj_changeInfo);
@@ -773,6 +773,7 @@ namespace tim {
             }
 
             env->DeleteLocalRef(groupIDStr);
+            env->DeleteLocalRef(j_str_customData);
         }
 
         void GroupListenerJni::OnTopicCreated(const std::map<std::string, jobject> &_listener_, const std::string &groupID, const std::string &topicID) {
