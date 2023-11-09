@@ -196,9 +196,23 @@ DEFINE_NATIVE_FUNC(void, NativeSetConversationDraft, jstring conversation_id, js
         convType = kTIMConv_Group;
         convID = conversationID_str.substr(6);
     }
-    std::string draftText = tim::jni::StringJni::Jstring2Cstring(env, draft_text);
 
-    tim::TIMEngine::GetInstance()->SetConversationDraft(convID.c_str(), convType, draftText.c_str(), new tim::TIMCallbackIMpl(callback));
+    json::Object json_text;  // 构造消息
+    json_text[kTIMElemType] = kTIMElem_Text;
+    json_text[kTIMTextElemContent] = tim::jni::StringJni::Jstring2Cstring(env, draft_text);
+    json::Array json_elem_array;
+    json_elem_array.push_back(json_text);
+    json::Object json_msg;
+    json_msg[kTIMMsgElemArray] = json_elem_array;
+
+    json::Object json_draft; // 构造草稿
+    json_draft[kTIMDraftEditTime] =(int) time(nullptr);
+    json_draft[kTIMDraftUserDefine] = "";
+    json_draft[kTIMDraftMsg] = json_msg;
+
+    std::string draftStr = json::Serialize(json_draft);
+
+    tim::TIMEngine::GetInstance()->SetConversationDraft(convID.c_str(), convType, draftStr.c_str(), new tim::TIMCallbackIMpl(callback));
 }
 
 DEFINE_NATIVE_FUNC(void, NativeSetConversationCustomData, jobject conversation_idlist, jstring custom_data, jobject callback) {

@@ -114,10 +114,11 @@ DEFINE_NATIVE_FUNC(void, NativeGetFriendsInfo, jobject user_idlist, jobject call
 }
 
 DEFINE_NATIVE_FUNC(void, NativeSetFriendInfo, jobject info, jobject callback) {
-    json::Object info_c;
-    tim::jni::FriendInfoJni::Convert2CoreObject(info, info_c);
+    json::Object update_info_json;
+    tim::jni::FriendInfoJni::Convert2CoreObject(info, update_info_json);
+    std::string paramStr = json::Serialize(update_info_json);
 
-    tim::TIMEngine::GetInstance()->SetFriendInfo(json::Serialize(info_c).c_str(), new tim::TIMCallbackIMpl(callback));
+    tim::TIMEngine::GetInstance()->SetFriendInfo(paramStr.c_str(), new tim::TIMCallbackIMpl(callback));
 }
 
 DEFINE_NATIVE_FUNC(void, NativeSearchFriends, jobject search_param, jobject callback) {

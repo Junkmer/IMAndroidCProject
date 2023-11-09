@@ -9,6 +9,7 @@
 #include "message_jni.h"
 #include "group_at_info_jni.h"
 #include "TIMConversationManager.h"
+#include "TIMGroupManager.h"
 #include "json.h"
 
 namespace tim {
@@ -220,24 +221,43 @@ namespace tim {
                 env->DeleteLocalRef(jStr);
             }
 
-            //TODO::获取会话头像，待SDK下个版本实现，实现后，需要将上面的内容方式去掉
-//            jStr = StringJni::Cstring2Jstring(env, conv_obj_json[kTIMConvFaceurl]);
-//            if (jStr) {
-//                env->SetObjectField(conversationObj, j_field_id_array_[FieldIDFaceUrl], jStr);
-//                env->DeleteLocalRef(jStr);
-//            }
+            jStr = StringJni::Cstring2Jstring(env, conv_obj_json[kTIMConvFaceUrl]);
+            if (jStr) {
+                env->SetObjectField(conversationObj, j_field_id_array_[FieldIDFaceUrl], jStr);
+                env->DeleteLocalRef(jStr);
+            }
 
             env->SetIntField(conversationObj, j_field_id_array_[FieldIDRecvOpt], conv_obj_json[kTIMConvRecvOpt]);
 
-            //TODO::获取群类型，待SDK下个版本实现
-//            jStr = StringJni::Cstring2Jstring(env, conv_obj_json[kTIMConvGroupType]);
-//            if (jStr) {
-//                env->SetObjectField(conversationObj, j_field_id_array_[FieldIDGroupType], jStr);
-//                env->DeleteLocalRef(jStr);
-//            }
+            auto groupType = TIMGroupType(conv_obj_json[kTIMConvGroupType].ToInt());
+            std::string groupTypeStr;
+            switch (groupType) {
+                case TIMGroupType::kTIMGroup_Private:
+                    groupTypeStr = "Work";
+                    break;
+                case TIMGroupType::kTIMGroup_Public:
+                    groupTypeStr = "Public";
+                    break;
+                case TIMGroupType::kTIMGroup_ChatRoom:
+                    groupTypeStr = "Meeting";
+                    break;
+                case TIMGroupType::kTIMGroup_AVChatRoom:
+                    groupTypeStr = "AVChatRoom";
+                    break;
+                case TIMGroupType::kTIMGroup_Community:
+                    groupTypeStr = "Community";
+                    break;
+                default:
+                    groupTypeStr = "invite group type";
+                    break;
+            }
+            jStr = StringJni::Cstring2Jstring(env, groupTypeStr);
+            if (jStr) {
+                env->SetObjectField(conversationObj, j_field_id_array_[FieldIDGroupType], jStr);
+                env->DeleteLocalRef(jStr);
+            }
 
             env->SetIntField(conversationObj, j_field_id_array_[FieldIDUnreadCount], conv_obj_json[kTIMConvUnReadNum]);
-
 
             bool isHasLastMsgFlag = conv_obj_json[kTIMConvIsHasLastMsg];
             if (isHasLastMsgFlag && conv_obj_json.HasKey(kTIMConvLastMsg)) {
@@ -249,13 +269,20 @@ namespace tim {
             }
 
             if (conv_obj_json[kTIMConvIsHasDraft].ToBool()) {
-                json::Object draft_obj = conv_obj_json[kTIMConvDraft];
-                jStr = StringJni::Cstring2Jstring(env, draft_obj[kTIMDraftUserDefine]);
-                if (jStr) {
-                    env->SetObjectField(conversationObj, j_field_id_array_[FieldIDDraftText], jStr);
-                    env->DeleteLocalRef(jStr);
+                if (conv_obj_json.HasKey(kTIMConvDraft)){
+                    json::Object draft_json = conv_obj_json[kTIMConvDraft];
+                    json::Object msg_json = draft_json[kTIMDraftMsg];
+                    json::Array elem_array = msg_json[kTIMMsgElemArray];
+                    json::Object text_elem = elem_array[0];
+                    if (text_elem.HasKey(kTIMTextElemContent)){
+                        jStr = StringJni::Cstring2Jstring(env, text_elem[kTIMTextElemContent]);
+                        if (jStr) {
+                            env->SetObjectField(conversationObj, j_field_id_array_[FieldIDDraftText], jStr);
+                            env->DeleteLocalRef(jStr);
+                        }
+                        env->SetLongField(conversationObj, j_field_id_array_[FieldIDDraftTimestamp], draft_json[kTIMDraftEditTime].ToInt());
+                    }
                 }
-                env->SetLongField(conversationObj, j_field_id_array_[FieldIDDraftTimestamp], draft_obj[kTIMDraftEditTime].ToInt());
             }
 
             if (conv_obj_json.HasKey(kTIMConvGroupAtInfoArray)){
