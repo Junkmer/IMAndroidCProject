@@ -25,9 +25,9 @@ namespace tim {
             }
             if (listener_advanced_msg_map.empty()) {
                 TIMAddRecvNewMsgCallback(ImplTIMRecvNewMsgCallback, &listener_advanced_msg_map);
-                TIMSetMsgReadedReceiptCallback(ImplTIMMsgReadedReceiptCallback, &listener_advanced_msg);
-                TIMSetMsgRevokeCallback(ImplTIMMsgRevokeCallback, &listener_advanced_msg);
-                TIMSetMsgUpdateCallback(ImplTIMMsgUpdateCallback, &listener_advanced_msg);
+                TIMSetMsgReadedReceiptCallback(ImplTIMMsgReadedReceiptCallback, &listener_advanced_msg_map);
+                TIMSetMsgRevokeCallback(ImplTIMMsgRevokeCallback, &listener_advanced_msg_map);
+                TIMSetMsgUpdateCallback(ImplTIMMsgUpdateCallback, &listener_advanced_msg_map);
             }
 
             std::string path = StringJni::Jstring2Cstring(env, listenerPath);
@@ -138,8 +138,8 @@ namespace tim {
             json::Array revoke_msg_array = json::Deserialize(json_msg_revoke_info_array);
             for (const auto &item: revoke_msg_array) {
                 //TODO::撤回消息没有messageID字段，待新版发布
-//                std::string msgId = item[kTIMMsgMsgId];
-//                OnRecvMessageRevoked(*(std::map<std::string, jobject> *) user_data, msgId);
+                std::string msgId = item[kTIMMsgMsgId];
+                OnRecvMessageRevoked(*(std::map<std::string, jobject> *) user_data, msgId);
             }
         }
 

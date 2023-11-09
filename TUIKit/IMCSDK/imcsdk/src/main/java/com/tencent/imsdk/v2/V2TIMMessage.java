@@ -45,7 +45,6 @@ public class V2TIMMessage implements Serializable {
     private String groupID;
     private String userID;
     private int status;
-    private int elemType;
 
     private List<V2TIMElem> elemList = new ArrayList<>();
 

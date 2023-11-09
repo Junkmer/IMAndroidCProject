@@ -68,12 +68,6 @@ namespace tim {
             }
             j_field_array_[FieldIDType] = jfield;
 
-            jfield = env->GetFieldID(j_cls_, "elementType", "I");
-            if (nullptr == jfield) {
-                return false;
-            }
-            j_field_array_[FieldIDElemType] = jfield;
-
             jfield = env->GetFieldID(j_cls_, "opMember", "Lcom/tencent/imsdk/v2/V2TIMGroupMemberInfo;");
             if (nullptr == jfield) {
                 return false;
@@ -124,7 +118,6 @@ namespace tim {
                 return nullptr;
             }
 
-            env->SetIntField(jElemObj, j_field_array_[FieldIDElemType], elem_json[kTIMElemType]);
             env->SetObjectField(jElemObj, j_field_array_[FieldIDGroupID], StringJni::Cstring2Jstring(env, elem_json[kTIMGroupTipsElemGroupId]));
             env->SetIntField(jElemObj, j_field_array_[FieldIDType], elem_json[kTIMGroupTipsElemTipType]);
 
@@ -152,8 +145,8 @@ namespace tim {
                 }
             }
 
-            if (elem_json.HasKey(kTIMGroupTipsElemChangedGroupMemberInfoArray)){
-                json::Array member_info_change_array = elem_json[kTIMGroupTipsElemChangedGroupMemberInfoArray];
+            if (elem_json.HasKey(kTIMGroupTipsElemMemberChangeInfoArray)){
+                json::Array member_info_change_array = elem_json[kTIMGroupTipsElemMemberChangeInfoArray];
                 for (int i = 0; i < member_info_change_array.size(); ++i) {
                     jobject memberInfoChangeObj = GroupMemberChangeInfoJni::Convert2JObject(member_info_change_array[i]);
                     env->CallVoidMethod(jElemObj, j_method_id_array_[MethodIDAddMemberChangeInfo], memberInfoChangeObj);
@@ -167,7 +160,97 @@ namespace tim {
         }
 
         std::unique_ptr<json::Object> GroupElemHandlerJni::Convert2CoreObject(int elemType, jobject jElemObj) {
-            return nullptr;
+            if (TIMElemType(elemType) != TIMElemType::kTIMElem_GroupTips || !jElemObj) return nullptr;
+
+            ScopedJEnv scopedJEnv;
+            auto *env = scopedJEnv.GetEnv();
+
+            if (!InitIDs(env)) {
+                return nullptr;
+            }
+
+            json::Object groupTipElem;
+            groupTipElem[kTIMElemType] = TIMElemType::kTIMElem_GroupTips;
+
+            jstring jStr = nullptr;
+
+            jStr = (jstring) env->GetObjectField(jElemObj, j_field_array_[FieldIDGroupID]);
+            if (jStr) {
+                groupTipElem[kTIMGroupTipsElemGroupId] = StringJni::Jstring2Cstring(env, jStr).c_str();
+                env->DeleteLocalRef(jStr);
+            }
+            groupTipElem[kTIMGroupTipsElemTipType] = env->GetIntField(jElemObj, j_field_array_[FieldIDType]);;
+
+            jobject opMemberObj = env->GetObjectField(jElemObj, j_field_array_[FieldIDOpMember]);
+            if (opMemberObj) {
+                json::Object opMember_json;
+                bool flag = GroupMemberInfoJni::Convert2CoreObject(opMemberObj,opMember_json);
+                if (flag){
+                    groupTipElem[kTIMGroupTipsElemOpGroupMemberInfo] = opMember_json;
+                }
+                env->DeleteLocalRef(opMemberObj);
+            }
+
+            jobject memberInfoListObj = env->GetObjectField(jElemObj, j_field_array_[FieldIDMemberList]);
+            if (memberInfoListObj) {
+                json::Array member_array;
+                int size = ArrayListJni::Size(memberInfoListObj);
+                for (int i = 0; i < size; ++i){
+                    json::Object member_json;
+                    jobject member_info_obj = ArrayListJni::Get(memberInfoListObj,i);
+                    bool flag = GroupMemberInfoJni::Convert2CoreObject(member_info_obj,member_json);
+                    if (flag){
+                        member_array.push_back(member_json);
+                    }
+                    env->DeleteLocalRef(member_info_obj);
+                }
+                if (size > 0){
+                    groupTipElem[kTIMGroupTipsElemChangedGroupMemberInfoArray] = member_array;
+                }
+                env->DeleteLocalRef(memberInfoListObj);
+            }
+
+//            jobject groupChangeInfoListObj = env->GetObjectField(jElemObj, j_field_array_[FieldIDGroupChangeInfoList]);
+//            if (groupChangeInfoListObj) {
+//                json::Array change_info_array;
+//                int size = ArrayListJni::Size(groupChangeInfoListObj);
+//                for (int i = 0; i < size; ++i){
+//                    json::Object change_info_json;
+//                    jobject change_info_obj = ArrayListJni::Get(groupChangeInfoListObj,i);
+//                    bool flag = GroupChangeInfoJni::Convert2CoreObject(change_info_obj,change_info_json);
+//                    if (flag){
+//                        change_info_array.push_back(change_info_json);
+//                    }
+//                    env->DeleteLocalRef(change_info_obj);
+//                }
+//                if (size > 0){
+//                    groupTipElem[kTIMGroupTipsElemGroupChangeInfoArray] = change_info_array;
+//                }
+//                env->DeleteLocalRef(groupChangeInfoListObj);
+//            }
+
+//            jobject memberChangeInfoListObj = env->GetObjectField(jElemObj, j_field_array_[FieldIDGroupChangeInfoList]);
+//            if (memberChangeInfoListObj) {
+//                json::Array member_change_info_array;
+//                int size = ArrayListJni::Size(memberChangeInfoListObj);
+//                for (int i = 0; i < size; ++i){
+//                    json::Object member_change_info_json;
+//                    jobject memberChangeInfoObj = ArrayListJni::Get(memberChangeInfoListObj,i);
+//                    bool flag = GroupMemberChangeInfoJni::Convert2CoreObject(memberChangeInfoObj,member_change_info_json);
+//                    if (flag){
+//                        member_change_info_array.push_back(member_change_info_json);
+//                    }
+//                    env->DeleteLocalRef(memberChangeInfoObj);
+//                }
+//                if (size > 0){
+//                    groupTipElem[kTIMGroupTipsElemChangedGroupMemberInfoArray] = member_change_info_array;
+//                }
+//                env->DeleteLocalRef(memberChangeInfoListObj);
+//            }
+
+            groupTipElem[kTIMGroupTipsElemMemberNum] = env->GetIntField(jElemObj, j_field_array_[FieldIDMemberCount]);
+
+            return std::make_unique<json::Object>(groupTipElem);
         }
     }// namespace jni
 }// namespace tim
