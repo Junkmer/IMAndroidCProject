@@ -406,11 +406,11 @@ public class V2TIMManagerImpl extends V2TIMManager {
             callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "invalid api");
             return;
         }
-        String json = (String) param;
-        if (TextUtils.isEmpty(json)) {
-            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
-            return;
+
+        if (api.equals("isCommercialAbilityEnabled")) {
+            api = "internal_operation_is_commercial_ability_enabled";
         }
+
         nativeCallExperimentalAPI(api, param, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {

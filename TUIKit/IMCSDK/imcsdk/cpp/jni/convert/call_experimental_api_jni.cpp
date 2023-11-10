@@ -14,15 +14,6 @@ namespace tim {
             //TODO::实验性api的回调处理待完善
             std::string apiStr = tim::jni::StringJni::Jstring2Cstring(env, api);
 
-//            jclass clazz = env->GetObjectClass(param);
-            jclass clazz = env->FindClass("org/json/JSONObject");
-            jmethodID boolMethod1 = env->GetMethodID(clazz, "optInt", "(Ljava/lang/String;)I");
-            jmethodID boolMethod2 = env->GetMethodID(clazz, "optLong", "(Ljava/lang/String;)J");
-            jmethodID boolMethod3 = env->GetMethodID(clazz, "optDouble", "(Ljava/lang/String;)D");
-            jmethodID boolMethod4 = env->GetMethodID(clazz, "optString", "(Ljava/lang/String;)Ljava/lang/String;");
-            jmethodID boolMethod5 = env->GetMethodID(clazz, "opt", "(Ljava/lang/String;)Ljava/lang/Object;");
-            bool boolValue = env->CallBooleanMethod(param, boolMethod, "aaa");
-
             json::Object json_param;
             json_param[kTIMRequestInternalOperation] = apiStr;
 
@@ -100,8 +91,8 @@ namespace tim {
                 encrypt_info[kTIMDatabaseEncryptInfoEncryptKey] = "";
                 json_param[kTIMRequestSetDatabaseEncryptInfoParam] = encrypt_info;// object [DatabaseEncryptInfo](), 只写(选填), 设置数据库加密信息, 当 kTIMRequestInternalOperation 为 kTIMInternalOperationSetDatabaseEncryptInfo 时需要设置
             } else if (apiStr == kTIMInternalOperationIsCommercialAbilityEnabled) {
-                json_param[kTIMRequestIsCommercialAbilityEnabledParam] = IntegerJni::IntValue(
-                        param);// uint64, 只写(选填), 商业化能力项枚举的组合值, 当 kTIMRequestInternalOperation 为 kTIMInternalOperationIsCommercialAbilityEnabled 时需要设置
+                json_param[kTIMRequestIsCommercialAbilityEnabledParam] = (unsigned long long)LongJni::LongValue(param);// uint64, 只写(选填), 商业化能力项枚举的组合值, 当
+                // kTIMRequestInternalOperation 为 kTIMInternalOperationIsCommercialAbilityEnabled 时需要设置
             } else if (apiStr == kTIMInternalOperationSetOfflinePushState) {
                 json_param[kTIMRequestSetOfflinePushStateParam] = IntegerJni::IntValue(
                         param);// uint32, 只写(选填), 设置推送状态：0 - 不设置 1 - 开启推送 2 - 关闭推送, 当 kTIMRequestInternalOperation 为 kTIMInternalOperationSetOfflinePushState 时需要设置

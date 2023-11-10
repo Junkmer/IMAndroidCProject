@@ -52,10 +52,11 @@ DEFINE_NATIVE_FUNC(jstring, NativeInvite, jstring invitee, jstring data, jboolea
     }
     std::string pushInfoStr = json::Serialize(pushInfo);
 
-    char *inviteIDStr = nullptr;
-    tim::TIMEngine::GetInstance()->Invite(inviteeStr.c_str(), dataStr.c_str(), online_user_only, pushInfoStr.c_str(), timeout, inviteIDStr,
+    const size_t kInviteIDLength = 128;
+    char invite_id_buffer[kInviteIDLength] = {0};
+    tim::TIMEngine::GetInstance()->Invite(inviteeStr.c_str(), dataStr.c_str(), online_user_only, pushInfoStr.c_str(), timeout, invite_id_buffer,
                                           new tim::TIMCallbackIMpl(callback));
-    return tim::jni::StringJni::charToJstring(env, inviteIDStr);
+    return tim::jni::StringJni::charToJstring(env, invite_id_buffer);
 }
 
 DEFINE_NATIVE_FUNC(jstring, NativeInviteInGroup, jstring group_id, jobject invitee_list, jstring data, jboolean online_user_only, jint timeout,
@@ -73,10 +74,11 @@ DEFINE_NATIVE_FUNC(jstring, NativeInviteInGroup, jstring group_id, jobject invit
     std::string inviteeListStr = json::Serialize(inviteeList);
     std::string dataStr = tim::jni::StringJni::Jstring2Cstring(env, data);
 
-    char *inviteIDStr = nullptr;
+    const size_t kInviteIDLength = 128;
+    char invite_id_buffer[kInviteIDLength] = {0};
     tim::TIMEngine::GetInstance()->InviteInGroup(groupIDStr.c_str(), inviteeListStr.c_str(), dataStr.c_str(), online_user_only, timeout,
-                                                 inviteIDStr, new tim::TIMCallbackIMpl(callback));
-    return tim::jni::StringJni::charToJstring(env, inviteIDStr);
+                                                 invite_id_buffer, new tim::TIMCallbackIMpl(callback));
+    return tim::jni::StringJni::charToJstring(env, invite_id_buffer);
 }
 
 DEFINE_NATIVE_FUNC(void, NativeCancel, jstring invite_id, jstring data, jobject callback) {

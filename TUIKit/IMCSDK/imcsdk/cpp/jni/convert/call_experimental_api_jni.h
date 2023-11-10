@@ -28,7 +28,6 @@ namespace tim {
             static std::string getJString(JNIEnv *env, const jobject &obj, const jstring &key);
         };
 
-        JNIEnv *jniEnv;
     } // namespace tim
 } // namespace jni
 

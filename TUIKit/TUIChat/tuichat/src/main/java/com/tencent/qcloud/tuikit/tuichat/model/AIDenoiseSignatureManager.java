@@ -25,35 +25,35 @@ public class AIDenoiseSignatureManager {
             return;
         }
 
-        V2TIMManager.getInstance().callExperimentalAPI("getAIDenoiseSignature", null, new V2TIMValueCallback<Object>() {
-            @Override
-            public void onSuccess(Object object) {
-                if (object == null) {
-                    return;
-                }
-
-                if (!(object instanceof HashMap)) {
-                    return;
-                }
-
-                HashMap<String, String> hashMap = (HashMap<String, String>) object;
-                Object signatureObject = hashMap.get("signature");
-                Object expiredTimeObject = hashMap.get("expired_time");
-                if (signatureObject != null) {
-                    aiDenoiseSignature = (String) signatureObject;
-                }
-
-                if (expiredTimeObject != null) {
-                    String expiredTimeString = (String) expiredTimeObject;
-                    expiredTime = Integer.parseInt(expiredTimeString);
-                }
-            }
-
-            @Override
-            public void onError(int code, String desc) {
-                TUIChatLog.e(TAG, "getAIDenoiseSignature error, code:" + code + ", desc:" + desc);
-            }
-        });
+//        V2TIMManager.getInstance().callExperimentalAPI("getAIDenoiseSignature", null, new V2TIMValueCallback<Object>() {
+//            @Override
+//            public void onSuccess(Object object) {
+//                if (object == null) {
+//                    return;
+//                }
+//
+//                if (!(object instanceof HashMap)) {
+//                    return;
+//                }
+//
+//                HashMap<String, String> hashMap = (HashMap<String, String>) object;
+//                Object signatureObject = hashMap.get("signature");
+//                Object expiredTimeObject = hashMap.get("expired_time");
+//                if (signatureObject != null) {
+//                    aiDenoiseSignature = (String) signatureObject;
+//                }
+//
+//                if (expiredTimeObject != null) {
+//                    String expiredTimeString = (String) expiredTimeObject;
+//                    expiredTime = Integer.parseInt(expiredTimeString);
+//                }
+//            }
+//
+//            @Override
+//            public void onError(int code, String desc) {
+//                TUIChatLog.e(TAG, "getAIDenoiseSignature error, code:" + code + ", desc:" + desc);
+//            }
+//        });
     }
 
     public String getSignature() {

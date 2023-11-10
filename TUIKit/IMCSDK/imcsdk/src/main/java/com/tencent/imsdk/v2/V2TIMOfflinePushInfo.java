@@ -60,12 +60,11 @@ public class V2TIMOfflinePushInfo implements Serializable {
         return disable;
     }
 
-    public void setDisable(boolean disable) {
+    public void disablePush(boolean disable) {
         this.disable = disable;
     }
 
     public void setIOSSound(String IOSSound) {
-
         this.IOSSound = IOSSound;
     }
 

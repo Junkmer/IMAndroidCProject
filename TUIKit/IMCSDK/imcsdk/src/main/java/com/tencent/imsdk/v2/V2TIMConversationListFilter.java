@@ -36,7 +36,7 @@ public class V2TIMConversationListFilter implements Serializable {
         this.markType = markType;
     }
 
-    public boolean isHasUnreadCount() {
+    public boolean getHasUnreadCount() {
         return hasUnreadCount;
     }
 
@@ -44,7 +44,7 @@ public class V2TIMConversationListFilter implements Serializable {
         this.hasUnreadCount = hasUnreadCount;
     }
 
-    public boolean isHasGroupAtInfo() {
+    public boolean getHasGroupAtInfo() {
         return hasGroupAtInfo;
     }
 

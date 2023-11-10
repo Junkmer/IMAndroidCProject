@@ -472,9 +472,14 @@ DEFINE_NATIVE_FUNC(void, NativeCallExperimentalAPI, jstring api, jobject param, 
                                                            auto _callback = (jobject) user_data;
 
                                                            if (TIMErrCode::ERR_SUCC == code) {
-                                                               json::Object baseObject = json::Deserialize(json_params);
-                                                               if (baseObject.size() > 0) {
-                                                                   tim::jni::IMCallbackJNI::Success(_callback, (jobject const &) baseObject);
+                                                               LOGE("json_params = %s",json_params);
+                                                               json::Object base_json = json::Deserialize(json_params);
+                                                               if (base_json.size() > 0) {
+                                                                   if (base_json.HasKey(kTIMCommercialAbilityResultEnabled)){
+                                                                       bool isEnabled = base_json[kTIMCommercialAbilityResultEnabled];
+                                                                       tim::jni::IMCallbackJNI::Success(_callback, tim::jni::IntegerJni::NewIntegerObj
+                                                                               (isEnabled));
+                                                                   }
                                                                }
                                                            } else {
                                                                tim::jni::IMCallbackJNI::Fail(_callback, code, desc);

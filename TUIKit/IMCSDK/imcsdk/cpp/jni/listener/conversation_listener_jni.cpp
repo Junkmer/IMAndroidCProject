@@ -375,6 +375,7 @@ namespace tim {
                 env->CallVoidMethod(item.second, j_method_id_array_[MethodIDOnUnreadMessageCountChangedByFilter], filter_obj,
                                     (jlong) totalUnreadCount);
             }
+            env->DeleteLocalRef(filter_obj);
         }
 
         void ConversationListenerJni::OnConversationGroupCreated(const std::map<std::string, jobject> &_listener_, const std::string &groupName,
