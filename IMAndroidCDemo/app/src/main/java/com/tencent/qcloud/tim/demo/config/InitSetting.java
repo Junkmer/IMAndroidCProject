@@ -157,31 +157,31 @@ public class InitSetting {
     }
 
     private void initBuildInformation() {
-//        try {
-//            JSONObject buildInfoJson = new JSONObject();
-//            buildInfoJson.put("buildBrand", BrandUtil.getBuildBrand());
-//            buildInfoJson.put("buildManufacturer", BrandUtil.getBuildManufacturer());
-//            buildInfoJson.put("buildModel", BrandUtil.getBuildModel());
-//            buildInfoJson.put("buildVersionRelease", BrandUtil.getBuildVersionRelease());
-//            buildInfoJson.put("buildVersionSDKInt", BrandUtil.getBuildVersionSDKInt());
-//            // 工信部要求 app 在运行期间只能获取一次设备信息。因此 app 获取设备信息设置给 SDK 后，SDK 使用该值并且不再调用系统接口。
-//            // The Ministry of Industry and Information Technology requires the app to obtain device information only once
-//            // during its operation. Therefore, after the app obtains the device information and sets it to the SDK, the SDK
-//            // uses this value and no longer calls the system interface.
-//            V2TIMManager.getInstance().callExperimentalAPI("setBuildInfo", buildInfoJson.toString(), new V2TIMValueCallback<Object>() {
-//                @Override
-//                public void onSuccess(Object o) {
-//                    DemoLog.i(TAG, "setBuildInfo success");
-//                }
-//
-//                @Override
-//                public void onError(int code, String desc) {
-//                    DemoLog.i(TAG, "setBuildInfo code:" + code + " desc:" + ErrorMessageConverter.convertIMError(code, desc));
-//                }
-//            });
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            JSONObject buildInfoJson = new JSONObject();
+            buildInfoJson.put("buildBrand", BrandUtil.getBuildBrand());
+            buildInfoJson.put("buildManufacturer", BrandUtil.getBuildManufacturer());
+            buildInfoJson.put("buildModel", BrandUtil.getBuildModel());
+            buildInfoJson.put("buildVersionRelease", BrandUtil.getBuildVersionRelease());
+            buildInfoJson.put("buildVersionSDKInt", BrandUtil.getBuildVersionSDKInt());
+            // 工信部要求 app 在运行期间只能获取一次设备信息。因此 app 获取设备信息设置给 SDK 后，SDK 使用该值并且不再调用系统接口。
+            // The Ministry of Industry and Information Technology requires the app to obtain device information only once
+            // during its operation. Therefore, after the app obtains the device information and sets it to the SDK, the SDK
+            // uses this value and no longer calls the system interface.
+            V2TIMManager.getInstance().callExperimentalAPI("setBuildInfo", buildInfoJson.toString(), new V2TIMValueCallback<Object>() {
+                @Override
+                public void onSuccess(Object o) {
+                    DemoLog.i(TAG, "setBuildInfo success");
+                }
+
+                @Override
+                public void onError(int code, String desc) {
+                    DemoLog.i(TAG, "setBuildInfo code:" + code + " desc:" + ErrorMessageConverter.convertIMError(code, desc));
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }

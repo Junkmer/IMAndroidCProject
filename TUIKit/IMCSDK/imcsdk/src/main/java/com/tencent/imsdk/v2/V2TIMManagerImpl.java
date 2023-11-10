@@ -1,6 +1,8 @@
 package com.tencent.imsdk.v2;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 
 import com.tencent.imsdk.BaseConstants;
@@ -400,6 +402,15 @@ public class V2TIMManagerImpl extends V2TIMManager {
 
     @Override
     public void callExperimentalAPI(String api, Object param, V2TIMValueCallback<Object> _callback_) {
+        if (TextUtils.isEmpty(api)) {
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "invalid api");
+            return;
+        }
+        String json = (String) param;
+        if (TextUtils.isEmpty(json)) {
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
+            return;
+        }
         nativeCallExperimentalAPI(api, param, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
@@ -413,12 +424,18 @@ public class V2TIMManagerImpl extends V2TIMManager {
         });
     }
 
+    private void callbackOnError(V2TIMValueCallback<Object> callback, int code, String desc) {
+        if (callback != null) {
+            callback.onError(code, desc);
+        }
+    }
+
     private static void getFieldByReflection(final Class<?> clazz, final String fieldName, Object obj, Object value){
         try {
             Field path = clazz.getDeclaredField(fieldName);
             path.setAccessible(true);//启用私有变量可赋值权限
             path.set(obj,value);
-        } catch (NoSuchFieldException|IllegalAccessException e) {
+        } catch (@SuppressLint({"NewApi", "LocalSuppress"}) NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }

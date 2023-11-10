@@ -14,9 +14,21 @@ namespace tim {
 
         class CallExperimentalAPIJni {
         public:
-            static std::string ConvertToCoreObject(JNIEnv *env,const jstring &api,const jobject &param);
+            static std::string ConvertToCoreObject(JNIEnv *env, const jstring &api, const jobject &param);
+
+        private:
+            static jobject getJObject(JNIEnv *env, const jobject &obj, const jstring &key);
+
+            static int getJInt(JNIEnv *env, const jobject &obj, const jstring &key);
+
+            static long getJLong(JNIEnv *env, const jobject &obj, const jstring &key);
+
+            static double getJDouble(JNIEnv *env, const jobject &obj, const jstring &key);
+
+            static std::string getJString(JNIEnv *env, const jobject &obj, const jstring &key);
         };
 
+        JNIEnv *jniEnv;
     } // namespace tim
 } // namespace jni
 
