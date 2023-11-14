@@ -69,6 +69,9 @@ public class V2TIMMessage implements Serializable {
     private boolean isExcludedFromUnreadCount;
     private boolean isExcludedFromLastMessage;
     private boolean isSupportMessageExtension;
+    private boolean riskContent;
+    private V2TIMUserFullInfo revokerInfo;
+    private String 	revokeReason;
     private boolean isForwardMessage;//是否是转发消息，仅发送时需要
     private List<String> targetGroupMemberList;//发送定向群消息时设置
 
@@ -373,6 +376,18 @@ public class V2TIMMessage implements Serializable {
 
     public void setSupportMessageExtension(boolean supportMessageExtension) {
         isSupportMessageExtension = supportMessageExtension;
+    }
+
+    public boolean hasRiskContent() {
+        return riskContent;
+    }
+
+    public V2TIMUserFullInfo getRevokerInfo() {
+        return revokerInfo;
+    }
+
+    public String getRevokeReason() {
+        return revokeReason;
     }
 
     protected void setForwardMessage(boolean forwardMessage) {

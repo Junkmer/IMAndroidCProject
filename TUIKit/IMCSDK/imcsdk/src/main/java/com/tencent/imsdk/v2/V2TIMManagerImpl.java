@@ -419,8 +419,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
             setQuicChannelInfo(param, _callback_);
         } else if (api.equals("setProxyInfo")) {
             setProxyInfo(param, _callback_);
-        } else if (api.equals("setLibraryPath")) {
-            setLibraryPath(param, _callback_);
         } else if (api.equals("initLocalStorage")) {
             initLocalStorage(param, _callback_);
         } else if (api.equals("setTestEnvironment")) {
@@ -448,25 +446,25 @@ public class V2TIMManagerImpl extends V2TIMManager {
         } else if (api.equals("writeLog")) {
             writeLog(param, _callback_);
         } else if (api.equals("getAIDenoiseSignature")) {
-            getAIDenoiseSignature(_callback_);
+//            getAIDenoiseSignature(_callback_);
         } else if (api.equals("sendTRTCCustomData")) {
             sendTRTCCustomData(param, _callback_);
         } else if (api.equals("setMessageExtensionsBySequence")) {
-            setMessageExtensionsBySequence(param, _callback_);
+//            setMessageExtensionsBySequence(param, _callback_);
         } else if (api.equals("getMessageExtensionsBySequence")) {
-            getMessageExtensionsBySequence(param, _callback_);
+//            getMessageExtensionsBySequence(param, _callback_);
         } else if (api.equals("clearLocalHistoryMessage")) {
             clearLocalHistoryMessage(param, _callback_);
         } else if (api.equals("reportTUIComponentUsage")) {
             reportTUIComponentUsage(param, _callback_);
         } else if (api.equals("setConversationGroupOrderData")) {
-            setConversationGroupOrderData(param, _callback_);
+//            setConversationGroupOrderData(param, _callback_);
         } else if (api.equals("getConversationGroupOrderData")) {
-            getConversationGroupOrderData(param, _callback_);
+//            getConversationGroupOrderData(param, _callback_);
         } else if (api.equals("reportOfflinePushEvent")) {
-            reportOfflinePushEvent(param, _callback_);
+//            reportOfflinePushEvent(param, _callback_);
         } else if (api.equals("setOfflinePushInfo")) {
-            setOfflinePushInfo(param, _callback_);
+//            setOfflinePushInfo(param, _callback_);
         } else if (api.equals("setApplicationID")) {
             setApplicationID(param, _callback_);
         } else {
@@ -474,80 +472,80 @@ public class V2TIMManagerImpl extends V2TIMManager {
         }
     }
 
-    private void setConversationGroupOrderData(Object param, final V2TIMValueCallback<Object> _callback_) {
-        if (null == param || !(param instanceof String)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
-            return;
-        }
-        String apiTitle = "internal_operation_is_commercial_ability_enabled";
-        nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
-            @Override
-            public void success(Object data) {
-                super.success(data);
-            }
+//    private void setConversationGroupOrderData(Object param, final V2TIMValueCallback<Object> _callback_) {
+//        if (null == param || !(param instanceof String)) {
+//            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
+//            return;
+//        }
+//        String apiTitle = "internal_operation_is_commercial_ability_enabled";
+//        nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
+//            @Override
+//            public void success(Object data) {
+//                super.success(data);
+//            }
+//
+//            @Override
+//            public void fail(int code, String errorMessage) {
+//                super.fail(code, errorMessage);
+//            }
+//        });
+//    }
 
-            @Override
-            public void fail(int code, String errorMessage) {
-                super.fail(code, errorMessage);
-            }
-        });
-    }
-
-    private void getConversationGroupOrderData(Object param, final V2TIMValueCallback<Object> _callback_) {
-        V2TIMValueCallback<String> v2TIMValueCallback = new V2TIMValueCallback<String>() {
-            @Override
-            public void onSuccess(String orderData) {
-                callback.onSuccess(orderData);
-            }
-
-            @Override
-            public void onError(int code, String desc) {
-                if (callback != null) {
-                    callback.onError(code, desc);
-                }
-            }
-        };
-
-        ConversationManager.getInstance().getConversationGroupOrderData(
-                new IMCallback<String>(v2TIMValueCallback) {
-                    @Override
-                    public void success(String orderData) {
-                        super.success(orderData);
-                    }
-
-                    @Override
-                    public void fail(int code, String errorMessage) {
-                        super.fail(code, errorMessage);
-                    }
-                });
-
-        String apiTitle = "";
-        nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
-            @Override
-            public void success(Object data) {
-                super.success(data);
-            }
-
-            @Override
-            public void fail(int code, String errorMessage) {
-                super.fail(code, errorMessage);
-            }
-        });
-    }
+//    private void getConversationGroupOrderData(Object param, final V2TIMValueCallback<Object> _callback_) {
+//        V2TIMValueCallback<String> v2TIMValueCallback = new V2TIMValueCallback<String>() {
+//            @Override
+//            public void onSuccess(String orderData) {
+//                callback.onSuccess(orderData);
+//            }
+//
+//            @Override
+//            public void onError(int code, String desc) {
+//                if (callback != null) {
+//                    callback.onError(code, desc);
+//                }
+//            }
+//        };
+//
+////        ConversationManager.getInstance().getConversationGroupOrderData(
+////                new IMCallback<String>(v2TIMValueCallback) {
+////                    @Override
+////                    public void success(String orderData) {
+////                        super.success(orderData);
+////                    }
+////
+////                    @Override
+////                    public void fail(int code, String errorMessage) {
+////                        super.fail(code, errorMessage);
+////                    }
+////                });
+//
+//        String apiTitle = "";
+//        nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
+//            @Override
+//            public void success(Object data) {
+//                super.success(data);
+//            }
+//
+//            @Override
+//            public void fail(int code, String errorMessage) {
+//                super.fail(code, errorMessage);
+//            }
+//        });
+//    }
 
     private void reportTUIComponentUsage(Object param, final V2TIMValueCallback<Object> _callback_) {
         if (null == param || !(param instanceof String)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
             return;
         }
 
         String json = (String) param;
         if (TextUtils.isEmpty(json)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
             return;
         }
 
-        String apiTitle = "";
+        String apiTitle = "internal_operation_report_tuicomponent_usage";
         nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
@@ -576,30 +574,30 @@ public class V2TIMManagerImpl extends V2TIMManager {
 
     }
 
-    private void setMessageExtensionsBySequence(Object param, final V2TIMValueCallback<Object> _callback_) {
-        if (null == param || !(param instanceof String)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
-            return;
-        }
-
-        String json = (String) param;
-        if (TextUtils.isEmpty(json)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
-            return;
-        }
-
-        String apiTitle = "";
-        nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
-            @Override
-            public void success(Object data) {
-                super.success(data);
-            }
-
-            @Override
-            public void fail(int code, String errorMessage) {
-                super.fail(code, errorMessage);
-            }
-        });
+//    private void setMessageExtensionsBySequence(Object param, final V2TIMValueCallback<Object> _callback_) {
+//        if (null == param || !(param instanceof String)) {
+//            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
+//            return;
+//        }
+//
+//        String json = (String) param;
+//        if (TextUtils.isEmpty(json)) {
+//            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
+//            return;
+//        }
+//
+//        String apiTitle = "";
+//        nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
+//            @Override
+//            public void success(Object data) {
+//                super.success(data);
+//            }
+//
+//            @Override
+//            public void fail(int code, String errorMessage) {
+//                super.fail(code, errorMessage);
+//            }
+//        });
 
 //        String groupID = "";
 //        long messageSequence = 0;
@@ -664,102 +662,102 @@ public class V2TIMManagerImpl extends V2TIMManager {
 //                        super.fail(code, errorMessage);
 //                    }
 //                });
-    }
+//    }
 
-    private void getMessageExtensionsBySequence(Object param, final V2TIMValueCallback<Object> _callback_) {
-        if (null == param || !(param instanceof String)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
-            return;
-        }
-
-        String json = (String) param;
-        if (TextUtils.isEmpty(json)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
-            return;
-        }
-
-        String apiTitle = "";
-        nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
-            @Override
-            public void success(Object data) {
-                super.success(data);
-            }
-
-            @Override
-            public void fail(int code, String errorMessage) {
-                super.fail(code, errorMessage);
-            }
-        });
-
-//        String groupID = "";
-//        long messageSequence = 0;
-//        List<MessageExtension> extensionList = new ArrayList<>();
-//        try {
-//            JSONObject jsonObject = new JSONObject(json);
-//            groupID = jsonObject.optString("groupID");
-//            messageSequence = jsonObject.optLong("messageSequence");
-//        } catch (JSONException e) {
-//            e.printStackTrace();
+//    private void getMessageExtensionsBySequence(Object param, final V2TIMValueCallback<Object> _callback_) {
+//        if (null == param || !(param instanceof String)) {
+//            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
+//            return;
 //        }
 //
-//        final V2TIMValueCallback<List<MessageExtension>> v2TIMValueCallback =
-//                new V2TIMValueCallback<List<MessageExtension>>() {
-//                    @Override
-//                    public void onSuccess(List<MessageExtension> extensions) {
-//                        if (callback != null) {
-//                            List<V2TIMMessageExtension> v2TIMMessageExtensions = new ArrayList<>();
-//                            for (MessageExtension extension : extensions) {
-//                                V2TIMMessageExtension v2TIMMessageExtension = new V2TIMMessageExtension();
-//                                v2TIMMessageExtension.setMessageExtension(extension);
-//                                v2TIMMessageExtensions.add(v2TIMMessageExtension);
-//                            }
-//                            callback.onSuccess(v2TIMMessageExtensions);
-//                        }
-//                    }
+//        String json = (String) param;
+//        if (TextUtils.isEmpty(json)) {
+//            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
+//            return;
+//        }
 //
-//                    @Override
-//                    public void onError(int code, String desc) {
-//                        if (callback != null) {
-//                            callback.onError(code, desc);
-//                        }
-//                    }
-//                };
+//        String apiTitle = "";
+//        nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
+//            @Override
+//            public void success(Object data) {
+//                super.success(data);
+//            }
 //
-//        Message message = new Message();
-//        message.setMessageStatus(Message.V2TIM_MSG_STATUS_SUCCESS);
-//        message.setSupportMessageExtension(true);
-//        message.addElement(new TextElement());
-//        message.setMessageType(V2TIMConversation.V2TIM_GROUP);
-//        message.setGroupID(groupID);
-//        message.setSeq(messageSequence);
+//            @Override
+//            public void fail(int code, String errorMessage) {
+//                super.fail(code, errorMessage);
+//            }
+//        });
 //
-//        MessageCenter.getInstance().getMessageExtensions(
-//                message, new IMCallback<List<MessageExtension>>(v2TIMValueCallback) {
-//                    @Override
-//                    public void success(List<MessageExtension> data) {
-//                        super.success(data);
-//                    }
-//
-//                    @Override
-//                    public void fail(int code, String errorMessage) {
-//                        super.fail(code, errorMessage);
-//                    }
-//                });
-    }
+////        String groupID = "";
+////        long messageSequence = 0;
+////        List<MessageExtension> extensionList = new ArrayList<>();
+////        try {
+////            JSONObject jsonObject = new JSONObject(json);
+////            groupID = jsonObject.optString("groupID");
+////            messageSequence = jsonObject.optLong("messageSequence");
+////        } catch (JSONException e) {
+////            e.printStackTrace();
+////        }
+////
+////        final V2TIMValueCallback<List<MessageExtension>> v2TIMValueCallback =
+////                new V2TIMValueCallback<List<MessageExtension>>() {
+////                    @Override
+////                    public void onSuccess(List<MessageExtension> extensions) {
+////                        if (callback != null) {
+////                            List<V2TIMMessageExtension> v2TIMMessageExtensions = new ArrayList<>();
+////                            for (MessageExtension extension : extensions) {
+////                                V2TIMMessageExtension v2TIMMessageExtension = new V2TIMMessageExtension();
+////                                v2TIMMessageExtension.setMessageExtension(extension);
+////                                v2TIMMessageExtensions.add(v2TIMMessageExtension);
+////                            }
+////                            callback.onSuccess(v2TIMMessageExtensions);
+////                        }
+////                    }
+////
+////                    @Override
+////                    public void onError(int code, String desc) {
+////                        if (callback != null) {
+////                            callback.onError(code, desc);
+////                        }
+////                    }
+////                };
+////
+////        Message message = new Message();
+////        message.setMessageStatus(Message.V2TIM_MSG_STATUS_SUCCESS);
+////        message.setSupportMessageExtension(true);
+////        message.addElement(new TextElement());
+////        message.setMessageType(V2TIMConversation.V2TIM_GROUP);
+////        message.setGroupID(groupID);
+////        message.setSeq(messageSequence);
+////
+////        MessageCenter.getInstance().getMessageExtensions(
+////                message, new IMCallback<List<MessageExtension>>(v2TIMValueCallback) {
+////                    @Override
+////                    public void success(List<MessageExtension> data) {
+////                        super.success(data);
+////                    }
+////
+////                    @Override
+////                    public void fail(int code, String errorMessage) {
+////                        super.fail(code, errorMessage);
+////                    }
+////                });
+//    }
 
     private void clearLocalHistoryMessage(Object param, final V2TIMValueCallback<Object> _callback_) {
         if (null == param || !(param instanceof String)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
             return;
         }
 
         String json = (String) param;
         if (TextUtils.isEmpty(json)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
             return;
         }
 
-        String apiTitle = "";
+        String apiTitle = "internal_operation_clear_local_history_message";
         nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
@@ -801,11 +799,11 @@ public class V2TIMManagerImpl extends V2TIMManager {
 
     private void sendTRTCCustomData(Object param, V2TIMValueCallback<Object> _callback_) {
         if (null == param || !(param instanceof byte[])) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not byte array");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not byte array");
             return;
         }
 
-        String apiTitle = "";
+        String apiTitle = "internal_operation_send_trtc_custom_data";
         nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
@@ -833,21 +831,9 @@ public class V2TIMManagerImpl extends V2TIMManager {
 //        });
     }
 
-    private void getAIDenoiseSignature(final V2TIMValueCallback<Object> _callback_) {
-        String apiTitle = "";
-        nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
-            @Override
-            public void success(Object data) {
-                super.success(data);
-            }
-
-            @Override
-            public void fail(int code, String errorMessage) {
-                super.fail(code, errorMessage);
-            }
-        });
-
-//        BaseManager.getInstance().getAIDenoiseSignature(new IMCallback(callback) {
+//    private void getAIDenoiseSignature(final V2TIMValueCallback<Object> _callback_) {
+//        String apiTitle = "";
+//        nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
 //            @Override
 //            public void success(Object data) {
 //                super.success(data);
@@ -858,21 +844,33 @@ public class V2TIMManagerImpl extends V2TIMManager {
 //                super.fail(code, errorMessage);
 //            }
 //        });
-    }
+//
+////        BaseManager.getInstance().getAIDenoiseSignature(new IMCallback(callback) {
+////            @Override
+////            public void success(Object data) {
+////                super.success(data);
+////            }
+////
+////            @Override
+////            public void fail(int code, String errorMessage) {
+////                super.fail(code, errorMessage);
+////            }
+////        });
+//    }
 
     private void writeLog(Object param, final V2TIMValueCallback<Object> _callback_) {
         if (null == param || !(param instanceof String)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
             return;
         }
 
         String json = (String) param;
         if (TextUtils.isEmpty(json)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
             return;
         }
 
-        String apiTitle = "";
+        String apiTitle = "internal_operation_write_log";
         nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
@@ -921,45 +919,45 @@ public class V2TIMManagerImpl extends V2TIMManager {
 
     private void getMessageRevoker(Object param, final V2TIMValueCallback<Object> _callback_) {
         if (!(param instanceof List)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not list");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not list");
             return;
         }
         List messageIDList = (List) param;
         for (Object messageID : messageIDList) {
             if (!(messageID instanceof String)) {
-                callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "item is no String type");
+                callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "item is no String type");
                 return;
             }
             break;
         }
 
-        V2TIMValueCallback<List<Message>> v2TIMValueCallback = new V2TIMValueCallback<List<Message>>() {
+        V2TIMValueCallback<List<V2TIMMessage>> v2TIMValueCallback = new V2TIMValueCallback<List<V2TIMMessage>>() {
             @Override
-            public void onSuccess(List<Message> messageList) {
+            public void onSuccess(List<V2TIMMessage> messageList) {
                 if (messageList.size() == 0) {
-                    if (callback != null) {
-                        callback.onError(BaseConstants.ERR_INVALID_PARAMETERS, "local messages do not exist");
+                    if (_callback_ != null) {
+                        _callback_.onError(BaseConstants.ERR_INVALID_PARAMETERS, "local messages do not exist");
                     }
                 } else {
-                    if (callback != null) {
+                    if (_callback_ != null) {
                         HashMap<String, String> revokerMap = new HashMap<>();
-                        for (Message message : messageList) {
+                        for (V2TIMMessage message : messageList) {
                             revokerMap.put(message.getMsgID(), message.getRevokerInfo().getUserID());
                         }
-                        callback.onSuccess(revokerMap);
+                        _callback_.onSuccess(revokerMap);
                     }
                 }
             }
 
             @Override
             public void onError(int code, String desc) {
-                if (callback != null) {
-                    callback.onError(code, desc);
+                if (_callback_ != null) {
+                    _callback_.onError(code, desc);
                 }
             }
         };
 
-        String apiTitle = "";
+        String apiTitle = "internal_operation_get_message_revoker";
         nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
@@ -988,11 +986,11 @@ public class V2TIMManagerImpl extends V2TIMManager {
 
     private void setOfflinePushState(Object param, V2TIMValueCallback<Object> _callback_) {
         if (null == param || !(param instanceof Integer)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not int");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not int");
             return;
         }
 
-        String apiTitle = "";
+        String apiTitle = "internal_operation_set_offline_push_state";
         nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
@@ -1021,8 +1019,8 @@ public class V2TIMManagerImpl extends V2TIMManager {
     }
 
     private void getOfflinePushState(V2TIMValueCallback<Object> valueCallback) {
-        String apiTitle = "";
-        nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
+        String apiTitle = "internal_operation_get_offline_push_state";
+        nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(valueCallback) {
             @Override
             public void success(Object data) {
                 super.success(data);
@@ -1057,13 +1055,13 @@ public class V2TIMManagerImpl extends V2TIMManager {
 
     private void setBuildInfo(Object param, V2TIMValueCallback<Object> _callback_) {
         if (null == param || !(param instanceof String)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
             return;
         }
 
         String json = (String) param;
         if (TextUtils.isEmpty(json)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
             return;
         }
 
@@ -1103,17 +1101,17 @@ public class V2TIMManagerImpl extends V2TIMManager {
 
     private void setDatabaseEncryptInfo(Object param, V2TIMValueCallback<Object> _callback_) {
         if (null == param || !(param instanceof String)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
             return;
         }
 
         String json = (String) param;
         if (TextUtils.isEmpty(json)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
             return;
         }
 
-        String apiTitle = "";
+        String apiTitle = "internal_operation_set_database_encrypt_info";
         nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
@@ -1149,11 +1147,11 @@ public class V2TIMManagerImpl extends V2TIMManager {
 
     private void isCommercialAbilityEnabled(Object param, V2TIMValueCallback<Object> _callback_) {
         if (null == param || !(param instanceof Long)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not int");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not int");
             return;
         }
 
-        String apiTitle = "";
+        String apiTitle = "internal_operation_is_commercial_ability_enabled";
         nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
@@ -1182,17 +1180,17 @@ public class V2TIMManagerImpl extends V2TIMManager {
 
     private void setPacketRetryInfo(Object param, V2TIMValueCallback<Object> _callback_) {
         if (null == param || !(param instanceof String)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
             return;
         }
 
         String json = (String) param;
         if (TextUtils.isEmpty(json)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
             return;
         }
 
-        String apiTitle = "";
+        String apiTitle = "internal_operation_set_max_retry_count";
         nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
@@ -1228,17 +1226,17 @@ public class V2TIMManagerImpl extends V2TIMManager {
 
     private void setCosSaveRegion(Object param, V2TIMValueCallback<Object> _callback_) {
         if (null == param || !(param instanceof String)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
             return;
         }
 
         String json = (String) param;
         if (TextUtils.isEmpty(json)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
             return;
         }
 
-        String apiTitle = "";
+        String apiTitle = "internal_operation_set_cos_save_region_for_conversation";
         nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
@@ -1282,17 +1280,17 @@ public class V2TIMManagerImpl extends V2TIMManager {
 
     private void initLocalStorage(Object param, V2TIMValueCallback<Object> _callback_) {
         if (!(param instanceof String)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
             return;
         }
 
         String userID = (String) param;
         if (TextUtils.isEmpty(userID)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "invalid userID");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "invalid userID");
             return;
         }
 
-        String apiTitle = "";
+        String apiTitle = "internal_operation_init_local_storage";
         nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
@@ -1320,17 +1318,17 @@ public class V2TIMManagerImpl extends V2TIMManager {
 
     private void setCustomServerInfo(Object param, V2TIMValueCallback<Object> _callback_) {
         if (null == param || !(param instanceof String)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
             return;
         }
 
         String json = (String) param;
         if (TextUtils.isEmpty(json)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
             return;
         }
 
-        String apiTitle = "request_set_env_param";
+        String apiTitle = "internal_operation_set_custom_server_info";
         nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
@@ -1391,17 +1389,17 @@ public class V2TIMManagerImpl extends V2TIMManager {
 
     private void setQuicChannelInfo(Object param, V2TIMValueCallback<Object> _callback_) {
         if (null == param || !(param instanceof String)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
             return;
         }
 
         String json = (String) param;
         if (TextUtils.isEmpty(json)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
             return;
         }
 
-        String apiTitle = "";
+        String apiTitle = "internal_operation_set_quic_channel_info";
         nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
@@ -1429,17 +1427,17 @@ public class V2TIMManagerImpl extends V2TIMManager {
 
     private void setProxyInfo(Object param, V2TIMValueCallback<Object> _callback_) {
         if (null == param || !(param instanceof String)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
             return;
         }
 
         String json = (String) param;
         if (TextUtils.isEmpty(json)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
             return;
         }
 
-        String apiTitle = "";
+        String apiTitle = "internal_operation_update_proxy_info";
         nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
@@ -1496,7 +1494,7 @@ public class V2TIMManagerImpl extends V2TIMManager {
 
     private void setUIPlatform(Object param, V2TIMValueCallback<Object> _callback_) {
         if (null == param) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is null");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is null");
             return;
         }
 
@@ -1507,66 +1505,32 @@ public class V2TIMManagerImpl extends V2TIMManager {
         } else if (param instanceof Integer) {
             numberUIPlatform = (Integer) param;
         } else {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is invalid");
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is invalid");
         }
 
-        BaseManager.getInstance().setCustomUIPlatform(stringUIPlatform, numberUIPlatform);
+        String apiTitle = "internal_operation_set_ui_platform";
+        nativeCallExperimentalAPI(apiTitle, numberUIPlatform, new IMCallback<Object>(_callback_) {
+            @Override
+            public void success(Object data) {
+                super.success(data);
+            }
 
-        callbackOnSuccess(callback, null);
+            @Override
+            public void fail(int code, String errorMessage) {
+                super.fail(code, errorMessage);
+            }
+        });
+
+//
+//        BaseManager.getInstance().setCustomUIPlatform(stringUIPlatform, numberUIPlatform);
+//
+//        callbackOnSuccess(callback, null);
     }
 
     private void setTestEnvironment(Object param, V2TIMValueCallback<Object> _callback_) {
         if (param != null && param instanceof Boolean) {
-            BaseManager.getInstance().setTestEnvironment(((Boolean) param).booleanValue());
-        }
-
-        callbackOnSuccess(callback, null);
-    }
-
-    private void setIPv6Prior(Object param, V2TIMValueCallback<Object> _callback_) {
-        if (param != null && param instanceof Boolean) {
-            BaseManager.getInstance().setIPv6Prior(((Boolean) param).booleanValue());
-        }
-
-        callbackOnSuccess(callback, null);
-    }
-
-    private void setApplicationID(Object param, V2TIMValueCallback<Object> _callback_) {
-        if (param != null && param instanceof Integer) {
-            BaseManager.getInstance().setApplicationID(((Integer) param).intValue());
-        }
-
-        callbackOnSuccess(callback, null);
-    }
-
-    private void reportOfflinePushEvent(Object param, final V2TIMValueCallback<Object> _callback_) {
-        if (null == param || !(param instanceof String)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
-            return;
-        }
-
-        String json = (String) param;
-        if (TextUtils.isEmpty(json)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
-            return;
-        }
-
-        List<OfflinePushEventItem> reportEventItemList = new ArrayList<>();
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-            JSONArray reportEventList = jsonObject.optJSONArray("eventList");
-            if (reportEventList != null && reportEventList.length() > 0) {
-                for (int i = 0; i < reportEventList.length(); i++) {
-                    JSONObject eventItemJson = reportEventList.getJSONObject(i);
-                    OfflinePushEventItem eventItem = new OfflinePushEventItem();
-                    eventItem.setEventType(eventItemJson.optInt("type"));
-                    eventItem.setEventTime(eventItemJson.getLong("time"));
-                    eventItem.setPushId(eventItemJson.optString("pushId"));
-                    reportEventItemList.add(eventItem);
-                }
-            }
-
-            OfflinePushManager.getInstance().reportOfflinePushEvent(reportEventItemList, new IMCallback(callback) {
+            String apiTitle = "internal_operation_set_env";
+            nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
                 @Override
                 public void success(Object data) {
                     super.success(data);
@@ -1577,41 +1541,144 @@ public class V2TIMManagerImpl extends V2TIMManager {
                     super.fail(code, errorMessage);
                 }
             });
-        } catch (JSONException e) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "convert param to json failed");
-            e.printStackTrace();
         }
     }
 
-    private void setOfflinePushInfo(Object param, final V2TIMValueCallback<Object> _callback_) {
-        if (null == param || !(param instanceof String)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
-            return;
-        }
+    private void setIPv6Prior(Object param, V2TIMValueCallback<Object> _callback_) {
+        if (param != null && param instanceof Boolean) {
+            String apiTitle = "internal_operation_set_ipv6_prior";
+            nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
+                @Override
+                public void success(Object data) {
+                    super.success(data);
+                }
 
-        String json = (String) param;
-        if (TextUtils.isEmpty(json)) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
-            return;
-        }
-
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-            int status = jsonObject.optInt("notification_bar_state");
-            String version = jsonObject.optString("tim_push_plugin_version");
-
-            // 开关状态：1，开启； 2，关闭； 0，未采集
-            if (status < 0 || status > 2) {
-                status = 0;
-            }
-
-            OfflinePushManager.getInstance().setOfflinePushInfo(version, status);
-            callbackOnSuccess(callback, null);
-        } catch (JSONException e) {
-            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "convert param to json failed");
-            e.printStackTrace();
+                @Override
+                public void fail(int code, String errorMessage) {
+                    super.fail(code, errorMessage);
+                }
+            });
         }
     }
+
+    private void setApplicationID(Object param, V2TIMValueCallback<Object> _callback_) {
+        if (param != null && param instanceof Integer) {
+//            BaseManager.getInstance().setApplicationID(((Integer) param).intValue());
+            String apiTitle = "internal_operation_set_application_id";
+            nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
+                @Override
+                public void success(Object data) {
+                    super.success(data);
+                }
+
+                @Override
+                public void fail(int code, String errorMessage) {
+                    super.fail(code, errorMessage);
+                }
+            });
+        }
+
+    }
+
+//    private void reportOfflinePushEvent(Object param, final V2TIMValueCallback<Object> _callback_) {
+//        if (null == param || !(param instanceof String)) {
+//            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
+//            return;
+//        }
+//
+//        String json = (String) param;
+//        if (TextUtils.isEmpty(json)) {
+//            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
+//            return;
+//        }
+//
+//        String apiTitle = "internal_operation_get_offline_push_state";
+//        nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
+//            @Override
+//            public void success(Object data) {
+//                super.success(data);
+//            }
+//
+//            @Override
+//            public void fail(int code, String errorMessage) {
+//                super.fail(code, errorMessage);
+//            }
+//        });
+//
+////        List<OfflinePushEventItem> reportEventItemList = new ArrayList<>();
+////        try {
+////            JSONObject jsonObject = new JSONObject(json);
+////            JSONArray reportEventList = jsonObject.optJSONArray("eventList");
+////            if (reportEventList != null && reportEventList.length() > 0) {
+////                for (int i = 0; i < reportEventList.length(); i++) {
+////                    JSONObject eventItemJson = reportEventList.getJSONObject(i);
+////                    OfflinePushEventItem eventItem = new OfflinePushEventItem();
+////                    eventItem.setEventType(eventItemJson.optInt("type"));
+////                    eventItem.setEventTime(eventItemJson.getLong("time"));
+////                    eventItem.setPushId(eventItemJson.optString("pushId"));
+////                    reportEventItemList.add(eventItem);
+////                }
+////            }
+////
+////            OfflinePushManager.getInstance().reportOfflinePushEvent(reportEventItemList, new IMCallback(callback) {
+////                @Override
+////                public void success(Object data) {
+////                    super.success(data);
+////                }
+////
+////                @Override
+////                public void fail(int code, String errorMessage) {
+////                    super.fail(code, errorMessage);
+////                }
+////            });
+////        } catch (JSONException e) {
+////            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "convert param to json failed");
+////            e.printStackTrace();
+////        }
+//    }
+
+//    private void setOfflinePushInfo(Object param, final V2TIMValueCallback<Object> _callback_) {
+//        if (null == param || !(param instanceof String)) {
+//            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
+//            return;
+//        }
+//
+//        String apiTitle = "internal_operation_set_offline_push_state";
+//        nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
+//            @Override
+//            public void success(Object data) {
+//                super.success(data);
+//            }
+//
+//            @Override
+//            public void fail(int code, String errorMessage) {
+//                super.fail(code, errorMessage);
+//            }
+//        });
+//
+////        String json = (String) param;
+////        if (TextUtils.isEmpty(json)) {
+////            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
+////            return;
+////        }
+////
+////        try {
+////            JSONObject jsonObject = new JSONObject(json);
+////            int status = jsonObject.optInt("notification_bar_state");
+////            String version = jsonObject.optString("tim_push_plugin_version");
+////
+////            // 开关状态：1，开启； 2，关闭； 0，未采集
+////            if (status < 0 || status > 2) {
+////                status = 0;
+////            }
+////
+////            OfflinePushManager.getInstance().setOfflinePushInfo(version, status);
+////            callbackOnSuccess(callback, null);
+////        } catch (JSONException e) {
+////            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "convert param to json failed");
+////            e.printStackTrace();
+////        }
+//    }
 
     private void callbackOnError(V2TIMValueCallback<Object> callback, int code, String desc) {
         if (callback != null) {
