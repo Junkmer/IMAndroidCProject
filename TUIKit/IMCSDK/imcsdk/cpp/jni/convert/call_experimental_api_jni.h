@@ -17,15 +17,64 @@ namespace tim {
             static std::string ConvertToCoreObject(JNIEnv *env, const jstring &api, const jobject &param);
 
         private:
-            static jobject getJObject(JNIEnv *env, const jobject &obj, const jstring &key);
+            static void setCustomServerInfo(const jobject &param, json::Object &json_param);
 
-            static int getJInt(JNIEnv *env, const jobject &obj, const jstring &key);
+            static void setQuicChannelInfo(const jobject &param, json::Object &json_param);
 
-            static long getJLong(JNIEnv *env, const jobject &obj, const jstring &key);
+            static void setProxyInfo(const jobject &param, json::Object &json_param);
 
-            static double getJDouble(JNIEnv *env, const jobject &obj, const jstring &key);
+            static void initLocalStorage(const jobject &param, json::Object &json_param);
 
-            static std::string getJString(JNIEnv *env, const jobject &obj, const jstring &key);
+            static void setTestEnvironment(const jobject &param, json::Object &json_param);
+
+            static void setIPv6Prior(const jobject &param, json::Object &json_param);
+
+            static void setCosSaveRegion(const jobject &param, json::Object &json_param);
+
+            static void setUIPlatform(const jobject &param, json::Object &json_param);
+
+            static void setBuildInfo(const jobject &param, json::Object &json_param);
+
+            static void setDatabaseEncryptInfo(const jobject &param, json::Object &json_param);
+
+            static void isCommercialAbilityEnabled(const jobject &param, json::Object &json_param);
+
+            static void setPacketRetryInfo(const jobject &param, json::Object &json_param);
+
+            static void setOfflinePushState(const jobject &param, json::Object &json_param);
+
+            static void getOfflinePushState(const jobject &param, json::Object &json_param);
+
+            static void getMessageRevoker(const jobject &param, json::Object &json_param);
+
+            static void writeLog(const jobject &param, json::Object &json_param);
+
+            static void sendTRTCCustomData(const jobject &param, json::Object &json_param);
+
+            static void clearLocalHistoryMessage(const jobject &param, json::Object &json_param);
+
+            static void reportTUIComponentUsage(const jobject &param, json::Object &json_param);
+
+            static void setApplicationID(const jobject &param, json::Object &json_param);
+
+        private:
+            //java JSONObject
+            static jobject optJObject(const jobject &obj, const jstring &key);
+
+            static int optJsonInt(const jobject &obj, const jstring &key);
+
+            static long optJsonLong(const jobject &obj, const jstring &key);
+
+            static double optJsonDouble(const jobject &obj, const jstring &key);
+
+            static std::string optJsonString(const jobject &obj, const jstring &key);
+
+            static jobject optJson2JArr(const jobject &arr, const jstring &key);
+
+            //java JSONArray
+            static int jArr2Length(const jobject &arr);
+
+            static jobject optJArr2JsonObj(const jobject &arr, const int index);
         };
 
     } // namespace tim
