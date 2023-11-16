@@ -481,50 +481,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
                 super.fail(code, errorMessage);
             }
         });
-
-//        CustomServerInfo customServerInfo = new CustomServerInfo();
-//        try {
-//            // 仅长连接支持 Quic 通道
-//            JSONObject jsonObject = new JSONObject(json);
-//            JSONArray longconnectionAddressList = jsonObject.optJSONArray("longconnectionAddressList");
-//            if (longconnectionAddressList != null && longconnectionAddressList.length() > 0) {
-//                ArrayList list = new ArrayList();
-//                for (int i = 0; i < longconnectionAddressList.length(); i++) {
-//                    JSONObject address = longconnectionAddressList.getJSONObject(i);
-//                    CustomServerInfo.ServerAddress serverAddress = new CustomServerInfo.ServerAddress();
-//                    serverAddress.ip = address.optString("ip");
-//                    serverAddress.port = address.optInt("port");
-//                    serverAddress.isIPv6 = (address.has("isIPv6") ? address.optBoolean("isIPv6") : false);
-//                    serverAddress.isQuic = (address.has("isQuic") ? address.optBoolean("isQuic") : false);
-//
-//                    list.add(serverAddress);
-//                }
-//                customServerInfo.longconnectionAddressList = list;
-//            }
-//
-//            JSONArray shortconnectionAddressList = jsonObject.optJSONArray("shortconnectionAddressList");
-//            if (shortconnectionAddressList != null && shortconnectionAddressList.length() > 0) {
-//                ArrayList list = new ArrayList();
-//                for (int i = 0; i < shortconnectionAddressList.length(); i++) {
-//                    JSONObject address = shortconnectionAddressList.getJSONObject(i);
-//                    CustomServerInfo.ServerAddress serverAddress = new CustomServerInfo.ServerAddress();
-//                    serverAddress.ip = address.optString("ip");
-//                    serverAddress.port = address.optInt("port");
-//                    serverAddress.isIPv6 = (address.has("isIPv6") ? address.optBoolean("isIPv6") : false);
-//
-//                    list.add(serverAddress);
-//                }
-//                customServerInfo.shortconnectionAddressList = list;
-//            }
-//
-//            customServerInfo.serverPublicKey = jsonObject.optString("serverPublicKey");
-//
-//            BaseManager.getInstance().setCustomServerInfo(customServerInfo);
-//        } catch (JSONException e) {
-//            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "convert param to json failed");
-//            e.printStackTrace();
-//        }
-
     }
 
     private void setQuicChannelInfo(String apiTitle , Object param, V2TIMValueCallback<Object> _callback_) {
@@ -550,18 +506,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
                 super.fail(code, errorMessage);
             }
         });
-
-//        try {
-//            JSONObject jsonObject = new JSONObject(json);
-//            boolean forceUseQuicChannel = jsonObject.optBoolean("forceUseQuicChannel");
-//
-//            BaseManager.getInstance().setForceUseQuicChannel(forceUseQuicChannel);
-//
-//            callbackOnSuccess(callback, null);
-//        } catch (JSONException e) {
-//            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "convert param to json failed");
-//            e.printStackTrace();
-//        }
     }
 
     private void setProxyInfo(String apiTitle , Object param, V2TIMValueCallback<Object> _callback_) {
@@ -587,47 +531,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
                 super.fail(code, errorMessage);
             }
         });
-
-//        try {
-//            JSONObject jsonObject = new JSONObject(json);
-//            if (!jsonObject.has("proxyType")) {
-//                callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "proxyType must be set");
-//                return;
-//            }
-//
-//            // http 和 socks5 代理，需要设置 host 和 port，user_name 和 password 可选
-//            // pac 代理，不需要设置 host 和 port，user_name 和 password 可选
-//            // 因此，host 和 port，要么都设置，要么都不设置
-//            if ((jsonObject.has("proxyHost") && !jsonObject.has("proxyPort"))
-//                    || (!jsonObject.has("proxyHost") && jsonObject.has("proxyPort"))) {
-//                callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS,
-//                        "proxyHost and proxyPort must be set together if need");
-//                return;
-//            }
-//
-//            SDKConfig.ProxyInfo proxyInfo = new SDKConfig.ProxyInfo();
-//            proxyInfo.proxyType = jsonObject.optInt("proxyType");
-//
-//            if (jsonObject.has("proxyHost") && jsonObject.has("proxyPort")) {
-//                proxyInfo.proxyHost = jsonObject.optString("proxyHost");
-//                proxyInfo.proxyPort = jsonObject.optInt("proxyPort");
-//            }
-//
-//            if (jsonObject.has("proxyUsername")) {
-//                proxyInfo.proxyUsername = jsonObject.optString("proxyUsername");
-//            }
-//
-//            if (jsonObject.has("proxyPassword")) {
-//                proxyInfo.proxyPassword = jsonObject.optString("proxyPassword");
-//            }
-//
-//            BaseManager.getInstance().setProxyInfo(proxyInfo);
-//
-//            callbackOnSuccess(callback, null);
-//        } catch (JSONException e) {
-//            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "convert param to json failed");
-//            e.printStackTrace();
-//        }
     }
 
     private void initLocalStorage(String apiTitle , Object param, V2TIMValueCallback<Object> _callback_) {
@@ -653,18 +556,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
                 super.fail(code, errorMessage);
             }
         });
-
-//        BaseManager.getInstance().initLocalStorage(userID, new IMCallback(callback) {
-//            @Override
-//            public void success(Object data) {
-//                super.success(data);
-//            }
-//
-//            @Override
-//            public void fail(int code, String errorMessage) {
-//                super.fail(code, errorMessage);
-//            }
-//        });
     }
 
     private void setTestEnvironment(String apiTitle , Object param, V2TIMValueCallback<Object> _callback_) {
@@ -722,34 +613,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
                 super.fail(code, errorMessage);
             }
         });
-
-//        try {
-//            JSONObject jsonObject = new JSONObject(json);
-//            String conversationID = jsonObject.optString("conversationID");
-//            String cosSaveRegion = jsonObject.optString("cosSaveRegion");
-//            if (TextUtils.isEmpty(conversationID) || TextUtils.isEmpty(cosSaveRegion)) {
-//                callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "invalid param");
-//                return;
-//            }
-//
-//            ConversationKey conversationKey =
-//                    V2TIMConversationManagerImpl.getInstance().getConversationKey(conversationID);
-//            ConversationManager.getInstance().setCosSaveRegionForConversation(
-//                    conversationKey, cosSaveRegion, new IMCallback(callback) {
-//                        @Override
-//                        public void success(Object data) {
-//                            super.success(data);
-//                        }
-//
-//                        @Override
-//                        public void fail(int code, String errorMessage) {
-//                            super.fail(code, errorMessage);
-//                        }
-//                    });
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
     }
 
     private void setUIPlatform(String apiTitle , Object param, V2TIMValueCallback<Object> _callback_) {
@@ -758,11 +621,8 @@ public class V2TIMManagerImpl extends V2TIMManager {
             return;
         }
 
-        String stringUIPlatform = "";
         int numberUIPlatform = 0;
-        if (param instanceof String) {
-            stringUIPlatform = (String) param;
-        } else if (param instanceof Integer) {
+        if (param instanceof Integer) {
             numberUIPlatform = (Integer) param;
         } else {
             callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is invalid");
@@ -779,11 +639,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
                 super.fail(code, errorMessage);
             }
         });
-
-//
-//        BaseManager.getInstance().setCustomUIPlatform(stringUIPlatform, numberUIPlatform);
-//
-//        callbackOnSuccess(callback, null);
     }
 
     private void setBuildInfo(String apiTitle , Object param, V2TIMValueCallback<Object> _callback_) {
@@ -808,26 +663,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
                 super.fail(code, errorMessage);
             }
         });
-
-//        try {
-//            JSONObject jsonObject = new JSONObject(json);
-//            String buildBrand = jsonObject.optString("buildBrand");
-//            String buildManufacturer = jsonObject.optString("buildManufacturer");
-//            String buildModel = jsonObject.optString("buildModel");
-//            String buildVersionRelease = jsonObject.optString("buildVersionRelease");
-//            int buildVersionSDKInt = jsonObject.optInt("buildVersionSDKInt");
-//
-//            SystemUtil.setBuildBrand(buildBrand);
-//            SystemUtil.setBuildManufacturer(buildManufacturer);
-//            SystemUtil.setBuildModel(buildModel);
-//            SystemUtil.setBuildVersionRelease(buildVersionRelease);
-//            SystemUtil.setBuildVersionSDKInt(buildVersionSDKInt);
-//
-//            callbackOnSuccess(callback, null);
-//        } catch (JSONException e) {
-//            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "convert param to json failed");
-//            e.printStackTrace();
-//        }
     }
 
     private void setDatabaseEncryptInfo(String apiTitle , Object param, V2TIMValueCallback<Object> _callback_) {
@@ -853,26 +688,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
                 super.fail(code, errorMessage);
             }
         });
-
-//        try {
-//            JSONObject jsonObject = new JSONObject(json);
-//            if (!jsonObject.has("encryptType") || !jsonObject.has("encryptKey")) {
-//                callbackOnError(
-//                        callback, BaseConstants.ERR_INVALID_PARAMETERS, "encryptType and encryptKey must be set");
-//                return;
-//            }
-//
-//            SDKConfig.DatabaseEncryptInfo databaseEncryptInfo = new SDKConfig.DatabaseEncryptInfo();
-//            databaseEncryptInfo.encryptType = jsonObject.optInt("encryptType");
-//            databaseEncryptInfo.encryptKey = jsonObject.optString("encryptKey");
-//
-//            BaseManager.getInstance().setDatabaseEncryptInfo(databaseEncryptInfo);
-//
-//            callbackOnSuccess(callback, null);
-//        } catch (JSONException e) {
-//            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "convert param to json failed");
-//            e.printStackTrace();
-//        }
     }
 
     private void isCommercialAbilityEnabled(String apiTitle , Object param, V2TIMValueCallback<Object> _callback_) {
@@ -893,18 +708,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
             }
         });
 
-//        Long longParam = (Long) param;
-//        BaseManager.getInstance().isCommercialAbilityEnabled(longParam.longValue(), new IMCallback<Object>(callback) {
-//            @Override
-//            public void success(Object data) {
-//                super.success(data);
-//            }
-//
-//            @Override
-//            public void fail(int code, String errorMessage) {
-//                super.fail(code, errorMessage);
-//            }
-//        });
     }
 
     private void setPacketRetryInfo(String apiTitle , Object param, V2TIMValueCallback<Object> _callback_) {
@@ -930,26 +733,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
                 super.fail(code, errorMessage);
             }
         });
-
-//        try {
-//            JSONObject jsonObject = new JSONObject(json);
-//            SDKConfig.PacketRetryInfo info = new SDKConfig.PacketRetryInfo();
-//
-//            if (jsonObject.has("maxRetryCount")) {
-//                info.maxRetryCount = jsonObject.optInt("maxRetryCount");
-//            }
-//
-//            if (jsonObject.has("packetRequestTimeout")) {
-//                info.packetRequestTimeout = jsonObject.optInt("packetRequestTimeout");
-//            }
-//
-//            BaseManager.getInstance().setPacketRetryInfo(info);
-//
-//            callbackOnSuccess(callback, null);
-//        } catch (JSONException e) {
-//            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "convert param to json failed");
-//            e.printStackTrace();
-//        }
     }
 
     private void setOfflinePushState(String apiTitle , Object param, V2TIMValueCallback<Object> _callback_) {
@@ -970,19 +753,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
             }
         });
 
-//        OfflinePushConfig pushConfig = new OfflinePushConfig();
-//        pushConfig.setOpenOfflinePush((int) param);
-//        OfflinePushManager.getInstance().setOfflinePushConfig(pushConfig, new IMCallback(callback) {
-//            @Override
-//            public void success(Object data) {
-//                super.success(data);
-//            }
-//
-//            @Override
-//            public void fail(int code, String errorMessage) {
-//                super.fail(code, errorMessage);
-//            }
-//        });
     }
 
     private void getOfflinePushState(String apiTitle,V2TIMValueCallback<Object> valueCallback) {
@@ -997,26 +767,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
                 super.fail(code, errorMessage);
             }
         });
-//        OfflinePushManager.getInstance().getOfflinePushConfig(new IMCallback(valueCallback) {
-//            @Override
-//            public void success(Object data) {
-//                OfflinePushConfig pushConfig = (OfflinePushConfig) data;
-//                final int openPush = pushConfig.getOpenOfflinePush();
-//                IMContext.getInstance().runOnMainThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (valueCallback != null) {
-//                            valueCallback.onSuccess(openPush);
-//                        }
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void fail(int code, String errorMessage) {
-//                super.fail(code, errorMessage);
-//            }
-//        });
     }
 
     private void getMessageRevoker(String apiTitle , Object param, final V2TIMValueCallback<Object> _callback_) {
@@ -1033,33 +783,7 @@ public class V2TIMManagerImpl extends V2TIMManager {
             break;
         }
 
-        V2TIMValueCallback<List<V2TIMMessage>> v2TIMValueCallback = new V2TIMValueCallback<List<V2TIMMessage>>() {
-            @Override
-            public void onSuccess(List<V2TIMMessage> messageList) {
-                if (messageList.size() == 0) {
-                    if (_callback_ != null) {
-                        _callback_.onError(BaseConstants.ERR_INVALID_PARAMETERS, "local messages do not exist");
-                    }
-                } else {
-                    if (_callback_ != null) {
-                        HashMap<String, String> revokerMap = new HashMap<>();
-                        for (V2TIMMessage message : messageList) {
-                            revokerMap.put(message.getMsgID(), message.getRevokerInfo().getUserID());
-                        }
-                        _callback_.onSuccess(revokerMap);
-                    }
-                }
-            }
-
-            @Override
-            public void onError(int code, String desc) {
-                if (_callback_ != null) {
-                    _callback_.onError(code, desc);
-                }
-            }
-        };
-
-        nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
+        nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
                 super.success(data);
@@ -1070,19 +794,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
                 super.fail(code, errorMessage);
             }
         });
-
-//        MessageCenter.getInstance().findMessageByMessageId(
-//                messageIDList, new IMCallback<List<Message>>(v2TIMValueCallback) {
-//                    @Override
-//                    public void success(List<Message> data) {
-//                        super.success(data);
-//                    }
-//
-//                    @Override
-//                    public void fail(int code, String errorMessage) {
-//                        super.fail(code, errorMessage);
-//                    }
-//                });
     }
 
     private void writeLog(String apiTitle , Object param, final V2TIMValueCallback<Object> _callback_) {
@@ -1097,7 +808,7 @@ public class V2TIMManagerImpl extends V2TIMManager {
             return;
         }
 
-        nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
+        nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
                 super.success(data);
@@ -1108,39 +819,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
                 super.fail(code, errorMessage);
             }
         });
-
-//        try {
-//            JSONObject jsonObject = new JSONObject(json);
-//            int logLevel = jsonObject.optInt("logLevel");
-//            String logContent = jsonObject.optString("logContent");
-//            String fileName = jsonObject.optString("fileName");
-//
-//            switch (logLevel) {
-//                case IMLog.LOG_LEVEL_VERBOSE:
-//                    IMLog.v(fileName, logContent);
-//                    break;
-//                case IMLog.LOG_LEVEL_DEBUG:
-//                    IMLog.d(fileName, logContent);
-//                    break;
-//                case IMLog.LOG_LEVEL_INFO:
-//                    IMLog.i(fileName, logContent);
-//                    break;
-//                case IMLog.LOG_LEVEL_WARN:
-//                    IMLog.w(fileName, logContent);
-//                    break;
-//                case IMLog.LOG_LEVEL_ERROR:
-//                    IMLog.e(fileName, logContent);
-//                    break;
-//                default:
-//                    callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "invalid logLevel");
-//                    return;
-//            }
-//
-//            callbackOnSuccess(callback, null);
-//        } catch (JSONException e) {
-//            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "convert param to json failed");
-//            e.printStackTrace();
-//        }
     }
 
     private void sendTRTCCustomData(String apiTitle , Object param, V2TIMValueCallback<Object> _callback_) {
@@ -1160,20 +838,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
                 super.fail(code, errorMessage);
             }
         });
-
-//        byte[] data = (byte[]) param;
-//
-//        BaseManager.getInstance().sendTRTCCustomData(data, new IMCallback(callback) {
-//            @Override
-//            public void success(Object data) {
-//                super.success(data);
-//            }
-//
-//            @Override
-//            public void fail(int code, String errorMessage) {
-//                super.fail(code, errorMessage);
-//            }
-//        });
     }
 
     private void clearLocalHistoryMessage(String apiTitle , Object param, final V2TIMValueCallback<Object> _callback_) {
@@ -1199,32 +863,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
                 super.fail(code, errorMessage);
             }
         });
-
-//        try {
-//            JSONObject jsonObject = new JSONObject(json);
-//            String conversationID = jsonObject.optString("conversationID");
-//            ConversationKey conversationKey =
-//                    V2TIMConversationManagerImpl.getInstance().getConversationKey(conversationID);
-//            long beginTimestamp = jsonObject.optLong("beginTimestamp");
-//            long endTimestamp = jsonObject.optLong("endTimestamp");
-//
-//            MessageCenter.getInstance().clearLocalHistoryMessage(
-//                    conversationKey, beginTimestamp, endTimestamp, new IMCallback(callback) {
-//                        @Override
-//                        public void success(Object data) {
-//                            super.success(data);
-//                        }
-//
-//                        @Override
-//                        public void fail(int code, String errorMessage) {
-//                            super.fail(code, errorMessage);
-//                        }
-//                    });
-//            callbackOnSuccess(callback, null);
-//        } catch (JSONException e) {
-//            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "convert param to json failed");
-//            e.printStackTrace();
-//        }
     }
 
     private void reportTUIComponentUsage(String apiTitle , Object param, final V2TIMValueCallback<Object> _callback_) {
@@ -1250,27 +888,11 @@ public class V2TIMManagerImpl extends V2TIMManager {
                 super.fail(code, errorMessage);
             }
         });
-
-//        try {
-//            JSONObject jsonObject = new JSONObject(json);
-//            long uiComponentType = jsonObject.optLong("UIComponentType");
-//            long uiStyleType = jsonObject.optLong("UIStyleType");
-//
-//            BaseManager.getInstance().reportTUIComponentUsage(uiComponentType, uiStyleType);
-//
-//            callbackOnSuccess(callback, null);
-//        } catch (JSONException e) {
-//            callbackOnError(callback, BaseConstants.ERR_INVALID_PARAMETERS, "convert param to json failed");
-//            e.printStackTrace();
-//        }
-
-
     }
 
     private void setApplicationID(String apiTitle , Object param, V2TIMValueCallback<Object> _callback_) {
         if (param != null && param instanceof Integer) {
-//            BaseManager.getInstance().setApplicationID(((Integer) param).intValue());
-            nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
+            nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
                 @Override
                 public void success(Object data) {
                     super.success(data);
@@ -1288,12 +910,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
     private void callbackOnError(V2TIMValueCallback<Object> callback, int code, String desc) {
         if (callback != null) {
             callback.onError(code, desc);
-        }
-    }
-
-    private void callbackOnSuccess(V2TIMValueCallback<Object> callback, Object result) {
-        if (callback != null) {
-            callback.onSuccess(result);
         }
     }
 
