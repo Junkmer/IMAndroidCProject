@@ -43,7 +43,7 @@ namespace tim {
 
             static void setOfflinePushState(const jobject &param, json::Object &json_param);
 
-            static void getOfflinePushState(const jobject &param, json::Object &json_param);
+            static void getOfflinePushState(json::Object &json_param);
 
             static void getMessageRevoker(const jobject &param, json::Object &json_param);
 
@@ -57,24 +57,6 @@ namespace tim {
 
             static void setApplicationID(const jobject &param, json::Object &json_param);
 
-        private:
-            //java JSONObject
-            static jobject optJObject(const jobject &obj, const jstring &key);
-
-            static int optJsonInt(const jobject &obj, const jstring &key);
-
-            static long optJsonLong(const jobject &obj, const jstring &key);
-
-            static double optJsonDouble(const jobject &obj, const jstring &key);
-
-            static std::string optJsonString(const jobject &obj, const jstring &key);
-
-            static jobject optJson2JArr(const jobject &arr, const jstring &key);
-
-            //java JSONArray
-            static int jArr2Length(const jobject &arr);
-
-            static jobject optJArr2JsonObj(const jobject &arr, const int index);
         };
 
     } // namespace tim
