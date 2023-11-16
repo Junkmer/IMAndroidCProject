@@ -430,7 +430,7 @@ public class V2TIMManagerImpl extends V2TIMManager {
         } else if (api.equals("setUIPlatform")) {
             setUIPlatform(api, param, _callback_);
         } else if (api.equals("setBuildInfo")) {
-            setBuildInfo(api, param, _callback_);
+            setBuildInfo(param, _callback_);
         } else if (api.equals("setDatabaseEncryptInfo")) {
             setDatabaseEncryptInfo(api, param, _callback_);
         } else if (api.equals("isCommercialAbilityEnabled")) {
@@ -641,7 +641,7 @@ public class V2TIMManagerImpl extends V2TIMManager {
         });
     }
 
-    private void setBuildInfo(String apiTitle , Object param, V2TIMValueCallback<Object> _callback_) {
+    private void setBuildInfo(Object param, V2TIMValueCallback<Object> _callback_) {
         if (null == param || !(param instanceof String)) {
             callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is not string");
             return;
@@ -652,17 +652,26 @@ public class V2TIMManagerImpl extends V2TIMManager {
             callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "param is empty");
             return;
         }
-        nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
-            @Override
-            public void success(Object data) {
-                super.success(data);
-            }
 
-            @Override
-            public void fail(int code, String errorMessage) {
-                super.fail(code, errorMessage);
-            }
-        });
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+            String buildBrand = jsonObject.optString("buildBrand");
+            String buildManufacturer = jsonObject.optString("buildManufacturer");
+            String buildModel = jsonObject.optString("buildModel");
+            String buildVersionRelease = jsonObject.optString("buildVersionRelease");
+            int buildVersionSDKInt = jsonObject.optInt("buildVersionSDKInt");
+
+            SystemUtil.setBuildBrand(buildBrand);
+            SystemUtil.setBuildManufacturer(buildManufacturer);
+            SystemUtil.setBuildModel(buildModel);
+            SystemUtil.setBuildVersionRelease(buildVersionRelease);
+            SystemUtil.setBuildVersionSDKInt(buildVersionSDKInt);
+
+            callbackOnSuccess(_callback_, null);
+        } catch (JSONException e) {
+            callbackOnError(_callback_, BaseConstants.ERR_INVALID_PARAMETERS, "convert param to json failed");
+            e.printStackTrace();
+        }
     }
 
     private void setDatabaseEncryptInfo(String apiTitle , Object param, V2TIMValueCallback<Object> _callback_) {
@@ -905,6 +914,12 @@ public class V2TIMManagerImpl extends V2TIMManager {
             });
         }
 
+    }
+
+    private void callbackOnSuccess(V2TIMValueCallback<Object> callback, Object result) {
+        if (callback != null) {
+            callback.onSuccess(result);
+        }
     }
 
     private void callbackOnError(V2TIMValueCallback<Object> callback, int code, String desc) {

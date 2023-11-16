@@ -35,8 +35,6 @@ namespace tim {
                 setCosSaveRegion(param, json_param);
             } else if (apiStr == "setUIPlatform") {
                 setUIPlatform(param, json_param);
-//            } else if(apiStr == kTIMInternalOperationSetBuildInfo){
-//            暂时没有设置设备信息隐藏接口
             } else if (apiStr == "setDatabaseEncryptInfo") {
                 setDatabaseEncryptInfo(param, json_param);
             } else if (apiStr == "isCommercialAbilityEnabled") {
@@ -217,10 +215,6 @@ namespace tim {
              */
             // uint32, 只写(选填), 设置 UI 平台，当 kTIMRequestInternalOperation 为 kTIMInternalOperationSetUIPlatform 时需要设置
             json_param[kTIMRequestSetUIPlatformParam] = IntegerJni::IntValue(param);
-        }
-
-        void CallExperimentalAPIJni::setBuildInfo(jobject const &param, json::Object &json_param) {
-//            json_param[kTIMRequestInternalOperation] = apiStr;
         }
 
         void CallExperimentalAPIJni::setDatabaseEncryptInfo(jobject const &param, json::Object &json_param) {

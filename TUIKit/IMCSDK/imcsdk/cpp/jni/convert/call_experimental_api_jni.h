@@ -33,8 +33,6 @@ namespace tim {
 
             static void setUIPlatform(const jobject &param, json::Object &json_param);
 
-            static void setBuildInfo(const jobject &param, json::Object &json_param);
-
             static void setDatabaseEncryptInfo(const jobject &param, json::Object &json_param);
 
             static void isCommercialAbilityEnabled(const jobject &param, json::Object &json_param);
