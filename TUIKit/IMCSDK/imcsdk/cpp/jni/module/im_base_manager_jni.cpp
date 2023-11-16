@@ -477,8 +477,7 @@ DEFINE_NATIVE_FUNC(void, NativeCallExperimentalAPI, jstring api, jobject param, 
                                                                if (base_json.size() > 0) {
                                                                    if (base_json.HasKey(kTIMCommercialAbilityResultEnabled)){
                                                                        bool isEnabled = base_json[kTIMCommercialAbilityResultEnabled];
-                                                                       tim::jni::IMCallbackJNI::Success(_callback, tim::jni::IntegerJni::NewIntegerObj
-                                                                               (isEnabled));
+                                                                       tim::jni::IMCallbackJNI::Success(_callback, tim::jni::IntegerJni::NewIntegerObj(isEnabled));
                                                                    }
                                                                }
                                                            } else {

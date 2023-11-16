@@ -470,7 +470,7 @@ public class V2TIMManagerImpl extends V2TIMManager {
             return;
         }
 
-        nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
+        nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
                 super.success(data);
@@ -495,7 +495,7 @@ public class V2TIMManagerImpl extends V2TIMManager {
             return;
         }
 
-        nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
+        nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
                 super.success(data);
@@ -520,7 +520,7 @@ public class V2TIMManagerImpl extends V2TIMManager {
             return;
         }
 
-        nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
+        nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
                 super.success(data);
@@ -545,7 +545,7 @@ public class V2TIMManagerImpl extends V2TIMManager {
             return;
         }
 
-        nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
+        nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
                 super.success(data);
@@ -602,7 +602,7 @@ public class V2TIMManagerImpl extends V2TIMManager {
             return;
         }
 
-        nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
+        nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
                 super.success(data);
@@ -686,7 +686,7 @@ public class V2TIMManagerImpl extends V2TIMManager {
             return;
         }
 
-        nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
+        nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
                 super.success(data);
@@ -705,7 +705,7 @@ public class V2TIMManagerImpl extends V2TIMManager {
             return;
         }
 
-        nativeCallExperimentalAPI(apiTitle, null, new IMCallback<Object>(_callback_) {
+        nativeCallExperimentalAPI(apiTitle, param, new IMCallback<Object>(_callback_) {
             @Override
             public void success(Object data) {
                 super.success(data);

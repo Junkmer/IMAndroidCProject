@@ -226,7 +226,7 @@ namespace tim {
         }
 
         void GroupListenerJni::ImplTIMRecvNewMsgCallback(const char *json_msg_array, const void *user_data) {
-            LOGE("ImplTIMRecvNewMsgCallback — json_msg_array = %s",json_msg_array);
+//            LOGE("ImplTIMRecvNewMsgCallback — json_msg_array = %s",json_msg_array);
             json::Array msg_array = json::Deserialize(json_msg_array);
             for (const auto &item: msg_array) {
                 json::Array elem_array = item[kTIMMsgElemArray];

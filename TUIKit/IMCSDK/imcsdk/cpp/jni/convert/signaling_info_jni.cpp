@@ -140,6 +140,56 @@ namespace tim {
             return signalingInfoObj;
         }
 
+        void SignalingInfoJni::setConvert2JObject(const json::Object &signalingInfo_json, jobject const &j_obj_signalingInfo) {
+            ScopedJEnv scopedJEnv;
+            auto *env = scopedJEnv.GetEnv();
+
+            if (!InitIDs(env)) {
+                return;
+            }
+
+            if (!j_obj_signalingInfo) {
+                return;
+            }
+            jstring jStr = nullptr;
+
+            jStr = StringJni::Cstring2Jstring(env, signalingInfo_json[kTIMSignalingInfoInviteID]);
+            if (jStr){
+                env->SetObjectField(j_obj_signalingInfo, j_field_array_[FieldIDInviteID], jStr);
+                env->DeleteLocalRef(jStr);
+            }
+
+            jStr = StringJni::Cstring2Jstring(env, signalingInfo_json[kTIMSignalingInfoGroupID]);
+            if (jStr){
+                env->SetObjectField(j_obj_signalingInfo, j_field_array_[FieldIDGroupID], jStr);
+                env->DeleteLocalRef(jStr);
+            }
+
+            jStr = StringJni::Cstring2Jstring(env, signalingInfo_json[kTIMSignalingInfoInviter]);
+            if (jStr){
+                env->SetObjectField(j_obj_signalingInfo, j_field_array_[FieldIDInviter], jStr);
+                env->DeleteLocalRef(jStr);
+            }
+
+            if (signalingInfo_json.HasKey(kTIMSignalingInfoInviteeList)){
+                json::Array invitee_array = signalingInfo_json[kTIMSignalingInfoInviteeList];
+                for (int i = 0; i < invitee_array.size(); ++i) {
+                    jstring inviteeStr = StringJni::Cstring2Jstring(env, invitee_array[i]);
+                    env->CallVoidMethod(j_obj_signalingInfo, j_method_id_array_[MethodIDAddInvitee], inviteeStr);
+                    env->DeleteLocalRef(inviteeStr);
+                }
+            }
+
+            jStr = StringJni::Cstring2Jstring(env, signalingInfo_json[kTIMSignalingInfoData]);
+            if (jStr){
+                env->SetObjectField(j_obj_signalingInfo, j_field_array_[FieldIDData], jStr);
+                env->DeleteLocalRef(jStr);
+            }
+
+            env->SetIntField(j_obj_signalingInfo, j_field_array_[FieldIDTimeout], signalingInfo_json[kTIMSignalingInfoTimeout]);
+            env->SetIntField(j_obj_signalingInfo, j_field_array_[FieldIDActionType], signalingInfo_json[kTIMSignalingInfoActionType]);
+        }
+
         bool SignalingInfoJni::Convert2CoreObject(const jobject &j_obj_signalingInfo, json::Object &signalingInfo_json) {
             ScopedJEnv scopedJEnv;
             auto *env = scopedJEnv.GetEnv();

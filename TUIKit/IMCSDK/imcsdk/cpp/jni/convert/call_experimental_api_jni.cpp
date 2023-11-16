@@ -317,7 +317,7 @@ namespace tim {
             json_param[kTIMRequestInternalOperation] = kTIMInternalOperationSendTRTCCustomData;
 
             // string, 只写(必填)，长连接透传发送的数据，当 kTIMRequestInternalOperation 为 kTIMInternalOperationSendTRTCCustomData 时需要设置
-            json_param[kTIMRequestSendTRTCCustomDataParam] = StringJni::Jstring2Cstring(env, (jstring) param);
+            json_param[kTIMRequestSendTRTCCustomDataParam] = StringJni::JbyteArray2Cstring(env, (jbyteArray) param);
         }
 
         void CallExperimentalAPIJni::clearLocalHistoryMessage(jobject const &param, json::Object &json_param) {

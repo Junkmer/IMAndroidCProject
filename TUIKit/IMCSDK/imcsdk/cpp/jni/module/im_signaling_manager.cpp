@@ -106,16 +106,29 @@ DEFINE_NATIVE_FUNC(void, NativeReject, jstring invite_id, jstring data, jobject 
 }
 
 //TODO::该实现存在问题，待优化
-DEFINE_NATIVE_FUNC(jobject, NativeGetSignalingInfo, jobject msg) {
+DEFINE_NATIVE_FUNC(void, NativeGetSignalingInfo, jobject msg, jobject callback) {
+    jobject jni_callback = env->NewGlobalRef(callback);
+
     std::unique_ptr<json::Object> timMessage = tim::jni::MessageJni::Convert2CoreObject(msg);
     std::string timMessageStr = json::Serialize(*timMessage);
-    jobject signalingInfoObj = nullptr;
     tim::TIMEngine::GetInstance()->GetSignalingInfo(timMessageStr.c_str(),
                                                     [](int32_t code, const char *desc, const char *json_params, const void *user_data) {
-                                                        auto signalObj = (jobject) user_data;
-                                                        signalObj = tim::jni::SignalingInfoJni::Convert2JObject(json::Deserialize(json_params));
-                                                    }, signalingInfoObj);
-    return signalingInfoObj;
+                                                        tim::jni::ScopedJEnv scopedJEnv;
+                                                        auto _env = scopedJEnv.GetEnv();
+                                                        auto _callback = (jobject) user_data;
+
+                                                        if (TIMErrCode::ERR_SUCC == code) {
+                                                           jobject j_obj_signalInfo = tim::jni::SignalingInfoJni::Convert2JObject(json::Deserialize(json_params));
+                                                            if (j_obj_signalInfo){
+                                                                tim::jni::IMCallbackJNI::Success(_callback, j_obj_signalInfo);
+                                                                _env->DeleteLocalRef(j_obj_signalInfo);
+                                                            }
+                                                        } else {
+                                                            tim::jni::IMCallbackJNI::Fail(_callback, code, desc);
+                                                        }
+
+
+                                                    }, jni_callback);
 }
 
 DEFINE_NATIVE_FUNC(void, NativeAddInvitedSignaling, jobject info, jobject callback) {
@@ -145,7 +158,7 @@ static JNINativeMethod gMethods[] = {
         {"nativeCancel",                  "(Ljava/lang/String;Ljava/lang/String;Lcom/tencent/imsdk/common/IMCallback;)V",                                    (void *) NativeCancel},
         {"nativeAccept",                  "(Ljava/lang/String;Ljava/lang/String;Lcom/tencent/imsdk/common/IMCallback;)V",                                    (void *) NativeAccept},
         {"nativeReject",                  "(Ljava/lang/String;Ljava/lang/String;Lcom/tencent/imsdk/common/IMCallback;)V",                                    (void *) NativeReject},
-        {"nativeGetSignalingInfo",        "(Lcom/tencent/imsdk/v2/V2TIMMessage;)Lcom/tencent/imsdk/v2/V2TIMSignalingInfo;",                                  (jobject *) NativeGetSignalingInfo},
+        {"nativeGetSignalingInfo",        "(Lcom/tencent/imsdk/v2/V2TIMMessage;Lcom/tencent/imsdk/common/IMCallback;)V",                             (jobject *) NativeGetSignalingInfo},
         {"nativeAddInvitedSignaling",     "(Lcom/tencent/imsdk/v2/V2TIMSignalingInfo;Lcom/tencent/imsdk/common/IMCallback;)V",                               (void *) NativeAddInvitedSignaling},
         {"nativeModifyInvitation",        "(Ljava/lang/String;Ljava/lang/String;Lcom/tencent/imsdk/common/IMCallback;)V",                                    (void *) NativeModifyInvitation},
 };
@@ -156,6 +169,10 @@ int RegisterNativeMethodsForV2TIMSignalingManager(JNIEnv *env) {
                                                  sizeof(gMethods) / sizeof(gMethods[0]));
 }
 
+//void test(JNIEnv *env){
+//    jclass clazz = env->FindClass("com/tencent/imsdk/v2/V2TIMSignalingManager");
+//    env->GetMethodID(clazz,"nativeGetSignalingInfo", "(Lcom/tencent/imsdk/v2/V2TIMMessage;Lcom/tencent/imsdk/common/IMCallback;)V")
+//}
 
 #ifdef __cplusplus
 }

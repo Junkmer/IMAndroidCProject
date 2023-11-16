@@ -1,8 +1,14 @@
 package com.tencent.imsdk.v2;
 
+import android.os.Build;
+
 import com.tencent.imsdk.common.IMCallback;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 public class V2TIMSignalingManagerImpl extends V2TIMSignalingManager {
 
@@ -16,7 +22,7 @@ public class V2TIMSignalingManagerImpl extends V2TIMSignalingManager {
 
     @Override
     public void addSignalingListener(V2TIMSignalingListener listener) {
-        nativeAddSignalingListener(listener,listener.toString());
+        nativeAddSignalingListener(listener, listener.toString());
     }
 
     @Override
@@ -25,7 +31,7 @@ public class V2TIMSignalingManagerImpl extends V2TIMSignalingManager {
     }
 
     @Override
-    public  String invite(String invitee, String data, boolean onlineUserOnly, V2TIMOfflinePushInfo offlinePushInfo, int timeout, V2TIMCallback _callback_) {
+    public String invite(String invitee, String data, boolean onlineUserOnly, V2TIMOfflinePushInfo offlinePushInfo, int timeout, V2TIMCallback _callback_) {
         return nativeInvite(invitee, data, onlineUserOnly, offlinePushInfo, timeout, new IMCallback(_callback_) {
             @Override
             public void success(Object data) {
@@ -40,7 +46,7 @@ public class V2TIMSignalingManagerImpl extends V2TIMSignalingManager {
     }
 
     @Override
-    public  String inviteInGroup(String groupID, List<String> inviteeList, String data, boolean onlineUserOnly, int timeout, V2TIMCallback _callback_) {
+    public String inviteInGroup(String groupID, List<String> inviteeList, String data, boolean onlineUserOnly, int timeout, V2TIMCallback _callback_) {
         return nativeInviteInGroup(groupID, inviteeList, data, onlineUserOnly, timeout, new IMCallback(_callback_) {
             @Override
             public void success(Object data) {
@@ -100,8 +106,41 @@ public class V2TIMSignalingManagerImpl extends V2TIMSignalingManager {
     }
 
     @Override
-    public V2TIMSignalingInfo getSignalingInfo(V2TIMMessage msg) {
-        return nativeGetSignalingInfo(msg);
+    public V2TIMSignalingInfo getSignalingInfo(V2TIMMessage msg){
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+//            CompletableFuture<V2TIMSignalingInfo> future = new CompletableFuture<>();
+//
+//            V2TIMValueCallback<V2TIMSignalingInfo> valueCallback = new V2TIMValueCallback<V2TIMSignalingInfo>() {
+//                @Override
+//                public void onSuccess(V2TIMSignalingInfo signalingInfo) {
+//                    future.complete(signalingInfo);
+//                }
+//
+//                @Override
+//                public void onError(int code, String error) {
+//                    future.cancel(true);
+//                }
+//            };
+//            nativeGetSignalingInfo(msg, new IMCallback(valueCallback) {
+//                @Override
+//                public void success(Object data) {
+//                    super.success(data);
+//                }
+//
+//                @Override
+//                public void fail(int code, String errorMessage) {
+//                    super.fail(code, errorMessage);
+//                }
+//            });
+//            try {
+//                return future.get();
+//            }catch (Exception e){
+//                return null;
+//            }
+//        }else {
+//            return null;
+//        }
+        return null;
     }
 
     @Override

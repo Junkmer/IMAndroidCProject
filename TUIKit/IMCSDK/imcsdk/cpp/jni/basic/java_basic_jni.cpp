@@ -222,28 +222,6 @@ namespace tim {
             return env->GetStaticLongField(j_cls_, fieldIdMap_["MAX_VALUE"]);
         }
 
-        //////////////////////////////////// ByteJni ////////////////////////////////////
-
-        jbyteArray ByteJni::Cuint8_t2JByteArray(JNIEnv *env, const uint8_t *data, size_t size) {
-
-            jbyteArray customDataJni = env->NewByteArray((jsize) size);
-
-            env->SetByteArrayRegion(customDataJni, 0, (jsize) size, (jbyte *) data);
-
-            return customDataJni;
-        }
-
-//        V2TIMBuffer ByteJni::JByteArray2V2TIMBuffer(JNIEnv *env, jbyteArray byteArray) {
-//
-//            auto *elements = (jbyte *) env->GetByteArrayElements(byteArray, 0);
-//            jsize arrayLength = env->GetArrayLength(byteArray);
-//
-//            auto *bytearr = (uint8_t *) elements;
-//            auto size = (size_t) arrayLength;
-//
-//            return {bytearr, size};
-//        }
-
         //////////////////////////////////// StringJni ////////////////////////////////////
 
         jclass StringJni::j_cls_ = nullptr;
@@ -364,21 +342,6 @@ namespace tim {
             std::string cstr((char *) chars, len);
             env->ReleaseByteArrayElements(byteArr, chars, 0);
             return cstr;
-        }
-
-        jstring StringJni::Cuint8_t2Jstring(JNIEnv *env, const uint8_t *data, size_t size) {
-            if (!Init(env)) {
-                return nullptr;
-            }
-
-            jbyteArray bytes = env->NewByteArray((jsize) size);
-            env->SetByteArrayRegion(bytes, 0, (jsize) size, (jbyte *) data);
-            jstring encoding = env->NewStringUTF("utf-8");
-
-            auto *jstr = (jstring) env->NewObject(j_cls_, methodIdMap_["constructor"], bytes, encoding);
-            env->DeleteLocalRef(bytes);
-            env->DeleteLocalRef(encoding);
-            return jstr;
         }
 
         //////////////////////////////////// ArrayListJni ////////////////////////////////////
