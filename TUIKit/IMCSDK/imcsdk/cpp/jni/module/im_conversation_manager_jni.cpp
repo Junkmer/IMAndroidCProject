@@ -99,8 +99,14 @@ DEFINE_NATIVE_FUNC(void, NativeGetConversation, jstring conversation_id, jobject
                                                                auto _callback = (jobject) user_data;
                                                                if (TIMErrCode::ERR_SUCC == code) {
                                                                    json::Array conv_array = json::Deserialize(json_params);
-                                                                   jobject conversationObj = tim::jni::ConversationJni::Convert2JObject(
-                                                                           conv_array[0]);
+                                                                   jobject conversationObj;
+                                                                   if (conv_array.size() > 0){
+                                                                       conversationObj = tim::jni::ConversationJni::Convert2JObject(conv_array[0]);
+
+                                                                   } else{
+                                                                       conversationObj = tim::jni::ConversationJni::CreateNewConvJObject();
+                                                                   }
+
                                                                    if (conversationObj) {
                                                                        tim::jni::IMCallbackJNI::Success(_callback, conversationObj);
                                                                        _env->DeleteLocalRef(conversationObj);

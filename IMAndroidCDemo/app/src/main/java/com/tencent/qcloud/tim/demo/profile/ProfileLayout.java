@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.tencent.imsdk.v2.V2TIMCallback;
+import com.tencent.imsdk.v2.V2TIMConversation;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMSDKListener;
 import com.tencent.imsdk.v2.V2TIMUserFullInfo;
@@ -421,8 +422,24 @@ public class ProfileLayout extends FrameLayout implements View.OnClickListener {
                 }
             });
         } else if (v.getId() == R.id.about_im) {
-            Intent intent = new Intent(getContext(), AboutIMActivity.class);
-            getContext().startActivity(intent);
+//            Intent intent = new Intent(getContext(), AboutIMActivity.class);
+//            getContext().startActivity(intent);
+
+            V2TIMManager.getConversationManager().getConversation("c2c_test111", new V2TIMValueCallback<V2TIMConversation>() {
+                @Override
+                public void onSuccess(V2TIMConversation v2TIMConversation) {
+                    if (v2TIMConversation != null){
+                        DemoLog.i(TAG, "getConversation success, conversationId = "+v2TIMConversation.getConversationID());
+                    }else {
+                        DemoLog.i(TAG, "getConversation conversation is null.");
+                    }
+                }
+
+                @Override
+                public void onError(int code, String desc) {
+                    DemoLog.e(TAG, "getConversation err code = " + code + ", desc = " + ErrorMessageConverter.convertIMError(code, desc));
+                }
+            });
         } else if (v.getId() == R.id.select_style) {
             StyleSelectActivity.OnResultReturnListener listener = new StyleSelectActivity.OnResultReturnListener() {
                 @Override

@@ -45,6 +45,9 @@ public class V2TIMConversationManagerImpl extends V2TIMConversationManager {
         nativeGetConversation(conversationID, new IMCallback<V2TIMConversation>(_callback_) {
             @Override
             public void success(V2TIMConversation data) {
+                if (data != null && data.getConversationID() == null){
+                    data.setConversationID(conversationID);
+                }
                 super.success(data);
             }
 

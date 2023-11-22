@@ -29,7 +29,7 @@ DEFINE_NATIVE_FUNC(void, NativeDownloadImage, jstring uuid,jstring url, int type
 
     std::string pathStr = tim::jni::StringJni::Jstring2Cstring(env,path);
 
-    tim::TIMEngine::GetInstance()->DownloadElemToPath(pathStr.c_str(),pathStr.c_str(),new tim::DownloadTIMCallbackIMpl(callback));
+    tim::TIMEngine::GetInstance()->DownloadElemToPath(paramStr.c_str(),pathStr.c_str(),new tim::DownloadTIMCallbackIMpl(callback));
 }
 
 DEFINE_NATIVE_FUNC(void, NativeDownloadSound, jstring file_id, jstring uuid, jstring url, jstring path, jobject callback) {
@@ -42,7 +42,7 @@ DEFINE_NATIVE_FUNC(void, NativeDownloadSound, jstring file_id, jstring uuid, jst
 
     std::string pathStr = tim::jni::StringJni::Jstring2Cstring(env,path);
 
-    tim::TIMEngine::GetInstance()->DownloadElemToPath(pathStr.c_str(),pathStr.c_str(),new tim::DownloadTIMCallbackIMpl(callback));
+    tim::TIMEngine::GetInstance()->DownloadElemToPath(paramStr.c_str(),pathStr.c_str(),new tim::DownloadTIMCallbackIMpl(callback));
 }
 
 DEFINE_NATIVE_FUNC(void, NativeDownloadVideo, jstring file_id, jstring uuid, jstring url, jstring path, jobject callback) {
@@ -55,7 +55,7 @@ DEFINE_NATIVE_FUNC(void, NativeDownloadVideo, jstring file_id, jstring uuid, jst
 
     std::string pathStr = tim::jni::StringJni::Jstring2Cstring(env,path);
 
-    tim::TIMEngine::GetInstance()->DownloadElemToPath(pathStr.c_str(),pathStr.c_str(),new tim::DownloadTIMCallbackIMpl(callback));
+    tim::TIMEngine::GetInstance()->DownloadElemToPath(paramStr.c_str(),pathStr.c_str(),new tim::DownloadTIMCallbackIMpl(callback));
 }
 
 DEFINE_NATIVE_FUNC(void, NativeDownloadSnapshot, jstring file_id, jstring uuid, jstring url, jstring path, jobject callback) {
@@ -68,7 +68,7 @@ DEFINE_NATIVE_FUNC(void, NativeDownloadSnapshot, jstring file_id, jstring uuid, 
 
     std::string pathStr = tim::jni::StringJni::Jstring2Cstring(env,path);
 
-    tim::TIMEngine::GetInstance()->DownloadElemToPath(pathStr.c_str(),pathStr.c_str(),new tim::DownloadTIMCallbackIMpl(callback));
+    tim::TIMEngine::GetInstance()->DownloadElemToPath(paramStr.c_str(),pathStr.c_str(),new tim::DownloadTIMCallbackIMpl(callback));
 }
 
 DEFINE_NATIVE_FUNC(void, NativeDownloadFile, jstring file_id, jstring uuid, jstring url, jstring path, jobject callback) {
@@ -81,7 +81,7 @@ DEFINE_NATIVE_FUNC(void, NativeDownloadFile, jstring file_id, jstring uuid, jstr
 
     std::string pathStr = tim::jni::StringJni::Jstring2Cstring(env,path);
 
-    tim::TIMEngine::GetInstance()->DownloadElemToPath(pathStr.c_str(),pathStr.c_str(),new tim::DownloadTIMCallbackIMpl(callback));
+    tim::TIMEngine::GetInstance()->DownloadElemToPath(paramStr.c_str(),pathStr.c_str(),new tim::DownloadTIMCallbackIMpl(callback));
 }
 
 DEFINE_NATIVE_FUNC(void, NativeDownloadMergerMessage, jobject elem, jobject callback) {

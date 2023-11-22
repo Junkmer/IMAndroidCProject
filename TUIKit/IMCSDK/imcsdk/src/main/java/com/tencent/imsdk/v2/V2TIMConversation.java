@@ -35,6 +35,10 @@ public class V2TIMConversation implements Serializable {
     private String customData;
     private List<String> conversationGroupList = new ArrayList<>();
 
+    protected void setConversationID(String conversationID) {
+        this.conversationID = conversationID;
+    }
+
     public String getConversationID() {
         return conversationID;
     }
