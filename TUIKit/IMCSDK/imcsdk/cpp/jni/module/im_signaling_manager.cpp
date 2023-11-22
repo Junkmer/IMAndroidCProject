@@ -14,6 +14,7 @@
 #include "offline_push_info_jni.h"
 #include "message_jni.h"
 #include "signaling_info_jni.h"
+#include "LogUtil.h"
 
 #define DEFINE_NATIVE_FUNC(RETURN_TYPE, NAME, ...) \
     RETURN_TYPE NAME(JNIEnv *env, jobject thiz, ##__VA_ARGS__)
@@ -120,11 +121,11 @@ DEFINE_NATIVE_FUNC(void, NativeGetSignalingInfo, jobject msg, jobject callback) 
                                                         if (TIMErrCode::ERR_SUCC == code) {
                                                            jobject j_obj_signalInfo = tim::jni::SignalingInfoJni::Convert2JObject(json::Deserialize(json_params));
                                                             if (j_obj_signalInfo){
-                                                                tim::jni::IMCallbackJNI::Success(_callback, j_obj_signalInfo);
+                                                                tim::jni::IMCallbackJNI::Success2signalInfo(_callback, j_obj_signalInfo);
                                                                 _env->DeleteLocalRef(j_obj_signalInfo);
                                                             }
                                                         } else {
-                                                            tim::jni::IMCallbackJNI::Fail(_callback, code, desc);
+                                                            tim::jni::IMCallbackJNI::Fail2signalInfo(_callback, code, desc);
                                                         }
 
 

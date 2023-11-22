@@ -22,6 +22,8 @@ namespace tim {
             static void FailOrComplete(const jobject &callback, const int &code, const char *desc, const jobject &params);
             static void Progress(const jobject &callback, const int &progress);
             static void DownloadProgress(const jobject &callback, const uint64_t &currentSize,const uint64_t &totalSize);
+            static void Success2signalInfo(const jobject &callback, const jobject &obj);
+            static void Fail2signalInfo(const jobject &callback, const int &code, const char *desc);
 
         private:
             enum MethodID {
@@ -30,6 +32,8 @@ namespace tim {
                 MethodIDFailOrComplete,
                 MethodIDProgress,
                 MethodIDDownloadProgress,
+                MethodIDSuccess2signalInfo,
+                MethodIDFail2signalInfo,
 
                 MethodIDMax,
             };

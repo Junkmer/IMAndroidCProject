@@ -1,7 +1,5 @@
 package com.tencent.imsdk.v2;
 
-import android.os.Build;
-
 import com.tencent.imsdk.common.IMCallback;
 
 import java.util.List;
@@ -106,41 +104,28 @@ public class V2TIMSignalingManagerImpl extends V2TIMSignalingManager {
     }
 
     @Override
-    public V2TIMSignalingInfo getSignalingInfo(V2TIMMessage msg){
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-//            CompletableFuture<V2TIMSignalingInfo> future = new CompletableFuture<>();
-//
-//            V2TIMValueCallback<V2TIMSignalingInfo> valueCallback = new V2TIMValueCallback<V2TIMSignalingInfo>() {
-//                @Override
-//                public void onSuccess(V2TIMSignalingInfo signalingInfo) {
-//                    future.complete(signalingInfo);
-//                }
-//
-//                @Override
-//                public void onError(int code, String error) {
-//                    future.cancel(true);
-//                }
-//            };
-//            nativeGetSignalingInfo(msg, new IMCallback(valueCallback) {
-//                @Override
-//                public void success(Object data) {
-//                    super.success(data);
-//                }
-//
-//                @Override
-//                public void fail(int code, String errorMessage) {
-//                    super.fail(code, errorMessage);
-//                }
-//            });
-//            try {
-//                return future.get();
-//            }catch (Exception e){
-//                return null;
-//            }
-//        }else {
-//            return null;
-//        }
-        return null;
+    public V2TIMSignalingInfo getSignalingInfo(V2TIMMessage msg) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            CompletableFuture<V2TIMSignalingInfo> future = new CompletableFuture<>();
+            nativeGetSignalingInfo(msg, new IMCallback() {
+                @Override
+                public void success2signalInfo(V2TIMSignalingInfo signalingInfo) {
+                    future.complete(signalingInfo);
+                }
+
+                @Override
+                public void fail2signalInfo(int code, String errorMessage) {
+                    future.cancel(true);
+                }
+            });
+            try {
+                return future.get();
+            } catch (Exception e) {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     @Override
