@@ -67,14 +67,7 @@ DEFINE_NATIVE_FUNC(jstring, NativeSendMessage, jobject message, jstring receiver
         conv_id = tim::jni::StringJni::Jstring2Cstring(env, group_id);
         conv_type = TIMConvType::kTIMConv_Group;
     }
-    std::unique_ptr<json::Object> message_json = tim::jni::MessageJni::Convert2CoreObject(message);
-    (*message_json)[kTIMMsgPriority] = priority;
-    (*message_json)[kTIMMsgIsOnlineMsg] = (bool) onlineUserOnly;
-    json::Object offline_push_info_json;
-    if (offlinePushInfo) {
-        tim::jni::OfflinePushInfoJni::Convert2CoreObject(offlinePushInfo, offline_push_info_json);
-        (*message_json)[kTIMMsgOfflinePushConfig] = offlinePushInfo;
-    }
+    std::unique_ptr<json::Object> message_json = tim::jni::MessageJni::SendMessageConvert2CoreObject(message,priority,onlineUserOnly,offlinePushInfo);
     std::string message_json_str = json::Serialize(*message_json);
 
     const size_t kMessageIDLength = 128;

@@ -328,7 +328,7 @@ namespace tim {
             return j_obj_message;
         }
 
-        std::unique_ptr<json::Object> MessageJni::Convert2CoreObject(jobject &messageObj) {
+        std::unique_ptr<json::Object> MessageJni::Convert2CoreObject(const jobject &messageObj) {
             ScopedJEnv scopedJEnv;
             auto *env = scopedJEnv.GetEnv();
 
@@ -438,6 +438,186 @@ namespace tim {
                 }
                 env->DeleteLocalRef(offlinePushObj);
             }
+
+            auto *elemListObj = env->GetObjectField(messageObj, j_filed_id_array[FieldIDElemList]);
+            int size;
+            size = ArrayListJni::Size(elemListObj);
+            if (size > 0) {
+                json::Array elem_array;
+                for (int i = 0; i < size; ++i) {
+                    auto *jElemObj = ArrayListJni::Get(elemListObj, i);
+                    if (nullptr == jElemObj) {
+                        continue;
+                    }
+                    jclass cls = env->GetObjectClass(jElemObj);
+                    jmethodID get_type = env->GetMethodID(cls, "getElementType", "()I");
+                    if (!get_type) continue;
+
+                    auto type = env->CallIntMethod(jElemObj, get_type);
+                    std::unique_ptr<json::Object> elem = ElemProcessor::GetInstance().BuildElem(JElemType2CElemType(type), jElemObj);
+                    if (elem) {
+                        elem_array.push_back(*elem);
+                    }
+                }
+                message[kTIMMsgElemArray] = elem_array;
+            }
+
+            jobject j_obj_atUserList = env->GetObjectField(messageObj, j_filed_id_array[FieldIDGroupAtUserList]);
+            size = ArrayListJni::Size(j_obj_atUserList);
+            if (size > 0) {
+                json::Array at_user_array;
+                for (int i = 0; i < size; ++i) {
+                    auto atUserObj = (jstring) ArrayListJni::Get(j_obj_atUserList, i);
+                    at_user_array.push_back(StringJni::Jstring2Cstring(env, atUserObj).c_str());
+                }
+                if (at_user_array.size() > 0) {
+                    message[kTIMMsgGroupAtUserArray] = at_user_array;
+                }
+            }
+
+            message[kTIMMsgSeq] = (long long) env->GetLongField(messageObj, j_filed_id_array[FieldIDSeq]);
+            message[kTIMMsgRand] = (long long) env->GetLongField(messageObj, j_filed_id_array[FieldIDRandom]);
+            message[kTIMMsgIsExcludedFromUnreadCount] = (bool) env->GetBooleanField(messageObj, j_filed_id_array[FieldIDIsExcludedFromUnreadCount]);
+            message[kTIMMsgExcludedFromLastMessage] = (bool) env->GetBooleanField(messageObj, j_filed_id_array[FieldIDIsExcludedFromLastMessage]);
+            message[kTIMMsgSupportMessageExtension] = (bool) env->GetBooleanField(messageObj, j_filed_id_array[FieldIDIsSupportMessageExtension]);
+
+            //转发消息时需要设置
+            message[kTIMMsgIsForwardMessage] = (bool) env->GetBooleanField(messageObj, j_filed_id_array[FieldIDIsForwardMessage]);
+
+            //发送群定向消息时设置
+            jobject j_obj_TargetGroupMemberList = env->GetObjectField(messageObj, j_filed_id_array[FieldIDTargetGroupMemberList]);
+            if (j_obj_TargetGroupMemberList) {
+                size = ArrayListJni::Size(j_obj_TargetGroupMemberList);
+                if (size > 0) {
+                    json::Array member_array;
+                    for (int i = 0; i < size; ++i) {
+                        auto memberId = (jstring) ArrayListJni::Get(j_obj_TargetGroupMemberList, i);
+                        member_array.push_back(StringJni::Jstring2Cstring(env, memberId).c_str());
+                    }
+                    if (member_array.size() > 0) {
+                        message[kTIMMsgTargetGroupMemberArray] = member_array;
+                    }
+                }
+            }
+
+            return std::make_unique<json::Object>(message);
+        }
+
+
+        std::unique_ptr<json::Object>
+        MessageJni::SendMessageConvert2CoreObject(jobject &messageObj, const jint priority, const jboolean onlineUserOnly, const jobject &offlinePushInfo) {
+            ScopedJEnv scopedJEnv;
+            auto *env = scopedJEnv.GetEnv();
+
+            if (!InitIDs(env)) {
+                return nullptr;
+            }
+
+            //点击消息发送时，对原始消息体做最初始赋值
+            env->SetIntField(messageObj, j_filed_id_array[FieldIDStatus], TIMMsgStatus::kTIMMsg_Sending);
+            env->SetBooleanField(messageObj, j_filed_id_array[FieldIDIsSelf], true);
+            env->SetBooleanField(messageObj, j_filed_id_array[FieldIDIsRead], true);
+
+            json::Object message;
+
+            message[kTIMMsgPriority] = priority;
+            message[kTIMMsgIsOnlineMsg] = (bool) onlineUserOnly;
+            if (offlinePushInfo) {
+                json::Object offline_push_info_json;
+                tim::jni::OfflinePushInfoJni::Convert2CoreObject(offlinePushInfo, offline_push_info_json);
+                message[kTIMMsgOfflinePushConfig] = offlinePushInfo;
+            }
+
+            auto msgIDStr = (jstring) env->GetObjectField(messageObj, j_filed_id_array[FieldIDMsgID]);
+            if (nullptr != msgIDStr) {
+                message[kTIMMsgMsgId] = StringJni::Jstring2Cstring(env, msgIDStr).c_str();
+                env->DeleteLocalRef(msgIDStr);
+            }
+
+            message[kTIMMsgServerTime] = (long long) env->GetLongField(messageObj, j_filed_id_array[FieldIDTimestamp]);
+
+            auto senderStr = (jstring) env->GetObjectField(messageObj, j_filed_id_array[FieldIDSender]);
+            if (nullptr != senderStr) {
+                message[kTIMMsgSender] = StringJni::Jstring2Cstring(env, senderStr).c_str();
+                env->DeleteLocalRef(senderStr);
+            }
+//------------------ 发送者用户资料 - start ------------------------//
+            json::Object senderUserInfo_json;
+
+            auto nickNameStr = (jstring) env->GetObjectField(messageObj, j_filed_id_array[FieldIDNickName]);
+            if (nullptr != nickNameStr) {
+                senderUserInfo_json[kTIMUserProfileNickName] = StringJni::Jstring2Cstring(env, nickNameStr).c_str();
+                env->DeleteLocalRef(nickNameStr);
+            }
+
+            auto friendRemarkStr = (jstring) env->GetObjectField(messageObj, j_filed_id_array[FieldIDFriendRemark]);
+            if (nullptr != friendRemarkStr) {
+                senderUserInfo_json[kTIMUserProfileFriendRemark] = StringJni::Jstring2Cstring(env, friendRemarkStr).c_str();
+                env->DeleteLocalRef(friendRemarkStr);
+            }
+
+            auto faceURLStr = (jstring) env->GetObjectField(messageObj, j_filed_id_array[FieldIDFaceUrl]);
+            if (nullptr != faceURLStr) {
+                senderUserInfo_json[kTIMUserProfileFaceUrl] = StringJni::Jstring2Cstring(env, faceURLStr).c_str();
+                env->DeleteLocalRef(faceURLStr);
+            }
+
+            message[kTIMMsgSenderProfile] = senderUserInfo_json;
+//------------------ end ------------------------//
+//------------------ 发送者群成员 - start ------------------------//
+
+            json::Object memberInfo_json;
+
+            auto nameCardStr = (jstring) env->GetObjectField(messageObj, j_filed_id_array[FieldIDNameCard]);
+            if (nullptr != nameCardStr) {
+                memberInfo_json[kTIMGroupMemberInfoNameCard] = StringJni::Jstring2Cstring(env, nameCardStr).c_str();
+                env->DeleteLocalRef(nameCardStr);
+            }
+
+            message[kTIMMsgSenderGroupMemberInfo] = memberInfo_json;
+//------------------ end ------------------------//
+
+            auto groupIDStr = (jstring) env->GetObjectField(messageObj, j_filed_id_array[FieldIDGroupID]);
+            if (nullptr != groupIDStr) {
+                std::string groupID = StringJni::Jstring2Cstring(env, groupIDStr);
+                if (!groupID.empty()) {
+                    message[kTIMMsgConvId] = groupID;
+                    message[kTIMMsgConvType] = TIMConvType::kTIMConv_Group;
+                }
+                env->DeleteLocalRef(groupIDStr);
+            }
+
+            auto userIDStr = (jstring) env->GetObjectField(messageObj, j_filed_id_array[FieldIDUserID]);
+            if (nullptr != userIDStr) {
+                std::string userID = StringJni::Jstring2Cstring(env, userIDStr);
+                if (!userID.empty()) {
+                    message[kTIMMsgConvId] = userID;
+                    message[kTIMMsgConvType] = TIMConvType::kTIMConv_C2C;
+                }
+                env->DeleteLocalRef(userIDStr);
+            }
+
+            message[kTIMMsgStatus] = TIMMsgStatus(env->GetIntField(messageObj, j_filed_id_array[FieldIDStatus]));
+
+            message[kTIMMsgCustomInt] = env->GetIntField(messageObj, j_filed_id_array[FieldIDLocalCustomInt]);
+            auto localCustomDataStr = (jstring) env->GetObjectField(messageObj, j_filed_id_array[FieldIDLocalCustomData]);
+            if (nullptr != localCustomDataStr) {
+                message[kTIMMsgCustomStr] = StringJni::Jstring2Cstring(env, localCustomDataStr);
+                env->DeleteLocalRef(localCustomDataStr);
+            }
+
+            auto cloudCustomDataStr = (jstring) env->GetObjectField(messageObj, j_filed_id_array[FieldIDCloudCustomData]);
+            if (nullptr != cloudCustomDataStr) {
+                message[kTIMMsgCloudCustomStr] = StringJni::Jstring2Cstring(env, cloudCustomDataStr);
+                env->DeleteLocalRef(cloudCustomDataStr);
+            }
+
+            message[kTIMMsgIsFormSelf] = (bool) env->GetBooleanField(messageObj, j_filed_id_array[FieldIDIsSelf]);
+            message[kTIMMsgIsRead] = (bool) env->GetBooleanField(messageObj, j_filed_id_array[FieldIDIsRead]);
+            message[kTIMMsgIsPeerRead] = (bool) env->GetBooleanField(messageObj, j_filed_id_array[FieldIDIsPeerRead]);
+            message[kTIMMsgNeedReadReceipt] = (bool) env->GetBooleanField(messageObj, j_filed_id_array[FieldIDNeedReadReceipt]);
+            message[kTIMMsgIsBroadcastMessage] = (bool) env->GetBooleanField(messageObj, j_filed_id_array[FieldIDIsBroadcastMessage]);
+            message[kTIMMsgPriority] = TIMMsgPriority(env->GetIntField(messageObj, j_filed_id_array[FieldIDPriority]));
 
             auto *elemListObj = env->GetObjectField(messageObj, j_filed_id_array[FieldIDElemList]);
             int size;
