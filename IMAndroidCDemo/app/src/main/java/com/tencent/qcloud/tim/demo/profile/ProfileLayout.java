@@ -422,24 +422,8 @@ public class ProfileLayout extends FrameLayout implements View.OnClickListener {
                 }
             });
         } else if (v.getId() == R.id.about_im) {
-//            Intent intent = new Intent(getContext(), AboutIMActivity.class);
-//            getContext().startActivity(intent);
-
-            V2TIMManager.getConversationManager().getConversation("c2c_test111", new V2TIMValueCallback<V2TIMConversation>() {
-                @Override
-                public void onSuccess(V2TIMConversation v2TIMConversation) {
-                    if (v2TIMConversation != null){
-                        DemoLog.i(TAG, "getConversation success, conversationId = "+v2TIMConversation.getConversationID());
-                    }else {
-                        DemoLog.i(TAG, "getConversation conversation is null.");
-                    }
-                }
-
-                @Override
-                public void onError(int code, String desc) {
-                    DemoLog.e(TAG, "getConversation err code = " + code + ", desc = " + ErrorMessageConverter.convertIMError(code, desc));
-                }
-            });
+            Intent intent = new Intent(getContext(), AboutIMActivity.class);
+            getContext().startActivity(intent);
         } else if (v.getId() == R.id.select_style) {
             StyleSelectActivity.OnResultReturnListener listener = new StyleSelectActivity.OnResultReturnListener() {
                 @Override
