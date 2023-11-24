@@ -439,11 +439,11 @@ namespace tim {
 
             }
 
-            long memberMaxCount = env->GetLongField(j_obj_groupInfo, j_field_array_[FieldIDMemberMaxCount]);
-            if (memberMaxCount != -1) {
-                update_group_info_json[kTIMGroupModifyInfoParamMaxMemberNum] = (long long) memberMaxCount;
-                modifyFlag = modifyFlag | TIMGroupModifyInfoFlag::kTIMGroupModifyInfoFlag_MaxMemberNum;
-            }
+//            long memberMaxCount = env->GetLongField(j_obj_groupInfo, j_field_array_[FieldIDMemberMaxCount]);
+//            if (memberMaxCount != -1) {
+//                update_group_info_json[kTIMGroupModifyInfoParamMaxMemberNum] = (long long) memberMaxCount;
+//                modifyFlag = modifyFlag | TIMGroupModifyInfoFlag::kTIMGroupModifyInfoFlag_MaxMemberNum;
+//            }
 
             update_group_info_json[kTIMGroupModifyInfoParamModifyFlag] = modifyFlag;
             return true;
