@@ -17,22 +17,45 @@ namespace tim {
         jclass ConversationListenerJni::j_cls_;
         jmethodID ConversationListenerJni::j_method_id_array_[MethodIDMax];
 
+        void ConversationListenerJni::InitListener() {
+            TIMSetConvEventCallback(ImplTIMConvEventCallback, &listener_conversation_map);
+            TIMSetConvTotalUnreadMessageCountChangedCallback(ImplTIMConvTotalUnreadMessageCountChangedCallback, &listener_conversation_map);
+            TIMSetConvUnreadMessageCountChangedByFilterCallback(ImplTIMConvTotalUnreadMessageCountChangedByFilterCallback,
+                                                                &listener_conversation_map);
+            TIMSetConvConversationGroupCreatedCallback(ImplTIMConvConversationGroupCreatedCallback, &listener_conversation_map);
+            TIMSetConvConversationGroupDeletedCallback(ImplTIMConvConversationGroupDeletedCallback, &listener_conversation_map);
+            TIMSetConvConversationGroupNameChangedCallback(ImplTIMConvConversationGroupNameChangedCallback, &listener_conversation_map);
+            TIMSetConvConversationsAddedToGroupCallback(ImplTIMConvConversationsAddedToGroupCallback, &listener_conversation_map);
+            TIMSetConvConversationsDeletedFromGroupCallback(ImplTIMConvConversationsDeletedFromGroupCallback, &listener_conversation_map);
+        }
+
+        void ConversationListenerJni::UnInitListener() {
+            TIMSetConvEventCallback(nullptr, nullptr);
+            TIMSetConvTotalUnreadMessageCountChangedCallback(nullptr, nullptr);
+            TIMSetConvUnreadMessageCountChangedByFilterCallback(nullptr, nullptr);
+            TIMSetConvConversationGroupCreatedCallback(nullptr, nullptr);
+            TIMSetConvConversationGroupDeletedCallback(nullptr, nullptr);
+            TIMSetConvConversationGroupNameChangedCallback(nullptr, nullptr);
+            TIMSetConvConversationsAddedToGroupCallback(nullptr, nullptr);
+            TIMSetConvConversationsDeletedFromGroupCallback(nullptr, nullptr);
+        }
+
         void ConversationListenerJni::AddListener(JNIEnv *env, jobject listener_conversation, jstring listenerPath) {
             if (nullptr == listener_conversation) {
                 LOGE("ConversationListenerJni | AddListener listener_simple is null");
                 return;
             }
-            if (listener_conversation_map.empty()) {
-                TIMSetConvEventCallback(ImplTIMConvEventCallback, &listener_conversation_map);
-                TIMSetConvTotalUnreadMessageCountChangedCallback(ImplTIMConvTotalUnreadMessageCountChangedCallback, &listener_conversation_map);
-                TIMSetConvUnreadMessageCountChangedByFilterCallback(ImplTIMConvTotalUnreadMessageCountChangedByFilterCallback,
-                                                                    &listener_conversation_map);
-                TIMSetConvConversationGroupCreatedCallback(ImplTIMConvConversationGroupCreatedCallback, &listener_conversation_map);
-                TIMSetConvConversationGroupDeletedCallback(ImplTIMConvConversationGroupDeletedCallback, &listener_conversation_map);
-                TIMSetConvConversationGroupNameChangedCallback(ImplTIMConvConversationGroupNameChangedCallback, &listener_conversation_map);
-                TIMSetConvConversationsAddedToGroupCallback(ImplTIMConvConversationsAddedToGroupCallback, &listener_conversation_map);
-                TIMSetConvConversationsDeletedFromGroupCallback(ImplTIMConvConversationsDeletedFromGroupCallback, &listener_conversation_map);
-            }
+//            if (listener_conversation_map.empty()) {
+//                TIMSetConvEventCallback(ImplTIMConvEventCallback, &listener_conversation_map);
+//                TIMSetConvTotalUnreadMessageCountChangedCallback(ImplTIMConvTotalUnreadMessageCountChangedCallback, &listener_conversation_map);
+//                TIMSetConvUnreadMessageCountChangedByFilterCallback(ImplTIMConvTotalUnreadMessageCountChangedByFilterCallback,
+//                                                                    &listener_conversation_map);
+//                TIMSetConvConversationGroupCreatedCallback(ImplTIMConvConversationGroupCreatedCallback, &listener_conversation_map);
+//                TIMSetConvConversationGroupDeletedCallback(ImplTIMConvConversationGroupDeletedCallback, &listener_conversation_map);
+//                TIMSetConvConversationGroupNameChangedCallback(ImplTIMConvConversationGroupNameChangedCallback, &listener_conversation_map);
+//                TIMSetConvConversationsAddedToGroupCallback(ImplTIMConvConversationsAddedToGroupCallback, &listener_conversation_map);
+//                TIMSetConvConversationsDeletedFromGroupCallback(ImplTIMConvConversationsDeletedFromGroupCallback, &listener_conversation_map);
+//            }
 
             std::string path = StringJni::Jstring2Cstring(env, listenerPath);
             for (auto &item: listener_conversation_map) {
@@ -51,16 +74,16 @@ namespace tim {
                 return;
             }
             listener_conversation_map.erase(StringJni::Jstring2Cstring(env, listenerPath));
-            if (listener_conversation_map.empty()) {
-                TIMSetConvEventCallback(nullptr, nullptr);
-                TIMSetConvTotalUnreadMessageCountChangedCallback(nullptr, nullptr);
-                TIMSetConvUnreadMessageCountChangedByFilterCallback(nullptr, nullptr);
-                TIMSetConvConversationGroupCreatedCallback(nullptr, nullptr);
-                TIMSetConvConversationGroupDeletedCallback(nullptr, nullptr);
-                TIMSetConvConversationGroupNameChangedCallback(nullptr, nullptr);
-                TIMSetConvConversationsAddedToGroupCallback(nullptr, nullptr);
-                TIMSetConvConversationsDeletedFromGroupCallback(nullptr, nullptr);
-            }
+//            if (listener_conversation_map.empty()) {
+//                TIMSetConvEventCallback(nullptr, nullptr);
+//                TIMSetConvTotalUnreadMessageCountChangedCallback(nullptr, nullptr);
+//                TIMSetConvUnreadMessageCountChangedByFilterCallback(nullptr, nullptr);
+//                TIMSetConvConversationGroupCreatedCallback(nullptr, nullptr);
+//                TIMSetConvConversationGroupDeletedCallback(nullptr, nullptr);
+//                TIMSetConvConversationGroupNameChangedCallback(nullptr, nullptr);
+//                TIMSetConvConversationsAddedToGroupCallback(nullptr, nullptr);
+//                TIMSetConvConversationsDeletedFromGroupCallback(nullptr, nullptr);
+//            }
         }
 
         bool ConversationListenerJni::InitIDs(JNIEnv *env) {
@@ -498,5 +521,6 @@ namespace tim {
             env->DeleteLocalRef(groupNameStr);
             env->DeleteLocalRef(conversationObjList);
         }
+
     }// namespace jni
 }// namespace tim

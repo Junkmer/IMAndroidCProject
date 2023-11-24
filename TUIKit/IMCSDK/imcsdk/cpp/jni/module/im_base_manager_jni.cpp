@@ -23,6 +23,7 @@
 #include "user_status_jni.h"
 #include "tim_callback_impl.h"
 #include "call_experimental_api_jni.h"
+#include "conversation_listener_jni.h"
 
 #define DEFINE_NATIVE_FUNC(RETURN_TYPE, NAME, ...)  \
     RETURN_TYPE NAME(JNIEnv *env, jobject thiz, ##__VA_ARGS__)

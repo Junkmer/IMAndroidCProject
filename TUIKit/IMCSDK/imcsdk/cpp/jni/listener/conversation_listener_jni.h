@@ -15,6 +15,11 @@ namespace tim {
     namespace jni {
         class ConversationListenerJni final : public std::enable_shared_from_this<ConversationListenerJni> {
         public:
+            void InitListener();
+
+            void UnInitListener();
+
+        public:
             ConversationListenerJni() = default;
 
             ~ConversationListenerJni() = default;

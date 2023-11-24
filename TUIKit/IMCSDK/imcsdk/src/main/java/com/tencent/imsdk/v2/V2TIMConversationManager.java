@@ -58,6 +58,8 @@ public abstract class V2TIMConversationManager {
 //--------------------------------------------------  native层-本地接口
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public native void nativeInitListener();
+
     native void nativeAddConversationListener(V2TIMConversationListener listener, String listenerPath);
 
     native void nativeRemoveConversationListener(String listenerPath);
