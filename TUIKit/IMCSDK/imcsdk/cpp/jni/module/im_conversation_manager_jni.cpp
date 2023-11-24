@@ -229,6 +229,11 @@ DEFINE_NATIVE_FUNC(void, NativeSetConversationCustomData, jobject conversation_i
     for (int i = 0; i < size; ++i) {
         auto item = (jstring) tim::jni::ArrayListJni::Get(conversation_idlist, i);
         std::string conversation = tim::jni::StringJni::Jstring2Cstring(env, item);
+        if (conversation.find("c2c_") != std::string::npos) {//单聊会话 c2c_
+            conversation = conversation.substr(4);
+        } else {//群聊会话 group_xxx
+            conversation = conversation.substr(6);
+        }
         conversation_vector.push_back(conversation);
         env->DeleteLocalRef(item);
     }

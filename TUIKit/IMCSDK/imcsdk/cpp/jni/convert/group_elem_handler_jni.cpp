@@ -101,6 +101,8 @@ namespace tim {
             return true;
         }
 
+
+
         jobject GroupElemHandlerJni::Convert2JObject(const json::Object &elem_json) {
             if (elem_json.size() == 0 || elem_json[kTIMElemType].ToInt() != TIMElemType::kTIMElem_GroupTips) {
                 return nullptr;
@@ -119,7 +121,7 @@ namespace tim {
             }
 
             env->SetObjectField(jElemObj, j_field_array_[FieldIDGroupID], StringJni::Cstring2Jstring(env, elem_json[kTIMGroupTipsElemGroupId]));
-            env->SetIntField(jElemObj, j_field_array_[FieldIDType], elem_json[kTIMGroupTipsElemTipType]);
+            env->SetIntField(jElemObj, j_field_array_[FieldIDType], CTipType2JTipType(TIMGroupTipType(elem_json[kTIMGroupTipsElemTipType].ToInt())));
 
             if (elem_json.HasKey(kTIMGroupTipsElemOpGroupMemberInfo)) {
                 jobject opMemberObj = GroupMemberInfoJni::Convert2JObject(elem_json[kTIMGroupTipsElemOpGroupMemberInfo]);
@@ -179,7 +181,7 @@ namespace tim {
                 groupTipElem[kTIMGroupTipsElemGroupId] = StringJni::Jstring2Cstring(env, jStr).c_str();
                 env->DeleteLocalRef(jStr);
             }
-            groupTipElem[kTIMGroupTipsElemTipType] = env->GetIntField(jElemObj, j_field_array_[FieldIDType]);;
+            groupTipElem[kTIMGroupTipsElemTipType] = JTipType2CTipType(env->GetIntField(jElemObj, j_field_array_[FieldIDType]));
 
             jobject opMemberObj = env->GetObjectField(jElemObj, j_field_array_[FieldIDOpMember]);
             if (opMemberObj) {
@@ -251,6 +253,55 @@ namespace tim {
             groupTipElem[kTIMGroupTipsElemMemberNum] = env->GetIntField(jElemObj, j_field_array_[FieldIDMemberCount]);
 
             return std::make_unique<json::Object>(groupTipElem);
+        }
+
+        TIMGroupTipType GroupElemHandlerJni::JTipType2CTipType(int jTipType) {
+            //im native sdk 中的群tip类型 转换 im c sdk中的群tip类型
+            switch (jTipType) {
+                case JavaTipType::V2TIM_GROUP_TIPS_TYPE_JOIN:
+                    return kTIMGroupTip_Invite;
+                case JavaTipType::V2TIM_GROUP_TIPS_TYPE_INVITE:
+                    return kTIMGroupTip_Invite;
+                case JavaTipType::V2TIM_GROUP_TIPS_TYPE_QUIT:
+                    return kTIMGroupTip_Quit;
+                case JavaTipType::V2TIM_GROUP_TIPS_TYPE_KICKED:
+                    return kTIMGroupTip_Kick;
+                case JavaTipType::V2TIM_GROUP_TIPS_TYPE_SET_ADMIN:
+                    return kTIMGroupTip_SetAdmin;
+                case JavaTipType::V2TIM_GROUP_TIPS_TYPE_CANCEL_ADMIN:
+                    return kTIMGroupTip_CancelAdmin;
+                case JavaTipType::V2TIM_GROUP_TIPS_TYPE_GROUP_INFO_CHANGE:
+                    return kTIMGroupTip_GroupInfoChange;
+                case JavaTipType::V2TIM_GROUP_TIPS_TYPE_MEMBER_INFO_CHANGE:
+                    return kTIMGroupTip_MemberInfoChange;
+                default:
+                    return kTIMGroupTip_None;
+            }
+        }
+
+        int GroupElemHandlerJni::CTipType2JTipType(TIMGroupTipType cTipType) {
+            //im c sdk中的群tip类型  转换 im native sdk 中的群tip类型
+            switch (cTipType) {
+                case kTIMGroupTip_Invite:
+                    return JavaTipType::V2TIM_GROUP_TIPS_TYPE_JOIN;
+                    //TODO: im sdk 目前暂没有区分用户加群方式
+//                    return JavaTipType::V2TIM_GROUP_TIPS_TYPE_INVITE;
+                case kTIMGroupTip_Quit:
+                    return JavaTipType::V2TIM_GROUP_TIPS_TYPE_QUIT;
+                case kTIMGroupTip_Kick:
+                    return JavaTipType::V2TIM_GROUP_TIPS_TYPE_KICKED;
+                case kTIMGroupTip_SetAdmin:
+                    return JavaTipType::V2TIM_GROUP_TIPS_TYPE_SET_ADMIN;
+                case kTIMGroupTip_CancelAdmin:
+                    return JavaTipType::V2TIM_GROUP_TIPS_TYPE_CANCEL_ADMIN;
+                case kTIMGroupTip_GroupInfoChange:
+                    return JavaTipType::V2TIM_GROUP_TIPS_TYPE_GROUP_INFO_CHANGE;
+                case kTIMGroupTip_MemberInfoChange:
+                case kTIMGroupTip_MemberMarkChange:
+                    return JavaTipType::V2TIM_GROUP_TIPS_TYPE_MEMBER_INFO_CHANGE;
+                default:
+                    return JavaTipType::GROUP_TIPS_TYPE_INVALID;
+            }
         }
     }// namespace jni
 }// namespace tim
