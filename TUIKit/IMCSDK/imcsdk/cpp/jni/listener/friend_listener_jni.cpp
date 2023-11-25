@@ -17,21 +17,35 @@ namespace tim {
         jclass FriendListenerJni::j_cls_;
         jmethodID FriendListenerJni::j_method_id_array_[MethodIDMax];
 
+        void FriendListenerJni::initListener() {
+            TIMSetOnAddFriendCallback(ImplTIMOnAddFriendCallback, &listener_friend_map);
+            TIMSetOnDeleteFriendCallback(ImplTIMOnDeleteFriendCallback, &listener_friend_map);
+            TIMSetUpdateFriendProfileCallback(ImplTIMUpdateFriendProfileCallback, &listener_friend_map);
+            TIMSetFriendAddRequestCallback(ImplTIMFriendAddRequestCallback, &listener_friend_map);
+            TIMSetFriendApplicationListDeletedCallback(ImplTIMFriendApplicationListDeletedCallback, &listener_friend_map);
+            TIMSetFriendApplicationListReadCallback(ImplTIMFriendApplicationListReadCallback, &listener_friend_map);
+            TIMSetFriendBlackListAddedCallback(ImplTIMFriendBlackListAddedCallback, &listener_friend_map);
+            TIMSetFriendBlackListDeletedCallback(ImplTIMFriendBlackListDeletedCallback, &listener_friend_map);
+        }
+
+        void FriendListenerJni::unInitListener() {
+            TIMSetOnAddFriendCallback(ImplTIMOnAddFriendCallback, nullptr);
+            TIMSetOnDeleteFriendCallback(ImplTIMOnDeleteFriendCallback, nullptr);
+            TIMSetUpdateFriendProfileCallback(ImplTIMUpdateFriendProfileCallback, nullptr);
+            TIMSetFriendAddRequestCallback(ImplTIMFriendAddRequestCallback, nullptr);
+            TIMSetFriendApplicationListDeletedCallback(ImplTIMFriendApplicationListDeletedCallback, nullptr);
+            TIMSetFriendApplicationListReadCallback(ImplTIMFriendApplicationListReadCallback, nullptr);
+            TIMSetFriendBlackListAddedCallback(ImplTIMFriendBlackListAddedCallback, nullptr);
+            TIMSetFriendBlackListDeletedCallback(ImplTIMFriendBlackListDeletedCallback, nullptr);
+        }
+
         void FriendListenerJni::AddListener(JNIEnv *env, jobject listener_friend, jstring listenerPath) {
             if (nullptr == listener_friend) {
                 LOGE("FriendListenerJni | AddListener listener_simple is null");
                 return;
             }
             if (listener_friend_map.empty()) {
-                TIMSetOnAddFriendCallback(ImplTIMOnAddFriendCallback, &listener_friend_map);
-                TIMSetOnDeleteFriendCallback(ImplTIMOnDeleteFriendCallback, &listener_friend_map);
-                TIMSetUpdateFriendProfileCallback(ImplTIMUpdateFriendProfileCallback, &listener_friend_map);
-                TIMSetFriendAddRequestCallback(ImplTIMFriendAddRequestCallback, &listener_friend_map);
-                TIMSetFriendApplicationListDeletedCallback(ImplTIMFriendApplicationListDeletedCallback, &listener_friend_map);
-                TIMSetFriendApplicationListReadCallback(ImplTIMFriendApplicationListReadCallback, &listener_friend_map);
-                TIMSetFriendBlackListAddedCallback(ImplTIMFriendBlackListAddedCallback, &listener_friend_map);
-                TIMSetFriendBlackListDeletedCallback(ImplTIMFriendBlackListDeletedCallback, &listener_friend_map);
-
+                tim::ObserverManager::getInstance().addListener(this);
             }
             std::string path = StringJni::Jstring2Cstring(env,listenerPath);
             for (auto &item: listener_friend_map) {
@@ -51,14 +65,7 @@ namespace tim {
             }
             listener_friend_map.erase(StringJni::Jstring2Cstring(env,listenerPath));
             if (listener_friend_map.empty()) {
-                TIMSetOnAddFriendCallback(ImplTIMOnAddFriendCallback, nullptr);
-                TIMSetOnDeleteFriendCallback(ImplTIMOnDeleteFriendCallback, nullptr);
-                TIMSetUpdateFriendProfileCallback(ImplTIMUpdateFriendProfileCallback, nullptr);
-                TIMSetFriendAddRequestCallback(ImplTIMFriendAddRequestCallback, nullptr);
-                TIMSetFriendApplicationListDeletedCallback(ImplTIMFriendApplicationListDeletedCallback, nullptr);
-                TIMSetFriendApplicationListReadCallback(ImplTIMFriendApplicationListReadCallback, nullptr);
-                TIMSetFriendBlackListAddedCallback(ImplTIMFriendBlackListAddedCallback, nullptr);
-                TIMSetFriendBlackListDeletedCallback(ImplTIMFriendBlackListDeletedCallback, nullptr);
+                tim::ObserverManager::getInstance().removeListener(this);
             }
         }
 
@@ -345,6 +352,7 @@ namespace tim {
 
             env->DeleteLocalRef(friendInfoListObj);
         }
-        
+
+
     }// namespace jni
 }// namespace tim

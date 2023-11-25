@@ -27,13 +27,6 @@ extern "C" {
 
 static std::shared_ptr<tim::jni::ConversationListenerJni> conversation_callback_jni;
 
-DEFINE_NATIVE_FUNC(void, NativeInitListener) {
-    if (!conversation_callback_jni) {
-        conversation_callback_jni = std::make_shared<tim::jni::ConversationListenerJni>();
-    }
-    conversation_callback_jni->InitListener();
-}
-
 DEFINE_NATIVE_FUNC(void, NativeAddConversationListener, jobject listener, jstring listenerPath) {
     if (!conversation_callback_jni) {
         conversation_callback_jni = std::make_shared<tim::jni::ConversationListenerJni>();
@@ -543,7 +536,6 @@ DEFINE_NATIVE_FUNC(void, NativeDeleteConversationsFromGroup, jstring group_name,
 
 // java 和 native 方法映射
 static JNINativeMethod gMethods[] = {
-        {"nativeInitListener",                        "()V",                                                                                          (void *) NativeInitListener},
         {"nativeAddConversationListener",             "(Lcom/tencent/imsdk/v2/V2TIMConversationListener;Ljava/lang/String;)V",                        (void *) NativeAddConversationListener},
         {"nativeRemoveConversationListener",          "(Ljava/lang/String;)V",                                                                        (void *) NativeRemoveConversationListener},
         {"nativeGetConversationList",                 "(JILcom/tencent/imsdk/common/IMCallback;)V",                                                   (void *) NativeGetConversationList},

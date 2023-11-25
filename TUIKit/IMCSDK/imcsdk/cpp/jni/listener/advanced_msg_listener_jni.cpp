@@ -18,16 +18,27 @@ namespace tim {
         jclass AdvancedMsgListenerJni::j_cls_;
         jmethodID AdvancedMsgListenerJni::j_method_id_array_[MethodIDMax];
 
+        void AdvancedMsgListenerJni::initListener() {
+            TIMAddRecvNewMsgCallback(ImplTIMRecvNewMsgCallback, &listener_advanced_msg_map);
+            TIMSetMsgReadedReceiptCallback(ImplTIMMsgReadedReceiptCallback, &listener_advanced_msg_map);
+            TIMSetMsgRevokeCallback(ImplTIMMsgRevokeCallback, &listener_advanced_msg_map);
+            TIMSetMsgUpdateCallback(ImplTIMMsgUpdateCallback, &listener_advanced_msg_map);
+        }
+
+        void AdvancedMsgListenerJni::unInitListener() {
+            TIMAddRecvNewMsgCallback(nullptr, nullptr);
+            TIMSetMsgReadedReceiptCallback(nullptr, nullptr);
+            TIMSetMsgRevokeCallback(nullptr, nullptr);
+            TIMSetMsgUpdateCallback(nullptr, nullptr);
+        }
+
         void AdvancedMsgListenerJni::AddListener(JNIEnv *env, jobject listener_advanced_msg, jstring listenerPath) {
             if (nullptr == listener_advanced_msg) {
                 LOGE("AdvancedMsgListenerJni | AddListener listener_simple is null");
                 return;
             }
             if (listener_advanced_msg_map.empty()) {
-                TIMAddRecvNewMsgCallback(ImplTIMRecvNewMsgCallback, &listener_advanced_msg_map);
-                TIMSetMsgReadedReceiptCallback(ImplTIMMsgReadedReceiptCallback, &listener_advanced_msg_map);
-                TIMSetMsgRevokeCallback(ImplTIMMsgRevokeCallback, &listener_advanced_msg_map);
-                TIMSetMsgUpdateCallback(ImplTIMMsgUpdateCallback, &listener_advanced_msg_map);
+                tim::ObserverManager::getInstance().addListener(this);
             }
 
             std::string path = StringJni::Jstring2Cstring(env, listenerPath);
@@ -48,10 +59,7 @@ namespace tim {
             }
             listener_advanced_msg_map.erase(StringJni::Jstring2Cstring(env, listenerPath));
             if (listener_advanced_msg_map.empty()) {
-                TIMAddRecvNewMsgCallback(nullptr, nullptr);
-                TIMSetMsgReadedReceiptCallback(nullptr, nullptr);
-                TIMSetMsgRevokeCallback(nullptr, nullptr);
-                TIMSetMsgUpdateCallback(nullptr, nullptr);
+                tim::ObserverManager::getInstance().removeListener(this);
             }
         }
 

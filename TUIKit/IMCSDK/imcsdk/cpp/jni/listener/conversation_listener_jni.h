@@ -10,14 +10,16 @@
 #include <map>
 #include "TIMCloud.h"
 #include "json.h"
+#include "observer_init.h"
 
 namespace tim {
     namespace jni {
-        class ConversationListenerJni final : public std::enable_shared_from_this<ConversationListenerJni> {
-        public:
-            void InitListener();
+        class ConversationListenerJni final : public std::enable_shared_from_this<ConversationListenerJni>,Observer {
+        private:
+            //实现Observer 纯虚函数
+            void initListener() override;
 
-            void UnInitListener();
+            void unInitListener() override;
 
         public:
             ConversationListenerJni() = default;

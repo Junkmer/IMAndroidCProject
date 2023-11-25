@@ -17,20 +17,35 @@
 namespace tim {
     namespace jni {
 
+        void BaseListenerJni::initListener() {
+            TIMSetNetworkStatusListenerCallback(ImplTIMNetworkStatusListenerCallback, &listener_imsdk_map);
+            TIMSetKickedOfflineCallback(ImplTIMKickedOfflineCallback, &listener_imsdk_map);
+            TIMSetUserSigExpiredCallback(ImplTIMUserSigExpiredCallback, &listener_imsdk_map);
+            TIMSetSelfInfoUpdatedCallback(ImplTIMSelfInfoUpdatedCallback, &listener_imsdk_map);
+            TIMSetUserInfoChangedCallback(ImplTIMUserInfoChangedCallback, &listener_imsdk_map);
+            TIMSetUserStatusChangedCallback(ImplTIMUserStatusChangedCallback, &listener_imsdk_map);
+            TIMSetMsgAllMessageReceiveOptionCallback(ImplTIMMsgAllMessageReceiveOptionCallback, &listener_imsdk_map);
+            TIMSetExperimentalNotifyCallback(ImplTIMExperimentalNotifyCallback, &listener_imsdk_map);
+        }
+
+        void BaseListenerJni::unInitListener() {
+            TIMSetNetworkStatusListenerCallback(nullptr, nullptr);
+            TIMSetKickedOfflineCallback(nullptr, nullptr);
+            TIMSetUserSigExpiredCallback(nullptr, nullptr);
+            TIMSetSelfInfoUpdatedCallback(nullptr, nullptr);
+            TIMSetUserInfoChangedCallback(nullptr, nullptr);
+            TIMSetUserStatusChangedCallback(nullptr, nullptr);
+            TIMSetMsgAllMessageReceiveOptionCallback(nullptr, nullptr);
+            TIMSetExperimentalNotifyCallback(nullptr, nullptr);
+        }
+
         void BaseListenerJni::AddSDKListener(JNIEnv *env, jobject listener_imsdk, jstring listenerPath) {
             if (nullptr == listener_imsdk) {
                 LOGE("addSDKListener | listener_imsdk is null");
                 return;
             }
             if (listener_imsdk_map.empty()) {
-                TIMSetNetworkStatusListenerCallback(ImplTIMNetworkStatusListenerCallback, &listener_imsdk_map);
-                TIMSetKickedOfflineCallback(ImplTIMKickedOfflineCallback, &listener_imsdk_map);
-                TIMSetUserSigExpiredCallback(ImplTIMUserSigExpiredCallback, &listener_imsdk_map);
-                TIMSetSelfInfoUpdatedCallback(ImplTIMSelfInfoUpdatedCallback, &listener_imsdk_map);
-                TIMSetUserInfoChangedCallback(ImplTIMUserInfoChangedCallback, &listener_imsdk_map);
-                TIMSetUserStatusChangedCallback(ImplTIMUserStatusChangedCallback, &listener_imsdk_map);
-                TIMSetMsgAllMessageReceiveOptionCallback(ImplTIMMsgAllMessageReceiveOptionCallback, &listener_imsdk_map);
-                TIMSetExperimentalNotifyCallback(ImplTIMExperimentalNotifyCallback, &listener_imsdk_map);
+                tim::ObserverManager::getInstance().addListener(this);
             }
 
             std::string path = StringJni::Jstring2Cstring(env, listenerPath);
@@ -47,14 +62,7 @@ namespace tim {
         void BaseListenerJni::RemoveSDKListener(JNIEnv *env, jstring listenerPath) {
             listener_imsdk_map.erase(StringJni::Jstring2Cstring(env, listenerPath));
             if (listener_imsdk_map.empty()) {
-                TIMSetNetworkStatusListenerCallback(nullptr, nullptr);
-                TIMSetKickedOfflineCallback(nullptr, nullptr);
-                TIMSetUserSigExpiredCallback(nullptr, nullptr);
-                TIMSetSelfInfoUpdatedCallback(nullptr, nullptr);
-                TIMSetUserInfoChangedCallback(nullptr, nullptr);
-                TIMSetUserStatusChangedCallback(nullptr, nullptr);
-                TIMSetMsgAllMessageReceiveOptionCallback(nullptr, nullptr);
-                TIMSetExperimentalNotifyCallback(nullptr, nullptr);
+                tim::ObserverManager::getInstance().removeListener(this);
             }
         }
 

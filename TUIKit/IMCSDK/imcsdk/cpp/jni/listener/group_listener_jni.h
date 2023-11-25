@@ -9,10 +9,17 @@
 #include <memory>
 #include <map>
 #include "json.h"
+#include "observer_init.h"
 
 namespace tim {
     namespace jni {
-        class GroupListenerJni final : public std::enable_shared_from_this<GroupListenerJni> {
+        class GroupListenerJni final : public std::enable_shared_from_this<GroupListenerJni>,Observer {
+        private:
+            //实现Observer 纯虚函数
+            void initListener() override;
+
+            void unInitListener() override;
+
         public:
             GroupListenerJni() = default;
 

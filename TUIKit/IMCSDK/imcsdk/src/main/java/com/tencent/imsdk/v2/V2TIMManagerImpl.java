@@ -61,9 +61,6 @@ public class V2TIMManagerImpl extends V2TIMManager {
             config = new V2TIMSDKConfig();
         }
 
-        //初始化各类监听
-        getConversationManager().nativeInitListener();
-
         IMContext.getInstance().init(context.getApplicationContext());
 
         getFieldByReflection(V2TIMSDKConfig.class,"sdkInitPath",config, SystemUtil.getSDKInitPath());

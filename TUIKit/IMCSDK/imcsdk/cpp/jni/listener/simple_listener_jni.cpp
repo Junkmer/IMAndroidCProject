@@ -20,6 +20,14 @@ namespace tim {
         jclass SimpleListenerJni::j_cls_;
         jmethodID SimpleListenerJni::j_method_id_array_[MethodIDMax];
 
+        void SimpleListenerJni::initListener() {
+            TIMAddRecvNewMsgCallback(TIMAddRecvNewMsgCallbackImpl, &listener_simple_map);
+        }
+
+        void SimpleListenerJni::unInitListener() {
+            TIMRemoveRecvNewMsgCallback(TIMAddRecvNewMsgCallbackImpl);
+        }
+
         void SimpleListenerJni::AddListener(JNIEnv *env, jobject listener_simple) {
             if (nullptr == listener_simple) {
                 LOGE("SimpleListenerJni | AddListener listener_simple is null");
@@ -27,7 +35,7 @@ namespace tim {
             }
             jobject j_obj = env->NewGlobalRef(listener_simple);
             if (listener_simple_map.empty()) {
-                TIMAddRecvNewMsgCallback(TIMAddRecvNewMsgCallbackImpl, &listener_simple_map);
+                tim::ObserverManager::getInstance().addListener(this);
             }
             listener_simple_map.insert(std::make_pair(listener_simple, j_obj));
         }
@@ -39,7 +47,7 @@ namespace tim {
             }
             listener_simple_map.erase(listener_simple);
             if (listener_simple_map.empty()) {
-                TIMRemoveRecvNewMsgCallback(TIMAddRecvNewMsgCallbackImpl);
+                tim::ObserverManager::getInstance().removeListener(this);
             }
         }
 
