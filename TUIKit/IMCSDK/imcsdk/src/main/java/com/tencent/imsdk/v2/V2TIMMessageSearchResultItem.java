@@ -1,6 +1,7 @@
 package com.tencent.imsdk.v2;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
 public class V2TIMMessageSearchResultItem implements Serializable {
     private String conversationID;
     private int messageCount;
-    private List<V2TIMMessage> messageList;
+    private final List<V2TIMMessage> messageList = new ArrayList<>();
 
     public String getConversationID() {
         return conversationID;

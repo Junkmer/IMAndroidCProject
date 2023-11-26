@@ -122,7 +122,7 @@ namespace tim {
             if (isSearchNameCard){
                 field_key_array.push_back(kTIMGroupMemberSearchFieldKey_NameCard);
             }
-
+            memberSearchParam_json[TIMGroupMemberSearchParamFieldList] = field_key_array;
             return true;
         }
     }//namespace jni

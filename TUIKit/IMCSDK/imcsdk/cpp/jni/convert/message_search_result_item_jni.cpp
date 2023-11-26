@@ -70,7 +70,7 @@ namespace tim {
             }
 
             jobject j_obj_searchResultItem = env->NewObject(j_cls_, j_method_id_array_[MethodIDConstructor]);
-            if (!j_obj_searchResultItem) {
+            if (nullptr == j_obj_searchResultItem) {
                 return nullptr;
             }
             int convType = searchResultItem_json[kTIMMsgSearchResultItemConvType];

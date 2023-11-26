@@ -84,6 +84,7 @@ namespace tim {
             if (isSearchName){
                 field_array.push_back(kTIMGroupSearchFieldKey_GroupName);
             }
+            groupSearchParam_json[TIMGroupSearchParamFieldList] = field_array;
             return true;
         }
     }//namespace jni

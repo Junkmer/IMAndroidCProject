@@ -63,18 +63,20 @@ namespace tim {
             }
 
             jobject j_obj_searchResult = env->NewObject(j_cls_, j_method_id_array_[MethodIDConstructor]);
-            if (!j_obj_searchResult) {
+            if (nullptr == j_obj_searchResult) {
                 return nullptr;
             }
 
             env->SetIntField(j_obj_searchResult, j_field_array_[FieldIDTotalCount], searchResult_json[kTIMMsgSearchResultTotalCount]);
 
-            if (searchResult_json.HasKey(kTIMMsgSearchResultItemArray)){
+            if (searchResult_json.HasKey(kTIMMsgSearchResultItemArray)) {
                 json::Array item_array = searchResult_json[kTIMMsgSearchResultItemArray];
                 for (int i = 0; i < item_array.size(); ++i) {
                     jobject j_obj_resultItem = MessageSearchResultItemJni::Convert2JObject(item_array[i]);
-                    env->CallVoidMethod(j_obj_searchResult,j_method_id_array_[MethodIDAddMessageSearchResultItem],j_obj_resultItem);
-                    env->DeleteLocalRef(j_obj_resultItem);
+                    if (j_obj_resultItem) {
+                        env->CallVoidMethod(j_obj_searchResult, j_method_id_array_[MethodIDAddMessageSearchResultItem], j_obj_resultItem);
+                        env->DeleteLocalRef(j_obj_resultItem);
+                    }
                 }
             }
 
