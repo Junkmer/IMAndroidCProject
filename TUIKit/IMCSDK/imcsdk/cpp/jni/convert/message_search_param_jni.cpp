@@ -100,7 +100,17 @@ namespace tim {
             jstring jStr = nullptr;
             jStr = (jstring) env->GetObjectField(j_obj_searchParam, j_field_array_[FieldIDConversationID]);
             if (jStr) {
-                searchParam_json[kTIMMsgSearchParamConvId] = StringJni::Jstring2Cstring(env, jStr).c_str();
+                std::string conversationID_str = tim::jni::StringJni::Jstring2Cstring(env, jStr);
+                if (conversationID_str.find("c2c_") != std::string::npos) {//单聊会话 c2c_
+                    searchParam_json[kTIMMsgSearchParamConvType] = kTIMConv_C2C;
+                    searchParam_json[kTIMMsgSearchParamConvId] = conversationID_str.substr(4);
+                } else if (conversationID_str.find("group_") != std::string::npos) {//群聊会话 group_xxx
+                    searchParam_json[kTIMMsgSearchParamConvType] = kTIMConv_Group;
+                    searchParam_json[kTIMMsgSearchParamConvId] = conversationID_str.substr(6);
+                } else {
+                    searchParam_json[kTIMMsgSearchParamConvType] = kTIMConv_C2C;
+                    searchParam_json[kTIMMsgSearchParamConvId] = conversationID_str;
+                }
                 env->DeleteLocalRef(jStr);
             }
 

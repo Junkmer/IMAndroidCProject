@@ -456,9 +456,9 @@ DEFINE_NATIVE_FUNC(void, NativeFindMessages, jobject messageIdList, jobject call
 DEFINE_NATIVE_FUNC(void, NativeSearchLocalMessages, jobject searchParam, jobject callback) {
     jobject jni_callback = env->NewGlobalRef(callback);
 
-    json::Object search_param;
-    tim::jni::MessageSearchParamJni::Convert2CoreObject(searchParam, search_param);
-    std::string paramStr = json::Serialize(search_param);
+    json::Object search_param_json;
+    tim::jni::MessageSearchParamJni::Convert2CoreObject(searchParam, search_param_json);
+    std::string paramStr = json::Serialize(search_param_json);
 
     tim::TIMEngine::GetInstance()->SearchLocalMessages(paramStr.c_str(),
                                                        [](int32_t code, const char *desc, const char *json_params, const void *user_data) {
