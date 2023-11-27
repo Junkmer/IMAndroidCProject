@@ -1,5 +1,7 @@
 package com.tencent.imsdk.v2;
 
+import android.text.TextUtils;
+
 import com.tencent.imsdk.common.IMCallback;
 
 import java.util.List;
@@ -45,8 +47,13 @@ public class V2TIMConversationManagerImpl extends V2TIMConversationManager {
         nativeGetConversation(conversationID, new IMCallback<V2TIMConversation>(_callback_) {
             @Override
             public void success(V2TIMConversation data) {
-                if (data != null && data.getConversationID() == null){
+                if (data != null && TextUtils.isEmpty(data.getConversationID())){
                     data.setConversationID(conversationID);
+                    if (conversationID.startsWith("c2c_")){
+                        data.setType(V2TIMConversation.V2TIM_C2C);
+                    }else {
+                        data.setType(V2TIMConversation.V2TIM_GROUP);
+                    }
                 }
                 super.success(data);
             }

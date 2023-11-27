@@ -43,6 +43,10 @@ public class V2TIMConversation implements Serializable {
         return conversationID;
     }
 
+    protected void setType(int type) {
+        this.type = type;
+    }
+
     public int getType() {
         return type;
     }
