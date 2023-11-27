@@ -33,29 +33,6 @@ public class V2TIMGroupInfo implements Serializable {
     private int recvOpt;
     private long joinTime;
 
-    /**
-     * 以下字段用于C++ SDK 判断当前需要修改的参数标记
-     */
-    // 未定义
-    private static final int   V2TIM_GROUP_INFO_MODIFY_FLAG_UNKNOWN = 0x00;
-    // 名称
-    private static final int  V2TIM_GROUP_INFO_MODIFY_FLAG_GROUP_NAME = 0x01;
-    // 公告
-    private static final int  V2TIM_GROUP_INFO_MODIFY_FLAG_NOTIFICATION = 0x01 << 1;
-    // 简介
-    private static final int  V2TIM_GROUP_INFO_MODIFY_FLAG_INTRODUCTION = 0x01 << 2;
-    // 头像
-    private static final int   V2TIM_GROUP_INFO_MODIFY_FLAG_FACE_URL = 0x01 << 3;
-    // 加群选项
-    private static final int  V2TIM_GROUP_INFO_MODIFY_FLAG_GROUP_ADD_OPTION = 0x01 << 4;
-    // 禁言
-    private static final int  V2TIM_GROUP_INFO_MODIFY_FLAG_SHUTUP_ALL = 0x01 << 8;
-    // 群自定义数据
-    private static final int  V2TIM_GROUP_INFO_MODIFY_FLAG_CUSTOM_INFO = 0x01 << 9;
-    // 话题自定义字段
-    private static final int  V2TIM_TOPIC_INFO_MODIFY_FLAG_CUSTOM_STRING = 0x1 << 11;
-    private int modifyFlag;
-
     public String getGroupID() {
         return groupID;
     }
@@ -85,7 +62,6 @@ public class V2TIMGroupInfo implements Serializable {
     }
 
     public void setGroupName(String groupName) {
-        modifyFlag = modifyFlag | V2TIM_GROUP_INFO_MODIFY_FLAG_GROUP_NAME;
         this.groupName = groupName;
     }
 
@@ -94,7 +70,6 @@ public class V2TIMGroupInfo implements Serializable {
     }
 
     public void setNotification(String notification) {
-        modifyFlag = modifyFlag | V2TIM_GROUP_INFO_MODIFY_FLAG_NOTIFICATION;
         this.notification = notification;
     }
 
@@ -103,7 +78,6 @@ public class V2TIMGroupInfo implements Serializable {
     }
 
     public void setIntroduction(String introduction) {
-        modifyFlag = modifyFlag | V2TIM_GROUP_INFO_MODIFY_FLAG_INTRODUCTION;
         this.introduction = introduction;
     }
 
@@ -112,7 +86,6 @@ public class V2TIMGroupInfo implements Serializable {
     }
 
     public void setFaceUrl(String faceUrl) {
-        modifyFlag = modifyFlag | V2TIM_GROUP_INFO_MODIFY_FLAG_FACE_URL;
         this.faceUrl = faceUrl;
     }
 
@@ -121,7 +94,6 @@ public class V2TIMGroupInfo implements Serializable {
     }
 
     public void setAllMuted(boolean allMuted) {
-        modifyFlag = modifyFlag | V2TIM_GROUP_INFO_MODIFY_FLAG_SHUTUP_ALL;
         isAllMuted = allMuted;
     }
 
@@ -138,7 +110,6 @@ public class V2TIMGroupInfo implements Serializable {
     }
 
     public void setGroupAddOpt(int groupAddOpt) {
-        modifyFlag = modifyFlag | V2TIM_GROUP_INFO_MODIFY_FLAG_GROUP_ADD_OPTION;
         this.groupAddOpt = groupAddOpt;
     }
 
@@ -155,7 +126,6 @@ public class V2TIMGroupInfo implements Serializable {
     }
 
     public void setCustomInfo(Map<String, byte[]> customInfo) {
-        modifyFlag = modifyFlag | V2TIM_GROUP_INFO_MODIFY_FLAG_CUSTOM_INFO;
         this.customInfo = customInfo;
     }
 

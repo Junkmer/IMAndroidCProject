@@ -40,7 +40,6 @@ namespace tim {
                 FieldIDRole,
                 FieldIDRecvOpt,
                 FieldIDJoinTime,
-                FieldIDModifyFlag,
 
                 FieldIDMax,
             };
