@@ -287,7 +287,7 @@ namespace tim {
         }
 
         void GroupListenerJni::ImplTIMGroupTipsEventCallback(const char *json_group_tip, const void *user_data) {
-            LOGE("ImplTIMGroupTipsEventCallback — json_group_tip = %s",json_group_tip);
+//            LOGE("ImplTIMGroupTipsEventCallback — json_group_tip = %s",json_group_tip);
 
             auto *_listener = (std::map<std::string, jobject> *) user_data;
 

@@ -54,7 +54,7 @@ void CGetConversationList(JNIEnv *env, const char *filter, uint64_t next_seq, ui
                                                                    auto _env = scopedJEnv.GetEnv();
 
                                                                    if (TIMErrCode::ERR_SUCC == code) {
-                                                                       LOGE("conversation = %s", json_params);
+//                                                                       LOGE("conversation = %s", json_params);
                                                                        jobject conversationResultObj = tim::jni::ConversationResultJni::Convert2JObject(
                                                                                json_params);
                                                                        if (conversationResultObj) {

@@ -148,7 +148,7 @@ namespace tim {
             for (auto &item: _listener_) {
                 jclass j_cls = env->GetObjectClass(item.second);
                 if (nullptr == j_cls) {
-                    LOGE("get object class faild");
+                    LOGE("get object class failed");
                 }
 
                 jmethodID method = env->GetMethodID(j_cls, "onExperimentalNotify", "((Ljava/lang/String;Ljava/lang/Object;)V");

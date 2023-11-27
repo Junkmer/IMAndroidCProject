@@ -479,7 +479,7 @@ DEFINE_NATIVE_FUNC(void, NativeCallExperimentalAPI, jstring api, jobject param, 
                                                            auto _callback = (jobject) user_data;
 
                                                            if (TIMErrCode::ERR_SUCC == code) {
-                                                               LOGE("json_params = %s",json_params);
+//                                                               LOGE("json_params = %s",json_params);
                                                                json::Object base_json = json::Deserialize(json_params);
                                                                if (base_json.size() > 0) {
                                                                    if (base_json.HasKey(kTIMCommercialAbilityResultEnabled)){
