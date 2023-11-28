@@ -14,6 +14,7 @@ namespace tim {
         public:
             static bool InitIDs(JNIEnv *env);
             static jobject Convert2JObject(const json::Object &conv_obj_json);
+            static jobject CreateNewConvJObject();
 
         private:
             enum FieldID {

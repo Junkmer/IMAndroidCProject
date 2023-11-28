@@ -61,6 +61,18 @@ namespace tim {
                 return false;
             }
             j_method_id_array[MethodIDDownloadProgress] = j_method;
+
+            j_method = env->GetMethodID(j_cls_callback, "success2signalInfo", "(Lcom/tencent/imsdk/v2/V2TIMSignalingInfo;)V");
+            if (j_method == nullptr) {
+                return false;
+            }
+            j_method_id_array[MethodIDSuccess2signalInfo] = j_method;
+
+            j_method = env->GetMethodID(j_cls_callback, "fail2signalInfo", "(ILjava/lang/String;)V");
+            if (j_method == nullptr) {
+                return false;
+            }
+            j_method_id_array[MethodIDFail2signalInfo] = j_method;
             return true;
         }
 
@@ -152,6 +164,28 @@ namespace tim {
             }
 
             env->CallVoidMethod(callback, j_method_id_array[MethodIDDownloadProgress], (jlong) currentSize, (jlong) totalSize);
+        }
+
+        void IMCallbackJNI::Success2signalInfo(jobject const &callback, jobject const &obj) {
+            ScopedJEnv scopedJEnv;
+            auto *env = scopedJEnv.GetEnv();
+
+            if (!InitIDs(env)) {
+                return;
+            }
+
+            env->CallVoidMethod(callback, j_method_id_array[MethodIDSuccess2signalInfo], obj);
+        }
+
+        void IMCallbackJNI::Fail2signalInfo(jobject const &callback, const int &code, const char *desc) {
+            ScopedJEnv scopedJEnv;
+            auto *env = scopedJEnv.GetEnv();
+
+            if (!InitIDs(env)) {
+                return;
+            }
+
+            env->CallVoidMethod(callback, j_method_id_array[MethodIDFail2signalInfo], code, StringJni::charToJstring(env, desc));
         }
 
     } // namespace jni

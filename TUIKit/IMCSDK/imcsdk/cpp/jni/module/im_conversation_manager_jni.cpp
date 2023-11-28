@@ -54,7 +54,7 @@ void CGetConversationList(JNIEnv *env, const char *filter, uint64_t next_seq, ui
                                                                    auto _env = scopedJEnv.GetEnv();
 
                                                                    if (TIMErrCode::ERR_SUCC == code) {
-                                                                       LOGE("conversation = %s", json_params);
+//                                                                       LOGE("conversation = %s", json_params);
                                                                        jobject conversationResultObj = tim::jni::ConversationResultJni::Convert2JObject(
                                                                                json_params);
                                                                        if (conversationResultObj) {
@@ -99,8 +99,14 @@ DEFINE_NATIVE_FUNC(void, NativeGetConversation, jstring conversation_id, jobject
                                                                auto _callback = (jobject) user_data;
                                                                if (TIMErrCode::ERR_SUCC == code) {
                                                                    json::Array conv_array = json::Deserialize(json_params);
-                                                                   jobject conversationObj = tim::jni::ConversationJni::Convert2JObject(
-                                                                           conv_array[0]);
+                                                                   jobject conversationObj;
+                                                                   if (conv_array.size() > 0){
+                                                                       conversationObj = tim::jni::ConversationJni::Convert2JObject(conv_array[0]);
+
+                                                                   } else{
+                                                                       conversationObj = tim::jni::ConversationJni::CreateNewConvJObject();
+                                                                   }
+
                                                                    if (conversationObj) {
                                                                        tim::jni::IMCallbackJNI::Success(_callback, conversationObj);
                                                                        _env->DeleteLocalRef(conversationObj);
@@ -123,10 +129,10 @@ DEFINE_NATIVE_FUNC(void, NativeGetConversationListForID, jobject conversation_id
         json::Object json_obj;
         if (conversation.find("c2c_") != std::string::npos) {//单聊会话 c2c_
             json_obj[kTIMGetConversationListParamConvType] = kTIMConv_C2C;
-            json_obj[kTIMGetConversationListParamConvId] = conversation.substr(3);
+            json_obj[kTIMGetConversationListParamConvId] = conversation.substr(4);
         } else if (conversation.find("group_") != std::string::npos) {//群聊会话 group_xxx
-            json_obj[kTIMGetConversationListParamConvType] = kTIMConv_C2C;
-            json_obj[kTIMGetConversationListParamConvId] = conversation.substr(5);
+            json_obj[kTIMGetConversationListParamConvType] = kTIMConv_Group;
+            json_obj[kTIMGetConversationListParamConvId] = conversation.substr(6);
         } else {
             json_obj[kTIMGetConversationListParamConvType] = kTIMConv_C2C;
             json_obj[kTIMGetConversationListParamConvId] = conversation;
@@ -544,7 +550,7 @@ static JNINativeMethod gMethods[] = {
         {"nativeGetTotalUnreadMessageCount",          "(Lcom/tencent/imsdk/common/IMCallback;)V",                                                     (void *) NativeGetTotalUnreadMessageCount},
         {"nativeGetUnreadMessageCountByFilter",       "(Lcom/tencent/imsdk/v2/V2TIMConversationListFilter;Lcom/tencent/imsdk/common/IMCallback;)V",   (void *) NativeGetUnreadMessageCountByFilter},
         {"nativeSubscribeUnreadMessageCountByFilter", "(Lcom/tencent/imsdk/v2/V2TIMConversationListFilter;)V",                                        (void *) NativeSubscribeUnreadMessageCountByFilter},
-        {"nativeSubscribeUnreadMessageCountByFilter", "(Lcom/tencent/imsdk/v2/V2TIMConversationListFilter;)V",                                        (void *) NativeSubscribeUnreadMessageCountByFilter},
+        {"nativeUnsubscribeUnreadMessageCountByFilter", "(Lcom/tencent/imsdk/v2/V2TIMConversationListFilter;)V",                                        (void *) NativeUnsubscribeUnreadMessageCountByFilter},
         {"nativeCleanConversationUnreadMessageCount", "(Ljava/lang/String;JJLcom/tencent/imsdk/common/IMCallback;)V",                                 (void *) NativeCleanConversationUnreadMessageCount},
         {"nativeCreateConversationGroup",             "(Ljava/lang/String;Ljava/util/List;Lcom/tencent/imsdk/common/IMCallback;)V",                   (void *) NativeCreateConversationGroup},
         {"nativeGetConversationGroupList",            "(Lcom/tencent/imsdk/common/IMCallback;)V",                                                     (void *) NativeGetConversationGroupList},

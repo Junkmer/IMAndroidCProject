@@ -41,12 +41,6 @@ namespace tim {
             static std::map<std::string, jfieldID> fieldIdMap_;
         };
 
-        class ByteJni{
-        public:
-            static jbyteArray Cuint8_t2JByteArray(JNIEnv *env, const uint8_t *data, size_t size);
-//            static V2TIMBuffer JByteArray2V2TIMBuffer(JNIEnv *env,jbyteArray byteArray);
-        };
-
         class StringJni {
         public:
             static bool Init(JNIEnv *env);
@@ -56,7 +50,6 @@ namespace tim {
             static std::string JbyteArray2Cstring(JNIEnv *env, const jbyteArray &byteArr);
             static jstring charToJstring(JNIEnv *env, const char *pat);
             static char *jstringToChar(JNIEnv *env, jstring jstr);
-            static jstring Cuint8_t2Jstring(JNIEnv *env, const uint8_t *data, size_t size);
         public:
             static jclass j_cls_;
             static std::map<std::string, jmethodID> methodIdMap_;

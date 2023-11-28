@@ -95,7 +95,7 @@ namespace tim {
                 env->DeleteLocalRef(jStr);
             }
 
-            jStr = (jstring) env->GetObjectField(messageExtensionObj,j_field_array_[FieldIDExtensionKey]);
+            jStr = (jstring) env->GetObjectField(messageExtensionObj,j_field_array_[FieldIDExtensionValue]);
             if (jStr){
                 messageExtension_json[kTIMMsgExtensionValue] = StringJni::Jstring2Cstring(env,jStr);
                 env->DeleteLocalRef(jStr);

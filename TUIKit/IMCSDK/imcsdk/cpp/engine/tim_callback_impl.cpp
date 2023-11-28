@@ -26,7 +26,7 @@ namespace tim {
         auto *env = scopedJEnv.GetEnv();
         if (env) {
             if (listener_callback_) {
-                LOGE("TIMCallbackIMpl ~init");
+//                LOGE("TIMCallbackIMpl ~init");
                 env->DeleteGlobalRef(listener_callback_);
             }
         }

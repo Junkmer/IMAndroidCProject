@@ -26,7 +26,6 @@ namespace tim {
         auto *env = scopedJEnv.GetEnv();
         if (env) {
             if (_download_callback_) {
-//                LOGE("DownloadTIMCallbackIMpl ~init");
                 env->DeleteGlobalRef(_download_callback_);
             }
         }
@@ -44,7 +43,7 @@ namespace tim {
                 json::Object result_json = json::Deserialize(json_params);
                 int totalSize = result_json[kTIMMsgDownloadElemResultTotalSize];
                 int currentSize = result_json[kTIMMsgDownloadElemResultCurrentSize];
-                if (currentSize == totalSize){
+                if (currentSize == totalSize && totalSize != 0){
                     tim::jni::IMCallbackJNI::Success(_download_callback_,{});
                 } else{
                     tim::jni::IMCallbackJNI::DownloadProgress(_download_callback_, currentSize, totalSize);

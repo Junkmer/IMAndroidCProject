@@ -3,6 +3,7 @@ package com.tencent.imsdk.v2;
 import com.tencent.imsdk.common.IMCallback;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public abstract class V2TIMSignalingManager {
 
@@ -48,7 +49,7 @@ public abstract class V2TIMSignalingManager {
 
     native void nativeReject(String inviteID, String data, IMCallback callback);
 
-    native V2TIMSignalingInfo nativeGetSignalingInfo(V2TIMMessage msg);
+    native void nativeGetSignalingInfo(V2TIMMessage msg, final IMCallback callback);
 
     native void nativeAddInvitedSignaling(final V2TIMSignalingInfo info, final IMCallback callback);
 

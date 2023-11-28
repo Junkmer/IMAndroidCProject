@@ -11,10 +11,17 @@
 #include <map>
 #include "TIMCloud.h"
 #include "json.h"
+#include "observer_init.h"
 
 namespace tim {
     namespace jni {
-        class BaseListenerJni{
+        class BaseListenerJni final:public Observer {
+        private:
+        //实现Observer 纯虚函数
+        void initListener() override;
+
+        void unInitListener() override;
+
         public:
             BaseListenerJni() = default;
 

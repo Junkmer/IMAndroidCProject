@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class V2TIMMessageSearchResult implements Serializable {
     private int totalCount;
-    private List<V2TIMMessageSearchResultItem> messageSearchResultItems = new ArrayList<>();
+    private final List<V2TIMMessageSearchResultItem> messageSearchResultItems = new ArrayList<>();
 
     public int getTotalCount() {
         return totalCount;

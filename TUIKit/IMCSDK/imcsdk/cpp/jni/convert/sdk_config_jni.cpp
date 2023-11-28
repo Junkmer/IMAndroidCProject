@@ -44,8 +44,8 @@ namespace tim {
 //            config.logPath = "/storage/emulated/0/Android/data/com.junker.im.ndk.im.ndk.demo/files/log/tencent/imsdk/";
 
             json::Object filter;
-            filter[kTIMSdkConfigLogFilePath] = util::getStringValue(env, clazz, object, "sdkInitPath");
-            filter[kTIMSdkConfigConfigFilePath] = util::getStringValue(env, clazz, object, "sdkLogPath");
+            filter[kTIMSdkConfigLogFilePath] = util::getStringValue(env, clazz, object, "sdkLogPath");
+            filter[kTIMSdkConfigConfigFilePath] = util::getStringValue(env, clazz, object, "sdkInitPath");
             env->DeleteLocalRef(clazz);
 
             return json::Serialize(filter);

@@ -15,18 +15,32 @@ namespace tim {
         jclass SignalingListenerJni::j_cls_;
         jmethodID SignalingListenerJni::j_method_id_array_[MethodIDMax];
 
+        void SignalingListenerJni::initListener() {
+            TIMSetSignalingReceiveNewInvitationCallback(ImplTIMSignalingReceiveNewInvitationCallback, &listener_signaling_map);
+            TIMSetSignalingInviteeAcceptedCallback(ImplTIMSignalingInviteeAcceptedCallback, &listener_signaling_map);
+            TIMSetSignalingInviteeRejectedCallback(ImplTIMSignalingInviteeRejectedCallback, &listener_signaling_map);
+            TIMSetSignalingInvitationCancelledCallback(ImplTIMSignalingInvitationCancelledCallback, &listener_signaling_map);
+            TIMSetSignalingInvitationTimeoutCallback(ImplTIMSignalingInvitationTimeoutCallback, &listener_signaling_map);
+            TIMSetSignalingInvitationModifiedCallback(ImplTIMSignalingInvitationModifiedCallback, &listener_signaling_map);
+        }
+
+        void SignalingListenerJni::unInitListener() {
+            TIMSetSignalingReceiveNewInvitationCallback(ImplTIMSignalingReceiveNewInvitationCallback, nullptr);
+            TIMSetSignalingInviteeAcceptedCallback(ImplTIMSignalingInviteeAcceptedCallback, nullptr);
+            TIMSetSignalingInviteeRejectedCallback(ImplTIMSignalingInviteeRejectedCallback, nullptr);
+            TIMSetSignalingInvitationCancelledCallback(ImplTIMSignalingInvitationCancelledCallback, nullptr);
+            TIMSetSignalingInvitationTimeoutCallback(ImplTIMSignalingInvitationTimeoutCallback, nullptr);
+            TIMSetSignalingInvitationModifiedCallback(ImplTIMSignalingInvitationModifiedCallback, nullptr);
+        }
+
+
         void SignalingListenerJni::AddListener(JNIEnv *env, jobject listener_signaling, jstring listenerPath) {
             if (nullptr == listener_signaling) {
                 LOGE("GroupListenerJni | AddListener listener_simple is null");
                 return;
             }
             if (listener_signaling_map.empty()) {
-                TIMSetSignalingReceiveNewInvitationCallback(ImplTIMSignalingReceiveNewInvitationCallback, &listener_signaling_map);
-                TIMSetSignalingInviteeAcceptedCallback(ImplTIMSignalingInviteeAcceptedCallback, &listener_signaling_map);
-                TIMSetSignalingInviteeRejectedCallback(ImplTIMSignalingInviteeRejectedCallback, &listener_signaling_map);
-                TIMSetSignalingInvitationCancelledCallback(ImplTIMSignalingInvitationCancelledCallback, &listener_signaling_map);
-                TIMSetSignalingInvitationTimeoutCallback(ImplTIMSignalingInvitationTimeoutCallback, &listener_signaling_map);
-                TIMSetSignalingInvitationModifiedCallback(ImplTIMSignalingInvitationModifiedCallback, &listener_signaling_map);
+                tim::ObserverManager::getInstance().addListener(this);
             }
 
             std::string path = StringJni::Jstring2Cstring(env, listenerPath);
@@ -47,12 +61,7 @@ namespace tim {
             }
             listener_signaling_map.erase(StringJni::Jstring2Cstring(env, listenerPath));
             if (listener_signaling_map.empty()) {
-                TIMSetSignalingReceiveNewInvitationCallback(ImplTIMSignalingReceiveNewInvitationCallback, nullptr);
-                TIMSetSignalingInviteeAcceptedCallback(ImplTIMSignalingInviteeAcceptedCallback, nullptr);
-                TIMSetSignalingInviteeRejectedCallback(ImplTIMSignalingInviteeRejectedCallback, nullptr);
-                TIMSetSignalingInvitationCancelledCallback(ImplTIMSignalingInvitationCancelledCallback, nullptr);
-                TIMSetSignalingInvitationTimeoutCallback(ImplTIMSignalingInvitationTimeoutCallback, nullptr);
-                TIMSetSignalingInvitationModifiedCallback(ImplTIMSignalingInvitationModifiedCallback, nullptr);
+                tim::ObserverManager::getInstance().removeListener(this);
             }
         }
 

@@ -67,14 +67,7 @@ DEFINE_NATIVE_FUNC(jstring, NativeSendMessage, jobject message, jstring receiver
         conv_id = tim::jni::StringJni::Jstring2Cstring(env, group_id);
         conv_type = TIMConvType::kTIMConv_Group;
     }
-    std::unique_ptr<json::Object> message_json = tim::jni::MessageJni::Convert2CoreObject(message);
-    (*message_json)[kTIMMsgPriority] = priority;
-    (*message_json)[kTIMMsgIsOnlineMsg] = (bool) onlineUserOnly;
-    json::Object offline_push_info_json;
-    if (offlinePushInfo) {
-        tim::jni::OfflinePushInfoJni::Convert2CoreObject(offlinePushInfo, offline_push_info_json);
-        (*message_json)[kTIMMsgOfflinePushConfig] = offlinePushInfo;
-    }
+    std::unique_ptr<json::Object> message_json = tim::jni::MessageJni::SendMessageConvert2CoreObject(message,priority,onlineUserOnly,offlinePushInfo);
     std::string message_json_str = json::Serialize(*message_json);
 
     const size_t kMessageIDLength = 128;
@@ -463,9 +456,9 @@ DEFINE_NATIVE_FUNC(void, NativeFindMessages, jobject messageIdList, jobject call
 DEFINE_NATIVE_FUNC(void, NativeSearchLocalMessages, jobject searchParam, jobject callback) {
     jobject jni_callback = env->NewGlobalRef(callback);
 
-    json::Object search_param;
-    tim::jni::MessageSearchParamJni::Convert2CoreObject(searchParam, search_param);
-    std::string paramStr = json::Serialize(search_param);
+    json::Object search_param_json;
+    tim::jni::MessageSearchParamJni::Convert2CoreObject(searchParam, search_param_json);
+    std::string paramStr = json::Serialize(search_param_json);
 
     tim::TIMEngine::GetInstance()->SearchLocalMessages(paramStr.c_str(),
                                                        [](int32_t code, const char *desc, const char *json_params, const void *user_data) {
@@ -587,7 +580,7 @@ DEFINE_NATIVE_FUNC(void, NativeSetMessageExtensions, jobject message, jobject ex
         jobject extension_obj = tim::jni::ArrayListJni::Get(extensions,i);
         bool flag = tim::jni::MessageExtensionJni::Convert2CoreObject(extension_obj,extension_json);
         if (flag){
-            json_extension_array.push_back(extension_obj);
+            json_extension_array.push_back(extension_json);
         }
     }
     std::string paramStr = json::Serialize(json_extension_array);
@@ -629,7 +622,7 @@ DEFINE_NATIVE_FUNC(void, NativeGetMessageExtensions, jobject message, jobject ca
             json::Array extensionResult_array = json::Deserialize(json_params);
             jobject extensionResultObjList = tim::jni::ArrayListJni::NewArrayList();
             for (int i = 0; i < extensionResult_array.size(); ++i) {
-                jobject extensionResultObj = tim::jni::MessageExtensionResultJni::Convert2JObject(extensionResult_array[i]);
+                jobject extensionResultObj = tim::jni::MessageExtensionJni::Convert2JObject(extensionResult_array[i]);
                 tim::jni::ArrayListJni::Add(extensionResultObjList, extensionResultObj);
                 _env->DeleteLocalRef(extensionResultObj);
             }

@@ -23,6 +23,8 @@
 #include "user_status_jni.h"
 #include "tim_callback_impl.h"
 #include "call_experimental_api_jni.h"
+#include "conversation_listener_jni.h"
+#include "observer_init.h"
 
 #define DEFINE_NATIVE_FUNC(RETURN_TYPE, NAME, ...)  \
     RETURN_TYPE NAME(JNIEnv *env, jobject thiz, ##__VA_ARGS__)
@@ -53,12 +55,17 @@ DEFINE_NATIVE_FUNC(void, NativeRemoveSDKListener, jstring listenerPath) {
 
 DEFINE_NATIVE_FUNC(bool, NativeInitSDK, const jint sdkAppID, jobject sdkConfig) {
     std::string config = tim::jni::SDKConfigJni::ConvertToCoreObject(env, sdkConfig);
-    int flag = TIMInit(sdkAppID, config.c_str());
-    return flag == TIM_SUCC;
+    int ret = TIMInit(sdkAppID, config.c_str());
+    bool flag = ret == TIM_SUCC;
+    if (flag){
+        tim::ObserverManager::getInstance().notifyInit();
+    }
+    return flag;
 }
 
 DEFINE_NATIVE_FUNC(void, NativeUninitSDK) {
     TIMUninit();
+    tim::ObserverManager::getInstance().notifyUnInit();
 }
 
 DEFINE_NATIVE_FUNC(void, NativeLogin, const jstring userID, const jstring userSig, jobject callback) {
@@ -472,13 +479,12 @@ DEFINE_NATIVE_FUNC(void, NativeCallExperimentalAPI, jstring api, jobject param, 
                                                            auto _callback = (jobject) user_data;
 
                                                            if (TIMErrCode::ERR_SUCC == code) {
-                                                               LOGE("json_params = %s",json_params);
+//                                                               LOGE("json_params = %s",json_params);
                                                                json::Object base_json = json::Deserialize(json_params);
                                                                if (base_json.size() > 0) {
                                                                    if (base_json.HasKey(kTIMCommercialAbilityResultEnabled)){
                                                                        bool isEnabled = base_json[kTIMCommercialAbilityResultEnabled];
-                                                                       tim::jni::IMCallbackJNI::Success(_callback, tim::jni::IntegerJni::NewIntegerObj
-                                                                               (isEnabled));
+                                                                       tim::jni::IMCallbackJNI::Success(_callback, tim::jni::IntegerJni::NewIntegerObj(isEnabled));
                                                                    }
                                                                }
                                                            } else {

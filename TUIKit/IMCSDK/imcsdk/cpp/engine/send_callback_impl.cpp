@@ -23,7 +23,7 @@ namespace tim {
         auto *env = scopedJEnv.GetEnv();
         if (env) {
             if (send_callback_) {
-                LOGE("SendTIMCallbackIMpl ~init");
+//                LOGE("SendTIMCallbackIMpl ~init");
                 env->DeleteGlobalRef(send_callback_);
             }
         }
@@ -39,7 +39,7 @@ namespace tim {
         auto sendTimCallbackIMpl = (SendTIMCallbackIMpl *)user_data;
         if (sendTimCallbackIMpl->send_callback_){
             if (TIM_SUCC == code){
-                LOGE("sendMessage success, json_params = %s",json_params);
+//                LOGE("sendMessage success, json_params = %s",json_params);
                 json::Object msg_obj = json::Deserialize(json_params);
                 jni::IMCallbackJNI::Success(sendTimCallbackIMpl->send_callback_,jni::MessageJni::Convert2JObject(msg_obj));
             } else{

@@ -20,19 +20,33 @@ namespace tim {
         jclass GroupListenerJni::j_cls_;
         jmethodID GroupListenerJni::j_method_id_array_[MethodIDMax];
 
+        void GroupListenerJni::initListener() {
+            TIMAddRecvNewMsgCallback(ImplTIMRecvNewMsgCallback, &listener_group_map);
+            TIMSetGroupTipsEventCallback(ImplTIMGroupTipsEventCallback, &listener_group_map);
+            TIMSetGroupAttributeChangedCallback(ImplTIMGroupAttributeChangedCallback, &listener_group_map);
+            TIMSetGroupCounterChangedCallback(ImplTIMGroupCounterChangedCallback, &listener_group_map);
+            TIMSetGroupTopicCreatedCallback(ImplTIMGroupTopicCreatedCallback, &listener_group_map);
+            TIMSetGroupTopicDeletedCallback(ImplTIMGroupTopicDeletedCallback, &listener_group_map);
+            TIMSetGroupTopicChangedCallback(ImplTIMGroupTopicChangedCallback, &listener_group_map);
+        }
+
+        void GroupListenerJni::unInitListener() {
+            TIMAddRecvNewMsgCallback(ImplTIMRecvNewMsgCallback, nullptr);
+            TIMSetGroupTipsEventCallback(ImplTIMGroupTipsEventCallback, nullptr);
+            TIMSetGroupAttributeChangedCallback(ImplTIMGroupAttributeChangedCallback, nullptr);
+            TIMSetGroupCounterChangedCallback(ImplTIMGroupCounterChangedCallback, nullptr);
+            TIMSetGroupTopicCreatedCallback(ImplTIMGroupTopicCreatedCallback, nullptr);
+            TIMSetGroupTopicDeletedCallback(ImplTIMGroupTopicDeletedCallback, nullptr);
+            TIMSetGroupTopicChangedCallback(ImplTIMGroupTopicChangedCallback, nullptr);
+        }
+
         void GroupListenerJni::AddListener(JNIEnv *env, jobject listener_simple, jstring listenerPath) {
             if (nullptr == listener_simple) {
                 LOGE("GroupListenerJni | AddListener listener_simple is null");
                 return;
             }
             if (listener_group_map.empty()) {
-                TIMAddRecvNewMsgCallback(ImplTIMRecvNewMsgCallback, &listener_group_map);
-                TIMSetGroupTipsEventCallback(ImplTIMGroupTipsEventCallback, &listener_group_map);
-                TIMSetGroupAttributeChangedCallback(ImplTIMGroupAttributeChangedCallback, &listener_group_map);
-                TIMSetGroupCounterChangedCallback(ImplTIMGroupCounterChangedCallback, &listener_group_map);
-                TIMSetGroupTopicCreatedCallback(ImplTIMGroupTopicCreatedCallback, &listener_group_map);
-                TIMSetGroupTopicDeletedCallback(ImplTIMGroupTopicDeletedCallback, &listener_group_map);
-                TIMSetGroupTopicChangedCallback(ImplTIMGroupTopicChangedCallback, &listener_group_map);
+                tim::ObserverManager::getInstance().addListener(this);
             }
 
             std::string path = StringJni::Jstring2Cstring(env, listenerPath);
@@ -53,13 +67,7 @@ namespace tim {
             }
             listener_group_map.erase(StringJni::Jstring2Cstring(env, listenerPath));
             if (listener_group_map.empty()) {
-                TIMAddRecvNewMsgCallback(ImplTIMRecvNewMsgCallback, nullptr);
-                TIMSetGroupTipsEventCallback(ImplTIMGroupTipsEventCallback, nullptr);
-                TIMSetGroupAttributeChangedCallback(ImplTIMGroupAttributeChangedCallback, nullptr);
-                TIMSetGroupCounterChangedCallback(ImplTIMGroupCounterChangedCallback, nullptr);
-                TIMSetGroupTopicCreatedCallback(ImplTIMGroupTopicCreatedCallback, nullptr);
-                TIMSetGroupTopicDeletedCallback(ImplTIMGroupTopicDeletedCallback, nullptr);
-                TIMSetGroupTopicChangedCallback(ImplTIMGroupTopicChangedCallback, nullptr);
+                tim::ObserverManager::getInstance().removeListener(this);
             }
         }
 
@@ -226,7 +234,7 @@ namespace tim {
         }
 
         void GroupListenerJni::ImplTIMRecvNewMsgCallback(const char *json_msg_array, const void *user_data) {
-            LOGE("ImplTIMRecvNewMsgCallback — json_msg_array = %s",json_msg_array);
+//            LOGE("ImplTIMRecvNewMsgCallback — json_msg_array = %s",json_msg_array);
             json::Array msg_array = json::Deserialize(json_msg_array);
             for (const auto &item: msg_array) {
                 json::Array elem_array = item[kTIMMsgElemArray];
@@ -279,7 +287,7 @@ namespace tim {
         }
 
         void GroupListenerJni::ImplTIMGroupTipsEventCallback(const char *json_group_tip, const void *user_data) {
-            LOGE("ImplTIMGroupTipsEventCallback — json_group_tip = %s",json_group_tip);
+//            LOGE("ImplTIMGroupTipsEventCallback — json_group_tip = %s",json_group_tip);
 
             auto *_listener = (std::map<std::string, jobject> *) user_data;
 

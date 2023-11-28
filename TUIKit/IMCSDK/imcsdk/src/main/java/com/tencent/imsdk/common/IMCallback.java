@@ -5,6 +5,7 @@ import com.tencent.imsdk.v2.V2TIMCompleteCallback;
 import com.tencent.imsdk.v2.V2TIMDownloadCallback;
 import com.tencent.imsdk.v2.V2TIMElem;
 import com.tencent.imsdk.v2.V2TIMSendCallback;
+import com.tencent.imsdk.v2.V2TIMSignalingInfo;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 
 public abstract class IMCallback<T> {
@@ -14,6 +15,9 @@ public abstract class IMCallback<T> {
     protected V2TIMCompleteCallback<T> completeCallback;
     protected V2TIMSendCallback<T> sendCallback;
     protected V2TIMDownloadCallback downloadCallback;
+
+    protected IMCallback(){
+    }
 
     protected IMCallback(V2TIMCallback cb) {
         this.callback = cb;
@@ -104,5 +108,13 @@ public abstract class IMCallback<T> {
                 }
             }
         });
+    }
+
+    public void success2signalInfo(V2TIMSignalingInfo signalingInfo){
+        ////由于java层获取信令有返回值 但 c层无返回值且是通过异步回调返回，因此需要做下转换
+    }
+
+    public void fail2signalInfo(final int code, final String errorMessage){
+        ////由于java层获取信令有返回值 但 c层无返回值且是通过异步回调返回，因此需要做下转换
     }
 }

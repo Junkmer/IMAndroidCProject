@@ -324,5 +324,21 @@ namespace tim {
 
             return conversationObj;
         }
+
+        jobject ConversationJni::CreateNewConvJObject() {
+            ScopedJEnv scopedJEnv;
+            auto *env = scopedJEnv.GetEnv();
+
+            if (!InitIDs(env)) {
+                return nullptr;
+            }
+
+            jobject conversationObj = env->NewObject(j_cls_, j_method_id_array_[MethodIDConstruct]);
+            if (nullptr == conversationObj) {
+                return nullptr;
+            }
+
+            return conversationObj;
+        }
     }// namespace tim
 }// namespace jni

@@ -12,11 +12,16 @@
 
 namespace tim {
     namespace jni {
-        class MessageJni{
+        class MessageJni {
         public:
             static bool InitIDs(JNIEnv *env);
+
             static jobject Convert2JObject(const json::Object &message_json_obj);
-            static std::unique_ptr<json::Object> Convert2CoreObject(jobject &messageObj);
+
+            static std::unique_ptr<json::Object> Convert2CoreObject(const jobject &messageObj);
+
+            static std::unique_ptr<json::Object>
+            SendMessageConvert2CoreObject(jobject &messageObj, const jint priority, const jboolean onlineUserOnly, const jobject &offlinePushInfo);
 
         private:
             static TIMElemType JElemType2CElemType(int jElemType);
@@ -61,14 +66,14 @@ namespace tim {
                 FieldIDMax,
             };
 
-            enum MethodID{
+            enum MethodID {
                 MethodIDConstructor = 0,
                 MethodIDAddMessageElem,
 
                 MethodIDMax
             };
-            
-            enum JavaElemType{
+
+            enum JavaElemType {
                 V2TIM_ELEM_TYPE_NONE = 0,
                 V2TIM_ELEM_TYPE_TEXT = 1,
                 V2TIM_ELEM_TYPE_CUSTOM = 2,

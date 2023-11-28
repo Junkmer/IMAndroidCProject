@@ -239,6 +239,9 @@ public class SearchMainPresenter {
                 conversationProvider.getConversationList(conversationIdList, new IUIKitCallback<List<ConversationInfo>>() {
                     @Override
                     public void onSuccess(List<ConversationInfo> conversationInfoList) {
+//                        if (pageIndex == 0) {
+//                            conversationSearchDataBeans.clear();
+//                        }
                         for (ConversationInfo conversationInfo : conversationInfoList) {
                             SearchDataBean searchDataBean = new SearchDataBean();
                             searchDataBean.setConversationID(conversationInfo.getConversationId());

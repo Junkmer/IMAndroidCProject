@@ -160,12 +160,6 @@ namespace tim {
             }
             j_field_array_[FieldIDJoinTime] = jfield;
 
-            jfield = env->GetFieldID(j_cls_, "modifyFlag", "I");
-            if (nullptr == jfield) {
-                return false;
-            }
-            j_field_array_[FieldIDModifyFlag] = jfield;
-
             return true;
         }
 
@@ -241,11 +235,13 @@ namespace tim {
             env->SetIntField(jObj, j_field_array_[FieldIDMemberCount], groupInfo_json[kTIMGroupDetailInfoMemberNum]);
             env->SetIntField(jObj, j_field_array_[FieldIDOnlineCount], groupInfo_json[kTIMGroupDetailInfoOnlineMemberNum]);
             env->SetLongField(jObj, j_field_array_[FieldIDMemberMaxCount], groupInfo_json[kTIMGroupDetailInfoMaxMemberNum].ToInt64());
-            //TODO::IM C SDK 获取群资料时，没有群成员角色、消息接收选项、加群时间字段，待完善
-//            //暂不支持该字段
-//            env->SetIntField(jObj, j_field_array_[FieldIDRole], groupInfo_json[kTIMGroupDetailInfo]);
-//            env->SetIntField(jObj, j_field_array_[FieldIDRecvOpt], groupInfo_json[kTIMGroupDetailInfoApproveOption]);
-//            env->SetLongField(jObj, j_field_array_[FieldIDJoinTime], groupInfo_json[kTIMGroupDetailInfo]);
+            if (groupInfo_json.HasKey(kTIMGroupBaseInfoSelfInfo)){
+                json::Object self_info_json = groupInfo_json[kTIMGroupBaseInfoSelfInfo];
+                env->SetIntField(jObj, j_field_array_[FieldIDRole], self_info_json[kTIMGroupSelfInfoRole]);
+                env->SetIntField(jObj, j_field_array_[FieldIDRecvOpt], self_info_json[kTIMGroupSelfInfoMsgFlag]);
+                env->SetLongField(jObj, j_field_array_[FieldIDJoinTime], self_info_json[kTIMGroupSelfInfoJoinTime].ToInt64());
+            }
+
             return jObj;
         }
 
@@ -309,7 +305,7 @@ namespace tim {
             }
 
             create_group_info_json[kTIMCreateGroupParamAddOption] = TIMGroupAddOption(env->GetIntField(j_obj_groupInfo, j_field_array_[FieldIDGroupAddOpt]));
-            create_group_info_json[kTIMCreateGroupParamApproveOption] = TIMGroupAddOption(env->GetIntField(j_obj_groupInfo, j_field_array_[FieldIDGroupAddOpt]));
+            create_group_info_json[kTIMCreateGroupParamApproveOption] = TIMGroupAddOption(env->GetIntField(j_obj_groupInfo, j_field_array_[FieldIDGroupApproveOpt]));
 
             jobject j_obj_customHashMap = env->GetObjectField(j_obj_groupInfo, j_field_array_[FieldIDCustomInfo]);
             jobject entry_set = HashMapJni::entrySet(j_obj_customHashMap);
@@ -439,11 +435,11 @@ namespace tim {
 
             }
 
-            long memberMaxCount = env->GetLongField(j_obj_groupInfo, j_field_array_[FieldIDMemberMaxCount]);
-            if (memberMaxCount != -1) {
-                update_group_info_json[kTIMGroupModifyInfoParamMaxMemberNum] = (long long) memberMaxCount;
-                modifyFlag = modifyFlag | TIMGroupModifyInfoFlag::kTIMGroupModifyInfoFlag_MaxMemberNum;
-            }
+//            long memberMaxCount = env->GetLongField(j_obj_groupInfo, j_field_array_[FieldIDMemberMaxCount]);
+//            if (memberMaxCount != -1) {
+//                update_group_info_json[kTIMGroupModifyInfoParamMaxMemberNum] = (long long) memberMaxCount;
+//                modifyFlag = modifyFlag | TIMGroupModifyInfoFlag::kTIMGroupModifyInfoFlag_MaxMemberNum;
+//            }
 
             update_group_info_json[kTIMGroupModifyInfoParamModifyFlag] = modifyFlag;
             return true;
