@@ -22,7 +22,7 @@ public class V2TIMMessageExtensionResult implements Serializable {
         return resultInfo;
     }
 
-    public V2TIMMessageExtension getGetExtension() {
+    public V2TIMMessageExtension getExtension() {
         return extension;
     }
 

@@ -305,7 +305,7 @@ namespace tim {
             }
 
             create_group_info_json[kTIMCreateGroupParamAddOption] = TIMGroupAddOption(env->GetIntField(j_obj_groupInfo, j_field_array_[FieldIDGroupAddOpt]));
-            create_group_info_json[kTIMCreateGroupParamApproveOption] = TIMGroupAddOption(env->GetIntField(j_obj_groupInfo, j_field_array_[FieldIDGroupAddOpt]));
+            create_group_info_json[kTIMCreateGroupParamApproveOption] = TIMGroupAddOption(env->GetIntField(j_obj_groupInfo, j_field_array_[FieldIDGroupApproveOpt]));
 
             jobject j_obj_customHashMap = env->GetObjectField(j_obj_groupInfo, j_field_array_[FieldIDCustomInfo]);
             jobject entry_set = HashMapJni::entrySet(j_obj_customHashMap);
