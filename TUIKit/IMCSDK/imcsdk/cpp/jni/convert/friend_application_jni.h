@@ -7,6 +7,7 @@
 
 #include <jni.h>
 #include "json.h"
+#include "TIMFriendshipManager.h"
 
 namespace tim {
     namespace jni {
@@ -16,11 +17,11 @@ namespace tim {
             static jobject Convert2JObject(const json::Object &application_json);
             static bool Convert2CoreObject_Request(const jobject &j_obj_application,json::Object &application_json);
             static bool Convert2CoreObject_Delete(const jobject &j_obj_application,std::string &userid);
+            static int CPendencyType2JApplicationType(TIMFriendPendencyType cPendencyType);
 
         private:
             enum FieldID {
                 FieldIDUserID = 0,
-                FieldIDuserID,
                 FieldIDNickname,
                 FieldIDFaceUrl,
                 FieldIDAddTime,
@@ -35,6 +36,12 @@ namespace tim {
                 MethodIDConstruct = 0,
 
                 MethodIDMax,
+            };
+
+            enum JavaApplicationType {
+                V2TIM_FRIEND_APPLICATION_COME_IN = 1,
+                V2TIM_FRIEND_APPLICATION_SEND_OUT = 2,
+                V2TIM_FRIEND_APPLICATION_BOTH = 3,
             };
 
             static jclass j_cls_;

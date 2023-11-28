@@ -10,6 +10,7 @@
 #include "friend_info_jni.h"
 #include "friend_application_jni.h"
 #include "TIMCloud.h"
+#include "friend_info_result_jni.h"
 
 namespace tim {
     namespace jni {
@@ -47,9 +48,9 @@ namespace tim {
             if (listener_friend_map.empty()) {
                 tim::ObserverManager::getInstance().addListener(this);
             }
-            std::string path = StringJni::Jstring2Cstring(env,listenerPath);
+            std::string path = StringJni::Jstring2Cstring(env, listenerPath);
             for (auto &item: listener_friend_map) {
-                if (path.empty() || path == item.first){
+                if (path.empty() || path == item.first) {
                     return;
                 }
             }
@@ -58,12 +59,12 @@ namespace tim {
             listener_friend_map.insert(std::make_pair(path, j_obj));
         }
 
-        void FriendListenerJni::RemoveListener(JNIEnv *env,jstring listenerPath) {
+        void FriendListenerJni::RemoveListener(JNIEnv *env, jstring listenerPath) {
             if (nullptr == listenerPath) {
                 LOGE("FriendListenerJni | RemoveListener listener_simple is null");
                 return;
             }
-            listener_friend_map.erase(StringJni::Jstring2Cstring(env,listenerPath));
+            listener_friend_map.erase(StringJni::Jstring2Cstring(env, listenerPath));
             if (listener_friend_map.empty()) {
                 tim::ObserverManager::getInstance().removeListener(this);
             }
@@ -82,50 +83,50 @@ namespace tim {
 
             jmethodID jmethod = nullptr;
 
-            jmethod = env->GetMethodID(j_cls_,"onFriendApplicationListAdded", "(Ljava/util/List;)V");
-            if (nullptr == jmethod){
+            jmethod = env->GetMethodID(j_cls_, "onFriendApplicationListAdded", "(Ljava/util/List;)V");
+            if (nullptr == jmethod) {
                 return false;
             }
             j_method_id_array_[MethodIDOnFriendApplicationListAdded] = jmethod;
 
-            jmethod = env->GetMethodID(j_cls_,"onFriendApplicationListDeleted", "(Ljava/util/List;)V");
-            if (nullptr == jmethod){
+            jmethod = env->GetMethodID(j_cls_, "onFriendApplicationListDeleted", "(Ljava/util/List;)V");
+            if (nullptr == jmethod) {
                 return false;
             }
             j_method_id_array_[MethodIDOnFriendApplicationListDeleted] = jmethod;
 
-            jmethod = env->GetMethodID(j_cls_,"onFriendApplicationListRead", "()V");
-            if (nullptr == jmethod){
+            jmethod = env->GetMethodID(j_cls_, "onFriendApplicationListRead", "()V");
+            if (nullptr == jmethod) {
                 return false;
             }
             j_method_id_array_[MethodIDOnFriendApplicationListRead] = jmethod;
 
-            jmethod = env->GetMethodID(j_cls_,"onFriendListAdded", "(Ljava/util/List;)V");
-            if (nullptr == jmethod){
+            jmethod = env->GetMethodID(j_cls_, "onFriendListAdded", "(Ljava/util/List;)V");
+            if (nullptr == jmethod) {
                 return false;
             }
             j_method_id_array_[MethodIDOnFriendListAdded] = jmethod;
 
-            jmethod = env->GetMethodID(j_cls_,"onFriendListDeleted", "(Ljava/util/List;)V");
-            if (nullptr == jmethod){
+            jmethod = env->GetMethodID(j_cls_, "onFriendListDeleted", "(Ljava/util/List;)V");
+            if (nullptr == jmethod) {
                 return false;
             }
             j_method_id_array_[MethodIDOnFriendListDeleted] = jmethod;
 
-            jmethod = env->GetMethodID(j_cls_,"onBlackListAdd", "(Ljava/util/List;)V");
-            if (nullptr == jmethod){
+            jmethod = env->GetMethodID(j_cls_, "onBlackListAdd", "(Ljava/util/List;)V");
+            if (nullptr == jmethod) {
                 return false;
             }
             j_method_id_array_[MethodIDOnBlackListAdd] = jmethod;
 
-            jmethod = env->GetMethodID(j_cls_,"onBlackListDeleted", "(Ljava/util/List;)V");
-            if (nullptr == jmethod){
+            jmethod = env->GetMethodID(j_cls_, "onBlackListDeleted", "(Ljava/util/List;)V");
+            if (nullptr == jmethod) {
                 return false;
             }
             j_method_id_array_[MethodIDOnBlackListDeleted] = jmethod;
 
-            jmethod = env->GetMethodID(j_cls_,"onFriendInfoChanged", "(Ljava/util/List;)V");
-            if (nullptr == jmethod){
+            jmethod = env->GetMethodID(j_cls_, "onFriendInfoChanged", "(Ljava/util/List;)V");
+            if (nullptr == jmethod) {
                 return false;
             }
             j_method_id_array_[MethodIDOnFriendInfoChanged] = jmethod;
@@ -139,25 +140,42 @@ namespace tim {
 
 
         void FriendListenerJni::ImplTIMOnAddFriendCallback(const char *json_identifier_array, const void *user_data) {
-            const auto* listener_friend_map = (const std::map<std::string, jobject> *) user_data;
-            OnFriendListAdded(*(std::map<std::string, jobject> *) user_data,json::Deserialize(json_identifier_array));
+            json::Array userIDList = json::Deserialize(json_identifier_array);
+            std::string userIDListStr = json::Serialize(userIDList);
+
+            const auto *listener_friend_map = (const std::map<std::string, jobject> *) user_data;
+
+            tim::TIMEngine::GetInstance()->GetFriendsInfo(userIDListStr.c_str(), [](int32_t code, const char *desc, const char *json_params, const void *user_data) {
+                tim::jni::ScopedJEnv scopedJEnv;
+                auto _env = scopedJEnv.GetEnv();
+                auto _callback = (jobject) user_data;
+
+                if (TIMErrCode::ERR_SUCC == code) {
+                    json::Array result_array = json::Deserialize(json_params);
+                    json::Object result_obj = result_array[0];
+                    if (result_obj.HasKey(kTIMFriendshipFriendInfoGetResultFriendInfo)) {
+                        OnFriendListAdded(*(std::map<std::string, jobject> *) user_data, result_obj[kTIMFriendshipFriendInfoGetResultFriendInfo]);
+                    }
+                }
+                //TODO::
+            }, listener_friend_map);
+
         }
 
         void FriendListenerJni::ImplTIMOnDeleteFriendCallback(const char *json_identifier_array, const void *user_data) {
-            OnFriendListDeleted(*(std::map<std::string, jobject> *) user_data,json::Deserialize(json_identifier_array));
+            OnFriendListDeleted(*(std::map<std::string, jobject> *) user_data, json::Deserialize(json_identifier_array));
         }
 
         void FriendListenerJni::ImplTIMUpdateFriendProfileCallback(const char *json_friend_profile_update_array, const void *user_data) {
-
-            OnFriendInfoChanged(*(std::map<std::string, jobject> *) user_data,json::Deserialize(json_friend_profile_update_array));
+            OnFriendInfoChanged(*(std::map<std::string, jobject> *) user_data, json::Deserialize(json_friend_profile_update_array));
         }
 
         void FriendListenerJni::ImplTIMFriendAddRequestCallback(const char *json_friend_add_request_pendency_array, const void *user_data) {
-            OnFriendApplicationListAdded(*(std::map<std::string, jobject> *) user_data,json::Deserialize(json_friend_add_request_pendency_array));
+            OnFriendApplicationListAdded(*(std::map<std::string, jobject> *) user_data, json::Deserialize(json_friend_add_request_pendency_array));
         }
 
         void FriendListenerJni::ImplTIMFriendApplicationListDeletedCallback(const char *json_identifier_array, const void *user_data) {
-            OnFriendApplicationListDeleted(*(std::map<std::string, jobject> *) user_data,json::Deserialize(json_identifier_array));
+            OnFriendApplicationListDeleted(*(std::map<std::string, jobject> *) user_data, json::Deserialize(json_identifier_array));
         }
 
         void FriendListenerJni::ImplTIMFriendApplicationListReadCallback(const void *user_data) {
@@ -165,14 +183,14 @@ namespace tim {
         }
 
         void FriendListenerJni::ImplTIMFriendBlackListAddedCallback(const char *json_friend_black_added_array, const void *user_data) {
-            OnBlackListAdded(*(std::map<std::string, jobject> *) user_data,json::Deserialize(json_friend_black_added_array));
+            OnBlackListAdded(*(std::map<std::string, jobject> *) user_data, json::Deserialize(json_friend_black_added_array));
         }
 
         void FriendListenerJni::ImplTIMFriendBlackListDeletedCallback(const char *json_identifier_array, const void *user_data) {
-            OnBlackListDeleted(*(std::map<std::string, jobject> *) user_data,json::Deserialize(json_identifier_array));
+            OnBlackListDeleted(*(std::map<std::string, jobject> *) user_data, json::Deserialize(json_identifier_array));
         }
 
-        void FriendListenerJni::OnFriendApplicationListAdded(const std::map<std::string, jobject> &_listener_,const json::Array &applicationList_json) {
+        void FriendListenerJni::OnFriendApplicationListAdded(const std::map<std::string, jobject> &_listener_, const json::Array &applicationList_json) {
             if (_listener_.empty()) {
                 return;
             }
@@ -183,8 +201,8 @@ namespace tim {
             jobject applicationListObj = ArrayListJni::NewArrayList();
             for (int i = 0; i < applicationList_json.size(); ++i) {
                 jobject applicationObj = FriendApplicationJni::Convert2JObject(applicationList_json[i]);
-                if (applicationObj){
-                    ArrayListJni::Add(applicationListObj,applicationObj);
+                if (applicationObj) {
+                    ArrayListJni::Add(applicationListObj, applicationObj);
                     env->DeleteLocalRef(applicationObj);
                 }
             }
@@ -196,7 +214,7 @@ namespace tim {
             env->DeleteLocalRef(applicationListObj);
         }
 
-        void FriendListenerJni::OnFriendApplicationListDeleted(const std::map<std::string, jobject> &_listener_,const json::Array &userIDList) {
+        void FriendListenerJni::OnFriendApplicationListDeleted(const std::map<std::string, jobject> &_listener_, const json::Array &userIDList) {
             if (_listener_.empty()) {
                 return;
             }
@@ -206,9 +224,9 @@ namespace tim {
 
             jobject userIDListObj = ArrayListJni::NewArrayList();
             for (int i = 0; i < userIDList.size(); ++i) {
-                jstring userIDStr = StringJni::Cstring2Jstring(env,userIDList[i]);
-                if (userIDStr){
-                    ArrayListJni::Add(userIDListObj,userIDStr);
+                jstring userIDStr = StringJni::Cstring2Jstring(env, userIDList[i]);
+                if (userIDStr) {
+                    ArrayListJni::Add(userIDListObj, userIDStr);
                     env->DeleteLocalRef(userIDStr);
                 }
             }
@@ -233,7 +251,7 @@ namespace tim {
             }
         }
 
-        void FriendListenerJni::OnFriendListAdded(const std::map<std::string, jobject> &_listener_,const json::Array &friendInfoList) {
+        void FriendListenerJni::OnFriendListAdded(const std::map<std::string, jobject> &_listener_, const json::Array &friendInfoList) {
             if (_listener_.empty()) {
                 return;
             }
@@ -244,8 +262,8 @@ namespace tim {
             jobject friendInfoListObj = ArrayListJni::NewArrayList();
             for (int i = 0; i < friendInfoList.size(); ++i) {
                 jobject friendInfoObj = FriendInfoJni::Convert2JObject(friendInfoList[i]);
-                if (friendInfoObj){
-                    ArrayListJni::Add(friendInfoListObj,friendInfoObj);
+                if (friendInfoObj) {
+                    ArrayListJni::Add(friendInfoListObj, friendInfoObj);
                     env->DeleteLocalRef(friendInfoObj);
                 }
             }
@@ -257,7 +275,7 @@ namespace tim {
             env->DeleteLocalRef(friendInfoListObj);
         }
 
-        void FriendListenerJni::OnFriendListDeleted(const std::map<std::string, jobject> &_listener_,const json::Array &userIDList) {
+        void FriendListenerJni::OnFriendListDeleted(const std::map<std::string, jobject> &_listener_, const json::Array &userIDList) {
             if (_listener_.empty()) {
                 return;
             }
@@ -267,9 +285,9 @@ namespace tim {
 
             jobject userIDListObj = ArrayListJni::NewArrayList();
             for (int i = 0; i < userIDList.size(); ++i) {
-                jstring userIDStr = StringJni::Cstring2Jstring(env,userIDList[i]);
-                if (userIDStr){
-                    ArrayListJni::Add(userIDListObj,userIDStr);
+                jstring userIDStr = StringJni::Cstring2Jstring(env, userIDList[i]);
+                if (userIDStr) {
+                    ArrayListJni::Add(userIDListObj, userIDStr);
                     env->DeleteLocalRef(userIDStr);
                 }
             }
@@ -281,7 +299,7 @@ namespace tim {
             env->DeleteLocalRef(userIDListObj);
         }
 
-        void FriendListenerJni::OnBlackListAdded(const std::map<std::string, jobject> &_listener_,const json::Array &friendInfoList) {
+        void FriendListenerJni::OnBlackListAdded(const std::map<std::string, jobject> &_listener_, const json::Array &friendInfoList) {
             if (_listener_.empty()) {
                 return;
             }
@@ -292,8 +310,8 @@ namespace tim {
             jobject friendInfoListObj = ArrayListJni::NewArrayList();
             for (int i = 0; i < friendInfoList.size(); ++i) {
                 jobject friendInfoObj = FriendInfoJni::Convert2JObject(friendInfoList[i]);
-                if (friendInfoObj){
-                    ArrayListJni::Add(friendInfoListObj,friendInfoObj);
+                if (friendInfoObj) {
+                    ArrayListJni::Add(friendInfoListObj, friendInfoObj);
                     env->DeleteLocalRef(friendInfoObj);
                 }
             }
@@ -305,7 +323,7 @@ namespace tim {
             env->DeleteLocalRef(friendInfoListObj);
         }
 
-        void FriendListenerJni::OnBlackListDeleted(const std::map<std::string, jobject> &_listener_,const json::Array &userIDList) {
+        void FriendListenerJni::OnBlackListDeleted(const std::map<std::string, jobject> &_listener_, const json::Array &userIDList) {
             if (_listener_.empty()) {
                 return;
             }
@@ -315,9 +333,9 @@ namespace tim {
 
             jobject userIDListObj = ArrayListJni::NewArrayList();
             for (int i = 0; i < userIDList.size(); ++i) {
-                jstring userIDStr = StringJni::Cstring2Jstring(env,userIDList[i]);
-                if (userIDStr){
-                    ArrayListJni::Add(userIDListObj,userIDStr);
+                jstring userIDStr = StringJni::Cstring2Jstring(env, userIDList[i]);
+                if (userIDStr) {
+                    ArrayListJni::Add(userIDListObj, userIDStr);
                     env->DeleteLocalRef(userIDStr);
                 }
             }
@@ -329,7 +347,7 @@ namespace tim {
             env->DeleteLocalRef(userIDListObj);
         }
 
-        void FriendListenerJni::OnFriendInfoChanged(const std::map<std::string, jobject> &_listener_,const json::Array &friendInfoList) {
+        void FriendListenerJni::OnFriendInfoChanged(const std::map<std::string, jobject> &_listener_, const json::Array &friendInfoList) {
             if (_listener_.empty()) {
                 return;
             }
@@ -340,8 +358,8 @@ namespace tim {
             jobject friendInfoListObj = ArrayListJni::NewArrayList();
             for (int i = 0; i < friendInfoList.size(); ++i) {
                 jobject friendInfoObj = FriendInfoJni::Convert2JObject_UpdateFriendInfoCallback(friendInfoList[i]);
-                if (friendInfoObj){
-                    ArrayListJni::Add(friendInfoListObj,friendInfoObj);
+                if (friendInfoObj) {
+                    ArrayListJni::Add(friendInfoListObj, friendInfoObj);
                     env->DeleteLocalRef(friendInfoObj);
                 }
             }

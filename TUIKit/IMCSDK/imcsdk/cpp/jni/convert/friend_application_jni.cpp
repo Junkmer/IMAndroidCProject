@@ -129,7 +129,8 @@ namespace tim {
                 env->DeleteLocalRef(jStr);
             }
 
-            env->SetIntField(applicationObj, j_field_id_array_[FieldIDType], application_json[kTIMFriendAddPendencyInfoType]);
+            auto type = TIMFriendPendencyType(application_json[kTIMFriendAddPendencyInfoType].ToInt());
+            env->SetIntField(applicationObj, j_field_id_array_[FieldIDType], CPendencyType2JApplicationType(type));
 
             return applicationObj;
         }
@@ -166,6 +167,20 @@ namespace tim {
                 env->DeleteLocalRef(jStr);
             }
             return true;
+        }
+
+        int FriendApplicationJni::CPendencyType2JApplicationType(TIMFriendPendencyType cPendencyType) {
+            //im c sdk中的好友申请未决类型  转换 im native sdk 中的好友申请未决类型
+            switch (cPendencyType) {
+                case FriendPendencyTypeComeIn:
+                    return JavaApplicationType::V2TIM_FRIEND_APPLICATION_COME_IN;
+                case FriendPendencyTypeSendOut:
+                    return JavaApplicationType::V2TIM_FRIEND_APPLICATION_SEND_OUT;
+                case FriendPendencyTypeBoth:
+                    return JavaApplicationType::V2TIM_FRIEND_APPLICATION_BOTH;
+                default:
+                    return JavaApplicationType::V2TIM_FRIEND_APPLICATION_COME_IN;
+            }
         }
     }// namespace jni
 }// namespace tim
