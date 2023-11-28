@@ -550,7 +550,7 @@ static JNINativeMethod gMethods[] = {
         {"nativeGetTotalUnreadMessageCount",          "(Lcom/tencent/imsdk/common/IMCallback;)V",                                                     (void *) NativeGetTotalUnreadMessageCount},
         {"nativeGetUnreadMessageCountByFilter",       "(Lcom/tencent/imsdk/v2/V2TIMConversationListFilter;Lcom/tencent/imsdk/common/IMCallback;)V",   (void *) NativeGetUnreadMessageCountByFilter},
         {"nativeSubscribeUnreadMessageCountByFilter", "(Lcom/tencent/imsdk/v2/V2TIMConversationListFilter;)V",                                        (void *) NativeSubscribeUnreadMessageCountByFilter},
-        {"nativeSubscribeUnreadMessageCountByFilter", "(Lcom/tencent/imsdk/v2/V2TIMConversationListFilter;)V",                                        (void *) NativeSubscribeUnreadMessageCountByFilter},
+        {"nativeUnsubscribeUnreadMessageCountByFilter", "(Lcom/tencent/imsdk/v2/V2TIMConversationListFilter;)V",                                        (void *) NativeUnsubscribeUnreadMessageCountByFilter},
         {"nativeCleanConversationUnreadMessageCount", "(Ljava/lang/String;JJLcom/tencent/imsdk/common/IMCallback;)V",                                 (void *) NativeCleanConversationUnreadMessageCount},
         {"nativeCreateConversationGroup",             "(Ljava/lang/String;Ljava/util/List;Lcom/tencent/imsdk/common/IMCallback;)V",                   (void *) NativeCreateConversationGroup},
         {"nativeGetConversationGroupList",            "(Lcom/tencent/imsdk/common/IMCallback;)V",                                                     (void *) NativeGetConversationGroupList},
