@@ -145,7 +145,6 @@ namespace tim {
         void AdvancedMsgListenerJni::ImplTIMMsgRevokeCallback(const char *json_msg_revoke_info_array, const void *user_data) {
             json::Array revoke_msg_array = json::Deserialize(json_msg_revoke_info_array);
             for (const auto &item: revoke_msg_array) {
-                //TODO::撤回消息没有messageID字段，待新版发布
                 std::string msgId = item[kTIMMsgMsgId];
                 OnRecvMessageRevoked(*(std::map<std::string, jobject> *) user_data, msgId);
             }
