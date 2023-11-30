@@ -44,17 +44,17 @@ namespace tim {
             }
             j_field_array_[FieldIDKeywordList] = jfield;
 
-            jfield = env->GetFieldID(j_cls_, "type", "I");
+            jfield = env->GetFieldID(j_cls_, "keywordListMatchType", "I");
             if (nullptr == jfield) {
                 return false;
             }
-            j_field_array_[FieldIDType] = jfield;
+            j_field_array_[FieldIDKeywordListMatchType] = jfield;
 
-            jfield = env->GetFieldID(j_cls_, "userIDList", "Ljava/util/List;");
+            jfield = env->GetFieldID(j_cls_, "senderUserIDList", "Ljava/util/List;");
             if (nullptr == jfield) {
                 return false;
             }
-            j_field_array_[FieldIDUserIDList] = jfield;
+            j_field_array_[FieldIDSenderUserIDList] = jfield;
 
             jfield = env->GetFieldID(j_cls_, "messageTypeList", "Ljava/util/List;");
             if (nullptr == jfield) {
@@ -85,6 +85,18 @@ namespace tim {
                 return false;
             }
             j_field_array_[FieldIDPageIndex] = jfield;
+
+            jfield = env->GetFieldID(j_cls_, "searchCount", "I");
+            if (nullptr == jfield) {
+                return false;
+            }
+            j_field_array_[FieldIDSearchCount] = jfield;
+
+            jfield = env->GetFieldID(j_cls_, "searchCursor", "Ljava/lang/String;");
+            if (nullptr == jfield) {
+                return false;
+            }
+            j_field_array_[FieldIDSearchCursor] = jfield;
 
             return true;
         }
@@ -134,9 +146,9 @@ namespace tim {
                 env->DeleteLocalRef(j_obj_keywordList);
             }
 
-            searchParam_json[kTIMMsgSearchParamKeywordListMatchType] = TIMKeywordListMatchType(env->GetIntField(j_obj_searchParam, j_field_array_[FieldIDType]));
+            searchParam_json[kTIMMsgSearchParamKeywordListMatchType] = TIMKeywordListMatchType(env->GetIntField(j_obj_searchParam, j_field_array_[FieldIDKeywordListMatchType]));
 
-            jobject j_obj_userIDList = env->GetObjectField(j_obj_searchParam, j_field_array_[FieldIDUserIDList]);
+            jobject j_obj_userIDList = env->GetObjectField(j_obj_searchParam, j_field_array_[FieldIDSenderUserIDList]);
             if (j_obj_userIDList){
                 size = ArrayListJni::Size(j_obj_userIDList);
                 if (size > 0){
@@ -174,6 +186,13 @@ namespace tim {
             searchParam_json[kTIMMsgSearchParamSearchTimePeriod] = (long long) env->GetLongField(j_obj_searchParam, j_field_array_[FieldIDSearchTimePeriod]);
             searchParam_json[kTIMMsgSearchParamPageSize] = env->GetIntField(j_obj_searchParam, j_field_array_[FieldIDPageSize]);
             searchParam_json[kTIMMsgSearchParamPageIndex] = env->GetIntField(j_obj_searchParam, j_field_array_[FieldIDPageIndex]);
+
+            searchParam_json[kTIMMsgSearchParamSearchCount] = env->GetIntField(j_obj_searchParam, j_field_array_[FieldIDSearchCount]);
+            jStr = (jstring) env->GetObjectField(j_obj_searchParam, j_field_array_[FieldIDSearchCursor]);
+            if (jStr) {
+                searchParam_json[kTIMMsgSearchParamSearchCursor] = tim::jni::StringJni::Jstring2Cstring(env, jStr);;
+                env->DeleteLocalRef(jStr);
+            }
             return true;
         }
 

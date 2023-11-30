@@ -19,6 +19,7 @@ namespace tim {
             enum FieldID{
                 FieldIDTotalCount = 0,
                 FieldIDMessageSearchResultItems,
+                FieldIDSearchCursor,
 
                 FieldIDMax,
             };

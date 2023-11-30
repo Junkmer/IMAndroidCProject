@@ -10,6 +10,7 @@ import java.util.List;
 public class V2TIMMessageSearchResult implements Serializable {
     private int totalCount;
     private final List<V2TIMMessageSearchResultItem> messageSearchResultItems = new ArrayList<>();
+    private String searchCursor;
 
     public int getTotalCount() {
         return totalCount;
@@ -17,6 +18,10 @@ public class V2TIMMessageSearchResult implements Serializable {
 
     public List<V2TIMMessageSearchResultItem> getMessageSearchResultItems() {
         return messageSearchResultItems;
+    }
+
+    public String getSearchCursor(){
+        return searchCursor;
     }
 
     private void addMessageSearchResultItem(V2TIMMessageSearchResultItem resultItem){
