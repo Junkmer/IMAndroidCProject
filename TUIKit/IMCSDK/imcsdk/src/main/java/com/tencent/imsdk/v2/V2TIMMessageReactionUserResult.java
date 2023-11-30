@@ -8,7 +8,7 @@ import java.util.List;
  * @ClassName V2TIMMessageReactionUserResult
  * @date 2023/10/31 16:19
  * @Version 1.0
- * @Description TODO
+ * @Description
  */
 public class V2TIMMessageReactionUserResult implements Serializable {
     private List<V2TIMUserInfo> userInfoList;
