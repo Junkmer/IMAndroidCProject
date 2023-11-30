@@ -316,6 +316,11 @@ namespace tim {
         ErrorCallBack(ret, callback);
     }
 
+    //仅用于jni层使用，不对外公开
+    void TIMEngine::GetFriendsInfo(const char *json_get_friends_info_param, TIMCommCallback cb, const void* user_data) {
+        TIMFriendshipGetFriendsInfo(json_get_friends_info_param, cb, user_data);
+    }
+
     void TIMEngine::AddFriendsToFriendGroup(const char *json_modify_friend_group_param, TIMCommCallback cb, const jobject &callback) {
         int ret = TIMFriendshipModifyFriendGroup(json_modify_friend_group_param, cb, callback);
         ErrorCallBack(ret, callback);

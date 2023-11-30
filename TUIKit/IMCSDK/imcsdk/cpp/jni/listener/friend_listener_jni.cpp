@@ -138,27 +138,22 @@ namespace tim {
             return listener_friend_map.empty();
         }
 
-
         void FriendListenerJni::ImplTIMOnAddFriendCallback(const char *json_identifier_array, const void *user_data) {
             json::Array userIDList = json::Deserialize(json_identifier_array);
             std::string userIDListStr = json::Serialize(userIDList);
 
-            const auto *listener_friend_map = (const std::map<std::string, jobject> *) user_data;
-
             tim::TIMEngine::GetInstance()->GetFriendsInfo(userIDListStr.c_str(), [](int32_t code, const char *desc, const char *json_params, const void *user_data) {
-                tim::jni::ScopedJEnv scopedJEnv;
-                auto _env = scopedJEnv.GetEnv();
-                auto _callback = (jobject) user_data;
-
                 if (TIMErrCode::ERR_SUCC == code) {
                     json::Array result_array = json::Deserialize(json_params);
                     json::Object result_obj = result_array[0];
                     if (result_obj.HasKey(kTIMFriendshipFriendInfoGetResultFriendInfo)) {
-                        OnFriendListAdded(*(std::map<std::string, jobject> *) user_data, result_obj[kTIMFriendshipFriendInfoGetResultFriendInfo]);
+                        json::Array friendInfoArray;
+                        friendInfoArray.push_back(result_obj[kTIMFriendshipFriendInfoGetResultFriendInfo]);
+                        OnFriendListAdded(*(std::map<std::string, jobject> *) user_data, friendInfoArray);
                     }
                 }
                 //TODO::
-            }, listener_friend_map);
+            }, user_data);
 
         }
 
