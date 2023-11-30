@@ -785,7 +785,8 @@ DEFINE_NATIVE_FUNC(void, NativeRefuseGroupApplication, jobject application, jstr
 
     json::Object handle_pendency;
     handle_pendency[kTIMGroupHandlePendencyParamIsAccept] = false;
-    handle_pendency[kTIMGroupHandlePendencyParamHandleMsg] = tim::jni::StringJni::Jstring2Cstring(env, reason);
+//    handle_pendency[kTIMGroupHandlePendencyParamHandleMsg] = tim::jni::StringJni::Jstring2Cstring(env, reason);
+    handle_pendency[kTIMGroupHandlePendencyParamHandleMsg] = "gsgf";
     json::Object pendency; //构造 GroupPendency
     tim::jni::GroupApplicationJni::Convert2CoreObject(application, pendency);
     handle_pendency[kTIMGroupHandlePendencyParamPendency] = pendency;

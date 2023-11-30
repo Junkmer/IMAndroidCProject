@@ -99,6 +99,12 @@ namespace tim {
             }
             j_field_array_[FieldIDHandleResult] = jfield;
 
+            jfield = env->GetFieldID(j_cls_, "authentication", "Ljava/lang/String;");
+            if (nullptr == jfield) {
+                return false;
+            }
+            j_field_array_[FieldIDAuthentication] = jfield;
+
             return true;
         }
         
@@ -128,6 +134,7 @@ namespace tim {
             env->SetIntField(jObj, j_field_array_[FieldIDApplicationType], groupApplication_json[kTIMGroupPendencyPendencyType]);
             env->SetIntField(jObj, j_field_array_[FieldIDHandleStatus], groupApplication_json[kTIMGroupPendencyHandled]);
             env->SetIntField(jObj, j_field_array_[FieldIDHandleResult], groupApplication_json[kTIMGroupPendencyHandleResult]);
+            env->SetObjectField(jObj,j_field_array_[FieldIDAuthentication],StringJni::Cstring2Jstring(env, groupApplication_json[kTIMGroupPendencyAuthentication]));
 
             return jObj;
         }
@@ -176,7 +183,12 @@ namespace tim {
             groupApplication_json[kTIMGroupPendencyPendencyType] = TIMGroupPendencyType(env->GetIntField(j_obj_groupApplication, j_field_array_[FieldIDApplicationType]));
             groupApplication_json[kTIMGroupPendencyHandled] = TIMGroupPendencyHandle(env->GetIntField(j_obj_groupApplication, j_field_array_[FieldIDHandleStatus]));
             groupApplication_json[kTIMGroupPendencyHandleResult] = TIMGroupPendencyHandleResult(env->GetIntField(j_obj_groupApplication, j_field_array_[FieldIDHandleResult]));
-            
+
+            jStr = (jstring) env->GetObjectField(j_obj_groupApplication, j_field_array_[FieldIDAuthentication]);
+            if (jStr) {
+                groupApplication_json[kTIMGroupPendencyAuthentication] = StringJni::Jstring2Cstring(env, jStr).c_str();
+                env->DeleteLocalRef(jStr);
+            }
             return true;
         }
     }//namespace jni
