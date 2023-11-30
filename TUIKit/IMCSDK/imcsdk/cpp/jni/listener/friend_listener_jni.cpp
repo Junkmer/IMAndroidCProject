@@ -152,7 +152,6 @@ namespace tim {
                         OnFriendListAdded(*(std::map<std::string, jobject> *) user_data, friendInfoArray);
                     }
                 }
-                //TODO::
             }, user_data);
 
         }
