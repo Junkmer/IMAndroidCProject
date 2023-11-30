@@ -26,6 +26,7 @@ public class V2TIMGroupApplication implements Serializable {
     private int applicationType;
     private int handleStatus;
     private int handleResult;
+    private String authentication;
 
     public String getGroupID() {
         return groupID;

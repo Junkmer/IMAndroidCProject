@@ -51,6 +51,12 @@ namespace tim {
             }
             j_field_array_[FieldIDMessageSearchResultItems] = jfield;
 
+            jfield = env->GetFieldID(j_cls_, "searchCursor", "Ljava/lang/String;");
+            if (nullptr == jfield) {
+                return false;
+            }
+            j_field_array_[FieldIDSearchCursor] = jfield;
+
             return true;
         }
 
@@ -77,6 +83,14 @@ namespace tim {
                         env->CallVoidMethod(j_obj_searchResult, j_method_id_array_[MethodIDAddMessageSearchResultItem], j_obj_resultItem);
                         env->DeleteLocalRef(j_obj_resultItem);
                     }
+                }
+            }
+
+            if (searchResult_json.HasKey(kTIMMsgSearchResultSearchCursor)){
+                jobject searchCursor_obj = StringJni::Cstring2Jstring(env,searchResult_json[kTIMMsgSearchResultSearchCursor]);
+                if (searchCursor_obj){
+                    env->SetObjectField(j_obj_searchResult, j_field_array_[FieldIDSearchCursor], searchCursor_obj);
+                    env->DeleteLocalRef(searchCursor_obj);
                 }
             }
 

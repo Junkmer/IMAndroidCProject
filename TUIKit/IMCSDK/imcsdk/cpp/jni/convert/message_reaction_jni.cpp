@@ -98,8 +98,7 @@ namespace tim {
                 env->SetObjectField(messageReactionObj,j_field_array_[FieldIDPartialUserList],userListObj);
                 env->DeleteLocalRef(userListObj);
             }
-            //TODO::im c sdk 当前暂为有该字段，待实现。
-//            env->GetBooleanField(messageReactionObj,j_field_array_[FieldIDReactedByMyself], false);
+            env->SetBooleanField(messageReactionObj,j_field_array_[FieldIDReactedByMyself], messageReaction_json[kTIMMsgReactionReactedByMyself].ToBool());
             return messageReactionObj;
         }
     }

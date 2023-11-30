@@ -14,7 +14,6 @@ namespace tim {
     namespace jni {
 
         std::string CallExperimentalAPIJni::ConvertToCoreObject(JNIEnv *env, jstring const &api, const jobject &param) {
-            //TODO::实验性api的回调处理待完善
             std::string apiStr = tim::jni::StringJni::Jstring2Cstring(env, api);
 
             json::Object json_param;

@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @ClassName V2TIMMessageExtensionResult
  * @date 2023/10/31 16:13
  * @Version 1.0
- * @Description TODO
+ * @Description
  */
 public class V2TIMMessageExtensionResult implements Serializable {
     private int resultCode;

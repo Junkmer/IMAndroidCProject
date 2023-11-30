@@ -163,6 +163,8 @@ namespace tim {
 
         void GetFriendsInfo(const char *json_get_friends_info_param, TIMCommCallback cb, const jobject &callback);
 
+        void GetFriendsInfo(const char *json_get_friends_info_param, TIMCommCallback cb, const void* user_data);
+
         void AddFriendsToFriendGroup(const char *json_modify_friend_group_param, TIMCommCallback cb, const jobject &callback);
 
         void DeleteFriendsFromFriendGroup(const char *json_modify_friend_group_param, TIMCommCallback cb, const jobject &callback);

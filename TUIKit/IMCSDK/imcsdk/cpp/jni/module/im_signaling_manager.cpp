@@ -106,7 +106,6 @@ DEFINE_NATIVE_FUNC(void, NativeReject, jstring invite_id, jstring data, jobject 
     tim::TIMEngine::GetInstance()->Reject(inviteIDStr.c_str(), dataStr.c_str(), new tim::TIMCallbackIMpl(callback));
 }
 
-//TODO::该实现存在问题，待优化
 DEFINE_NATIVE_FUNC(void, NativeGetSignalingInfo, jobject msg, jobject callback) {
     jobject jni_callback = env->NewGlobalRef(callback);
 
@@ -169,11 +168,6 @@ int RegisterNativeMethodsForV2TIMSignalingManager(JNIEnv *env) {
     return tim::jni::util::RegisterNativeMethods(env, "com/tencent/imsdk/v2/V2TIMSignalingManager", gMethods,
                                                  sizeof(gMethods) / sizeof(gMethods[0]));
 }
-
-//void test(JNIEnv *env){
-//    jclass clazz = env->FindClass("com/tencent/imsdk/v2/V2TIMSignalingManager");
-//    env->GetMethodID(clazz,"nativeGetSignalingInfo", "(Lcom/tencent/imsdk/v2/V2TIMMessage;Lcom/tencent/imsdk/common/IMCallback;)V")
-//}
 
 #ifdef __cplusplus
 }

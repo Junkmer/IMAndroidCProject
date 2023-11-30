@@ -607,8 +607,10 @@ namespace tim {
             jobject j_obj_changeInfoList = ArrayListJni::NewArrayList();
             for (const auto & changeInfo : changeInfos) {
                 jobject j_obj_changeInfo = GroupChangeInfoJni::Convert2JObject(changeInfo);
-                ArrayListJni::Add(j_obj_changeInfoList, j_obj_changeInfo);
-                env->DeleteLocalRef(j_obj_changeInfo);
+                if (j_obj_changeInfo){
+                    ArrayListJni::Add(j_obj_changeInfoList, j_obj_changeInfo);
+                    env->DeleteLocalRef(j_obj_changeInfo);
+                }
             }
 
             for (const auto & item_listener : _listener_) {

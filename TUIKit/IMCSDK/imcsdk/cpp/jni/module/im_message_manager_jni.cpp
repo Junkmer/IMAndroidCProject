@@ -480,7 +480,29 @@ DEFINE_NATIVE_FUNC(void, NativeSearchLocalMessages, jobject searchParam, jobject
 }
 
 DEFINE_NATIVE_FUNC(void, NativeSearchCloudMessages, jobject search_param, jobject callback) {
-// TODO: implement nativeSearchCloudMessages()
+    jobject jni_callback = env->NewGlobalRef(callback);
+
+    json::Object search_param_json;
+    tim::jni::MessageSearchParamJni::Convert2CoreObject(search_param, search_param_json);
+    std::string paramStr = json::Serialize(search_param_json);
+
+    tim::TIMEngine::GetInstance()->SearchCloudMessages(paramStr.c_str(),
+                                                       [](int32_t code, const char *desc, const char *json_params, const void *user_data) {
+                                                           tim::jni::ScopedJEnv scopedJEnv;
+                                                           auto _env = scopedJEnv.GetEnv();
+                                                           auto _callback = (jobject) user_data;
+
+                                                           if (TIMErrCode::ERR_SUCC == code) {
+                                                               json::Object result_json = json::Deserialize(json_params);
+                                                               jobject searchResultObj = tim::jni::MessageSearchResultJni::Convert2JObject(
+                                                                       result_json);
+                                                               tim::jni::IMCallbackJNI::Success(_callback, searchResultObj);
+                                                               _env->DeleteLocalRef(searchResultObj);
+                                                           } else {
+                                                               tim::jni::IMCallbackJNI::Fail(_callback, code, desc);
+                                                           }
+                                                           _env->DeleteGlobalRef(_callback);
+                                                       }, jni_callback);
 }
 
 DEFINE_NATIVE_FUNC(void, NativeSendMessageReadReceipts, jobject messageList, jobject callback) {

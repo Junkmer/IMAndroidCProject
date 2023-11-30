@@ -29,6 +29,7 @@ namespace tim {
                 FieldIDApplicationType,
                 FieldIDHandleStatus,
                 FieldIDHandleResult,
+                FieldIDAuthentication,
 
                 FieldIDMax,
             };

@@ -146,10 +146,12 @@ namespace tim {
                 }
             }
 
-            jobject userProfileObj = UserFullInfoJni::Convert2JObject(friend_info_json[kTIMFriendProfileUserProfile]);
-            if (userProfileObj) {
-                env->SetObjectField(friendInfoObj, j_field_id_array_[FieldIDUserFullInfo], userProfileObj);
-                env->DeleteLocalRef(userProfileObj);
+            if (friend_info_json.HasKey(kTIMFriendProfileUserProfile)){
+                jobject userProfileObj = UserFullInfoJni::Convert2JObject(friend_info_json[kTIMFriendProfileUserProfile]);
+                if (userProfileObj) {
+                    env->SetObjectField(friendInfoObj, j_field_id_array_[FieldIDUserFullInfo], userProfileObj);
+                    env->DeleteLocalRef(userProfileObj);
+                }
             }
             return friendInfoObj;
         }
