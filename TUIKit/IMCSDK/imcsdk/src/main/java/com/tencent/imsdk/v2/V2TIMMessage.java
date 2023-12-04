@@ -75,6 +75,8 @@ public class V2TIMMessage implements Serializable {
     private boolean isForwardMessage;//是否是转发消息，仅发送时需要
     private List<String> targetGroupMemberList;//发送定向群消息时设置
 
+    private V2TIMMessage(){}
+
     public String getMsgID() {
         return msgID;
     }

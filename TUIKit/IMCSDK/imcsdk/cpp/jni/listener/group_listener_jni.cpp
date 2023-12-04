@@ -299,7 +299,7 @@ namespace tim {
             auto tipType = TIMGroupTipType(tip_json[kTIMGroupTipsElemTipType].ToInt());
             if (tipType == TIMGroupTipType::kTIMGroupTip_Invite) {// 邀请加入提示
                 /**
-                 * TODO::注：由于目前此回调暂时无法区分进群成员具体是被邀请进群还是主动申请进群，暂通过新消息回调实现。
+                 * TODO::注：由于目前此回调暂时无法区分进群成员是“被邀请进群”还是“主动申请进群”，暂统一走 OnMemberEnter 回调。
                  */
                 member_array = tip_json[kTIMGroupTipsElemChangedGroupMemberInfoArray];
                 OnMemberEnter(*_listener, groupID, member_array);

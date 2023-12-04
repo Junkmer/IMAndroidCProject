@@ -6,5 +6,5 @@ package com.tencent.imsdk.v2;
 public interface V2TIMCallback {
     void onSuccess();
 
-    void onError(int code, String error);
+    void onError(int code, String desc);
 }
