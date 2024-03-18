@@ -191,6 +191,42 @@ DEFINE_NATIVE_FUNC(void, NativeDeleteConversation, jstring conversation_id, jobj
     tim::TIMEngine::GetInstance()->DeleteConversation(convID.c_str(), convType, new tim::TIMCallbackIMpl(callback));
 }
 
+DEFINE_NATIVE_FUNC(void, nativeDeleteConversationList, jobject conversation_id_list,jboolean clear_message, jobject callback) {
+    jobject jni_callback = env->NewGlobalRef(callback);
+
+    json::Array conversation_vector;
+    int size = tim::jni::ArrayListJni::Size(conversation_id_list);
+    for (int i = 0; i < size; ++i) {
+        auto item = (jstring) tim::jni::ArrayListJni::Get(conversation_id_list, i);
+        std::string conversation = tim::jni::StringJni::Jstring2Cstring(env, item);
+        conversation_vector.push_back(conversation);
+        env->DeleteLocalRef(item);
+    }
+
+    std::string convArrayStr = json::Serialize(conversation_vector);
+    tim::TIMEngine::GetInstance()->DeleteConversationList(convArrayStr.c_str(),clear_message,[](int32_t code, const char *desc, const char *json_params, const void *user_data) {
+        tim::jni::ScopedJEnv scopedJEnv;
+        auto _env = scopedJEnv.GetEnv();
+        auto _callback = (jobject) user_data;
+
+        if (TIMErrCode::ERR_SUCC == code) {
+            json::Array conv_array = json::Deserialize(json_params);
+            jobject operationResultList = tim::jni::ArrayListJni::NewArrayList();
+            for (const auto &i: conv_array) {
+                jobject operationResultObj = tim::jni::ConversationOperationResultJni::Convert2JObject(
+                        i);
+                tim::jni::ArrayListJni::Add(operationResultList, operationResultObj);
+                _env->DeleteLocalRef(operationResultObj);
+            }
+            tim::jni::IMCallbackJNI::Success(_callback, operationResultList);
+            _env->DeleteLocalRef(operationResultList);
+        } else {
+            tim::jni::IMCallbackJNI::Fail(_callback, code, desc);
+        }
+        _env->DeleteGlobalRef(_callback);
+    }, jni_callback);
+}
+
 DEFINE_NATIVE_FUNC(void, NativeSetConversationDraft, jstring conversation_id, jstring draft_text, jobject callback) {
     std::string conversationID_str = tim::jni::StringJni::Jstring2Cstring(env, conversation_id);
     std::string convID;
@@ -221,13 +257,13 @@ DEFINE_NATIVE_FUNC(void, NativeSetConversationDraft, jstring conversation_id, js
     tim::TIMEngine::GetInstance()->SetConversationDraft(convID.c_str(), convType, draftStr.c_str(), new tim::TIMCallbackIMpl(callback));
 }
 
-DEFINE_NATIVE_FUNC(void, NativeSetConversationCustomData, jobject conversation_idlist, jstring custom_data, jobject callback) {
+DEFINE_NATIVE_FUNC(void, NativeSetConversationCustomData, jobject conversation_id_list, jstring custom_data, jobject callback) {
     jobject jni_callback = env->NewGlobalRef(callback);
 
     json::Array conversation_vector;
-    int size = tim::jni::ArrayListJni::Size(conversation_idlist);
+    int size = tim::jni::ArrayListJni::Size(conversation_id_list);
     for (int i = 0; i < size; ++i) {
-        auto item = (jstring) tim::jni::ArrayListJni::Get(conversation_idlist, i);
+        auto item = (jstring) tim::jni::ArrayListJni::Get(conversation_id_list, i);
         std::string conversation = tim::jni::StringJni::Jstring2Cstring(env, item);
         conversation_vector.push_back(conversation);
         env->DeleteLocalRef(item);
@@ -543,6 +579,7 @@ static JNINativeMethod gMethods[] = {
         {"nativeGetConversationList",                 "(Ljava/util/List;Lcom/tencent/imsdk/common/IMCallback;)V",                                     (void *) NativeGetConversationListForID},
         {"nativeGetConversationListByFilter",         "(Lcom/tencent/imsdk/v2/V2TIMConversationListFilter;JILcom/tencent/imsdk/common/IMCallback;)V", (void *) NativeGetConversationListByFilter},
         {"nativeDeleteConversation",                  "(Ljava/lang/String;Lcom/tencent/imsdk/common/IMCallback;)V",                                   (void *) NativeDeleteConversation},
+        {"nativeDeleteConversationList",              "(Ljava/util/List;ZLcom/tencent/imsdk/common/IMCallback;)V",                                    (void *) nativeDeleteConversationList},
         {"nativeSetConversationDraft",                "(Ljava/lang/String;Ljava/lang/String;Lcom/tencent/imsdk/common/IMCallback;)V",                 (void *) NativeSetConversationDraft},
         {"nativeSetConversationCustomData",           "(Ljava/util/List;Ljava/lang/String;Lcom/tencent/imsdk/common/IMCallback;)V",                   (void *) NativeSetConversationCustomData},
         {"nativePinConversation",                     "(Ljava/lang/String;ZLcom/tencent/imsdk/common/IMCallback;)V",                                  (void *) NativePinConversation},

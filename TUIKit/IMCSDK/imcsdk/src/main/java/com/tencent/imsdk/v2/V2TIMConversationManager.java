@@ -24,6 +24,8 @@ public abstract class V2TIMConversationManager {
 
     public abstract void deleteConversation(String conversationID, V2TIMCallback callback);
 
+    public abstract void deleteConversationList(List<String> conversationIDList, boolean clearMessage, V2TIMValueCallback<List<V2TIMConversationOperationResult>> callback);
+
     public abstract void setConversationDraft(String conversationID, String draftText, V2TIMCallback callback);
 
     public abstract void setConversationCustomData(List<String> conversationIDList, String customData, V2TIMValueCallback<List<V2TIMConversationOperationResult>> callback);
@@ -71,6 +73,8 @@ public abstract class V2TIMConversationManager {
     native void nativeGetConversationListByFilter(V2TIMConversationListFilter filter, long nextSeq, int count, IMCallback<V2TIMConversationResult> callback);
 
     native void nativeDeleteConversation(String conversationID, IMCallback callback);
+
+    native void nativeDeleteConversationList(List<String> conversationIDList, boolean clearMessage, IMCallback<List<V2TIMConversationOperationResult>> callback);
 
     native void nativeSetConversationDraft(String conversationID, String draftText, IMCallback callback);
 

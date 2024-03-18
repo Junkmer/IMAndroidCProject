@@ -151,6 +151,12 @@ namespace tim {
         ErrorCallBack(ret, callbackImpl);
     }
 
+    void TIMEngine::DeleteConversationList(const char *conversation_id_array, bool clearMessage,
+                                           TIMCommCallback cb, jobject const &callback) {
+        int ret = TIMConvDeleteConversationList(conversation_id_array, clearMessage, cb, callback);
+        ErrorCallBack(ret, callback);
+    }
+
     void
     TIMEngine::SetConversationDraft(const char *conv_id, enum TIMConvType conv_type, const char *json_draft_param, TIMCallbackIMpl *callbackImpl) {
         int ret = TIMConvSetDraft(conv_id, conv_type, json_draft_param);

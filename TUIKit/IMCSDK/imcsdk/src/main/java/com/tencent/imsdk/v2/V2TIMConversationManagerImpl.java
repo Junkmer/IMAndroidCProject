@@ -111,6 +111,21 @@ public class V2TIMConversationManagerImpl extends V2TIMConversationManager {
     }
 
     @Override
+    public void deleteConversationList(List<String> conversationIDList, boolean clearMessage, V2TIMValueCallback<List<V2TIMConversationOperationResult>> _callback_) {
+        nativeDeleteConversationList(conversationIDList, clearMessage, new IMCallback<List<V2TIMConversationOperationResult>>(_callback_) {
+            @Override
+            public void success(List<V2TIMConversationOperationResult> data) {
+                super.success(data);
+            }
+
+            @Override
+            public void fail(int code, String errorMessage) {
+                super.fail(code, errorMessage);
+            }
+        });
+    }
+
+    @Override
     public void setConversationDraft(String conversationID, String draftText, V2TIMCallback _callback_) {
         nativeSetConversationDraft(conversationID, draftText, new IMCallback(_callback_) {
             @Override

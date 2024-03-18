@@ -89,6 +89,8 @@ namespace tim {
 
         void DeleteConversation(const char *conv_id, enum TIMConvType conv_type, TIMCallbackIMpl *callback);
 
+        void DeleteConversationList(const char* conversation_id_array, bool clearMessage, TIMCommCallback cb, const jobject &callback);
+
         void SetConversationDraft(const char *conv_id, enum TIMConvType conv_type, const char *json_draft_param, TIMCallbackIMpl *callback);
 
         void SetConversationCustomData(const char *conversation_id_array, const char *custom_data, TIMCommCallback cb, const jobject &callback);
