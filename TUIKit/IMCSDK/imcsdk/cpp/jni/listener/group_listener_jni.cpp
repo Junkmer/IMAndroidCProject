@@ -275,7 +275,7 @@ namespace tim {
                         }else if(reportType == TIMGroupReportType::kTIMGroupReport_Quit){//主动退出群组（主要用于多端同步）
                             OnQuitFromGroup(*_listener,groupID);
                         }else if(reportType == TIMGroupReportType::kTIMGroupReport_UserDefine){//收到 RESTAPI 下发的自定义系统消息
-                            std::string customData = elem_json[kTIMGroupReportElemOpUserInfo];
+                            std::string customData = elem_json[kTIMGroupReportElemUserData];
                             OnReceiveRESTCustomData(*_listener,groupID,customData);
                         }
                     }else if (elem_type == TIMElemType::kTIMElem_GroupTips){
