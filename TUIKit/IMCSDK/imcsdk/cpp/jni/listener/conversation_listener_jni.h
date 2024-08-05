@@ -50,7 +50,7 @@ namespace tim {
             static void ImplTIMConvConversationsAddedToGroupCallback(const char *group_name, const char *conversation_array, const void *user_data);
 
             static void
-            ImplTIMConvConversationsDeletedFromGroupCallback(const char *group_name, const char *conversation_array, const void *user_data);
+            ImplTIMConvConversationsDeletedFromGroupCallback(const char* group_name, const char* conversation_array, uint32_t reason, const void* user_data);
 
         protected:
             // V2TIMConversationListener

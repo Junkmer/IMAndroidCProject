@@ -25,6 +25,9 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".TestActivity"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".login.LoginForDevActivity"
             android:launchMode="singleTask"

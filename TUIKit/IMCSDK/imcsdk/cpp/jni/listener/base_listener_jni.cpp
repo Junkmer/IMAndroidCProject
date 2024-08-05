@@ -151,7 +151,7 @@ namespace tim {
                     LOGE("get object class failed");
                 }
 
-                jmethodID method = env->GetMethodID(j_cls, "onExperimentalNotify", "((Ljava/lang/String;Ljava/lang/Object;)V");
+                jmethodID method = env->GetMethodID(j_cls, "onExperimentalNotify", "(Ljava/lang/String;Ljava/lang/Object;)V");
                 if (nullptr != method) {
                     env->CallVoidMethod(item.second, method,key_jStr, nullptr);
                 } else {

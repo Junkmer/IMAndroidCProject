@@ -36,6 +36,7 @@ import com.tencent.imsdk.v2.V2TIMFriendshipListener;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.qcloud.tim.demo.R;
+import com.tencent.qcloud.tim.demo.TestActivity;
 import com.tencent.qcloud.tim.demo.config.AppConfig;
 import com.tencent.qcloud.tim.demo.profile.ProfileFragment;
 import com.tencent.qcloud.tim.demo.push.HandleOfflinePushCallBack;
@@ -573,6 +574,13 @@ public class MainActivity extends BaseLightActivity {
         mainTitleBar.getLeftGroup().setVisibility(View.GONE);
         mainTitleBar.getRightGroup().setVisibility(View.GONE);
         mainTitleBar.setTitle(getResources().getString(R.string.profile), ITitleBarLayout.Position.MIDDLE);
+
+        mainTitleBar.getMiddleTitle().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, TestActivity.class));
+            }
+        });
 
         initTUIKitDemoUI();
     }

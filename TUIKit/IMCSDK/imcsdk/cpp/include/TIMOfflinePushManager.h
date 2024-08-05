@@ -154,6 +154,14 @@ static const char* kTIMIOSOfflinePushConfigSound = "ios_offline_push_config_soun
 static const char* kTIMIOSOfflinePushConfigIgnoreBadge = "ios_offline_push_config_ignore_badge";
 // uint @ref TIMIOSOfflinePushType, 读写，iOS 离线推送的类型（仅对 iOS 生效），默认值是 TIMIOSOfflinePushType_APNS
 static const char* kTIMIOSOfflinePushConfigPushType = "ios_offline_push_config_push_type";
+// string, 读写, 设置 APNs 离线推送的通知图片 url, 借助 iOS 10 Service Extension 特性，可以下载并展示在弹窗上. url 使用的协议必须是 HTTPS 协议，取值样例：https://example.com/image.png
+// @note 
+// 限制说明：
+//  - 图片：支持 JPEG、GIF、PNG，大小不超过 10 MB
+// 使用说明：
+//  - 需要在 IM 控制台打开 mutable-content 属性，支持 iOS 10 Service Extension 特性
+//  - 获取 iOSImage 资源的 key 值是 "image"
+static const char* kTIMIOSOfflinePushConfigImage = "ios_offline_push_config_image";
 
 //------------------------------------------------------------------------------
 // 3.4 AndroidOfflinePushConfig(消息在 Android 系统上的离线推送配置)
@@ -178,6 +186,18 @@ static const char* kTIMAndroidOfflinePushConfigXiaoMiChannelID = "android_offlin
 static const char* kTIMAndroidOfflinePushConfigFCMChannelID = "android_offline_push_config_fcm_channel_id";
 // string, 读写, 离线推送设置华为推送消息分类，详见 [官网]( https://developer.huawei.com/consumer/cn/doc/development/HMSCore-Guides/message-classification-0000001149358835)
 static const char* kTIMAndroidOfflinePushConfigHuaWeiCategory = "android_offline_push_config_huawei_category";
+// string, 读写, 设置华为设备离线推送的通知图片 url, url 使用的协议必须是 HTTPS 协议，取值样例：https://example.com/image.png
+// @note
+// string, 读写, 图片文件须小于 512KB，规格建议为 40dp x 40dp，弧角大小为 8dp。超出建议规格的图片会存在图片压缩或图片显示不全的情况。图片格式建议使用 JPG/JPEG/PNG。
+static const char* kTIMAndroidOfflinePushConfigHuaWeiImage = "android_offline_push_config_huawei_image";
+// string, 读写, 设置荣耀设备离线推送的通知图片 url, url 使用的协议必须是 HTTPS 协议，取值样例：https://example.com/image.png
+// @note
+// 图标文件大小须小于 100KB，图标建议规格大小：160px x 160px，弧角大小为 32px，超出规格大小的图标会存在图片压缩或显示不全的情况。
+static const char* kTIMAndroidOfflinePushConfigHonorImage = "android_offline_push_config_honor_image";
+// string, 读写, 设置 Google FCM 设备离线推送的通知图片 url，未展开消息时显示为大图标，展开消息后展示为大图片. url 使用的协议必须是 HTTPS 协议，取值样例：https://example.com/image.png
+// @note
+// 图标文件大小须小于 1 MB，超出规格大小的图标会存在图片压缩或显示不全的情况。
+static const char* kTIMAndroidOfflinePushConfigFCMImage = "android_offline_push_config_fcm_image";
 
 //------------------------------------------------------------------------------
 // 3.4 OfflinePushConfig(消息离线推送配置)

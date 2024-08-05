@@ -68,7 +68,17 @@ typedef void (*TIMSignalingReceiveNewInvitationCallback)(const char* invite_id, 
                                                          const char* json_invitee_list, const char* data, const void* user_data);
 
 /**
- * 2.2 被邀请者接受邀请的回调
+ * 2.2 邀请被取消的回调
+ *
+ * @param invite_id 邀请 ID
+ * @param inviter 邀请者 userID
+ * @param data 自定义字段
+ * @param user_data ImSDK负责透传的用户自定义数据，未做任何处理
+ */
+typedef void (*TIMSignalingInvitationCancelledCallback)(const char* invite_id, const char* inviter, const char* data, const void* user_data);
+
+/**
+ * 2.3 被邀请者接受邀请的回调
  *
  * @param invite_id 邀请 ID
  * @param invitee 被邀请者 userID
@@ -78,7 +88,7 @@ typedef void (*TIMSignalingReceiveNewInvitationCallback)(const char* invite_id, 
 typedef void (*TIMSignalingInviteeAcceptedCallback)(const char* invite_id, const char* invitee, const char* data, const void* user_data);
 
 /**
- * 2.3 被邀请者拒绝邀请的回调
+ * 2.4 被邀请者拒绝邀请的回调
  *
  * @param invite_id 邀请 ID
  * @param invitee 被邀请者 userID
@@ -86,16 +96,6 @@ typedef void (*TIMSignalingInviteeAcceptedCallback)(const char* invite_id, const
  * @param user_data ImSDK负责透传的用户自定义数据，未做任何处理
  */
 typedef void (*TIMSignalingInviteeRejectedCallback)(const char* invite_id, const char* invitee, const char* data, const void* user_data);
-
-/**
- * 2.4 邀请被取消的回调
- *
- * @param invite_id 邀请 ID
- * @param inviter 邀请者 userID
- * @param data 自定义字段
- * @param user_data ImSDK负责透传的用户自定义数据，未做任何处理
- */
-typedef void (*TIMSignalingInvitationCancelledCallback)(const char* invite_id, const char* inviter, const char* data, const void* user_data);
 
 /**
  * 2.5 邀请超时的回调
@@ -130,7 +130,15 @@ typedef void (*TIMSignalingInvitationModifiedCallback)(const char* invite_id, co
 TIM_API void TIMSetSignalingReceiveNewInvitationCallback(TIMSignalingReceiveNewInvitationCallback cb, const void *user_data);
 
 /**
- * 3.2 设置信令邀请被接收者同意的回调
+ * 3.2 设置信令邀请被取消的回调
+ * 
+ * @param cb 信令邀请被取消的回调，请参考 @ref TIMSignalingInvitationCancelledCallback
+ * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
+ */
+TIM_API void TIMSetSignalingInvitationCancelledCallback(TIMSignalingInvitationCancelledCallback cb, const void *user_data);
+
+/**
+ * 3.3 设置信令邀请被接收者同意的回调
  * 
  * @param cb 同意信令邀请的回调，请参考 @ref TIMSignalingInviteeAcceptedCallback
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
@@ -138,20 +146,12 @@ TIM_API void TIMSetSignalingReceiveNewInvitationCallback(TIMSignalingReceiveNewI
 TIM_API void TIMSetSignalingInviteeAcceptedCallback(TIMSignalingInviteeAcceptedCallback cb, const void *user_data);
 
 /**
- * 3.3 设置信令邀请被接收者拒绝的回调
+ * 3.4 设置信令邀请被接收者拒绝的回调
  * 
  * @param cb 拒绝信令邀请的回调，请参考 @ref TIMSignalingInviteeRejectedCallback
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
  */
 TIM_API void TIMSetSignalingInviteeRejectedCallback(TIMSignalingInviteeRejectedCallback cb, const void *user_data);
-
-/**
- * 3.4 设置信令邀请被取消的回调
- * 
- * @param cb 信令邀请被取消的回调，请参考 @ref TIMSignalingInvitationCancelledCallback
- * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
- */
-TIM_API void TIMSetSignalingInvitationCancelledCallback(TIMSignalingInvitationCancelledCallback cb, const void *user_data);
 
 /**
  * 3.5 设置信令邀请超时的回调
@@ -267,7 +267,7 @@ TIM_API int TIMSignalingInviteInGroup(const char* group_id, const char* json_inv
 TIM_API int TIMSignalingCancel(const char* invite_id, const char* data, TIMCommCallback cb, const void* user_data);
 
 /**
- * 4.4 邀请方接受邀请
+ * 4.4 被邀请方接受邀请
  * 
  * @param invite_id 邀请 ID
  * @param data 自定义字段
@@ -293,7 +293,7 @@ TIM_API int TIMSignalingCancel(const char* invite_id, const char* data, TIMCommC
 TIM_API int TIMSignalingAccept(const char* invite_id, const char* data, TIMCommCallback cb, const void* user_data);
 
 /**
- * 4.5 邀请方拒绝邀请
+ * 4.5 被邀请方拒绝邀请
  * 
  * @param invite_id 邀请 ID
  * @param data 自定义字段

@@ -241,8 +241,7 @@ namespace tim {
             OnConversationsAddedToGroup(listener,group_name,json::Deserialize(conversation_array));
         }
 
-        void ConversationListenerJni::ImplTIMConvConversationsDeletedFromGroupCallback(const char *group_name, const char *conversation_array,
-                                                                                       const void *user_data) {
+        void ConversationListenerJni::ImplTIMConvConversationsDeletedFromGroupCallback(const char* group_name, const char* conversation_array, uint32_t reason, const void* user_data) {
             auto listener = *(std::map<std::string, jobject> *) user_data;
             OnConversationsDeletedFromGroup(listener,group_name,json::Deserialize(conversation_array));
         }
