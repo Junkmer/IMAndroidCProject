@@ -32,35 +32,7 @@ extern "C" {
 //                        一. 关系链相关配置选项定义
 //
 /////////////////////////////////////////////////////////////////////////////////
-// 1.1 好友变更类型
-enum TIMFriendChangeType {
-    // 未知类型
-    kTIMFriendChange_None,
-    // 新增好友
-    kTIMFriendChange_FriendAdd,
-    // 删除好友
-    kTIMFriendChange_FriendDel,
-    // 新增好友申请的未决
-    kTIMFriendChange_PendencyAdd,
-    // 删除好友申请的未决
-    kTIMFriendChange_PendencyDel,
-    // 加入黑名单
-    kTIMFriendChange_BlackListAdd,
-    // 从黑名单移除
-    kTIMFriendChange_BlackListDel,
-    // 未决已读上报
-    kTIMFriendChange_PendencyReadedReport,
-    // 好友数据更新
-    kTIMFriendChange_FriendProfileUpdate,
-    // 分组增加
-    kTIMFriendChange_FriendGroupAdd,
-    // 分组删除
-    kTIMFriendChange_FriendGroupDel,
-    // 分组修改
-    kTIMFriendChange_FriendGroupModify,
-};
-
-// 1.2 好友类型
+// 1.1 好友类型
 enum TIMFriendType {
     // 单向好友：用户A的好友表中有用户B，但B的好友表中却没有A
     FriendTypeSingle,
@@ -68,7 +40,7 @@ enum TIMFriendType {
     FriendTypeBoth,
 };
 
-// 1.3 好友申请未决类型
+// 1.2 好友申请未决类型
 enum TIMFriendPendencyType {
     // 别人发给我的
     FriendPendencyTypeComeIn,
@@ -78,7 +50,7 @@ enum TIMFriendPendencyType {
     FriendPendencyTypeBoth,
 };
 
-// 1.4 响应好友申请的动作类型
+// 1.3 响应好友申请的动作类型
 enum TIMFriendResponseAction {
     // 同意
     ResponseActionAgree,
@@ -88,7 +60,7 @@ enum TIMFriendResponseAction {
     ResponseActionReject,
 };
 
-// 1.5 好友的类型
+// 1.4 好友的类型
 enum TIMFriendCheckRelation {
     // 无关系
     FriendCheckNoRelation,
@@ -100,7 +72,7 @@ enum TIMFriendCheckRelation {
     FriendCheckBothWay,
 };
 
-// 1.6 好友搜索的枚举
+// 1.5 好友搜索的枚举
 enum TIMFriendshipSearchFieldKey {
     // 用户 ID
     kTIMFriendshipSearchFieldKey_Identifier = 0x01,
@@ -110,7 +82,7 @@ enum TIMFriendshipSearchFieldKey {
     kTIMFriendshipSearchFieldKey_Remark = 0x01 << 2,
 };
 
-// 1.7 两个用户之间的好友关系
+// 1.6 两个用户之间的好友关系
 enum TIMFriendshipRelationType {
     // 未知关系
     kTIMFriendshipRelationType_None,
@@ -122,6 +94,17 @@ enum TIMFriendshipRelationType {
     kTIMFriendshipRelationType_BothFriend,
 };
 
+// 1.7 关注类型
+enum TIMFollowType {
+    // 无任何关注关系
+    kTIMFollowLTypeNone,
+    // 对方在我的关注列表中
+    kTIMFollowLTypeInMyFollowingList,
+    // 对方在我的粉丝列表中
+    kTIMFollowLTypeInMyFollowersList,
+    // 对方与我互相关注
+    kTIMFollowLTypeInBothFollowersList,
+};
 
 /////////////////////////////////////////////////////////////////////////////////
 //
@@ -231,7 +214,7 @@ typedef void(*TIMFriendApplicationListReadCallback)(const void* user_data);
  * @param json_friend_black_added_array 新增黑名单列表
  * @param user_data ImSDK负责透传的用户自定义数据，未做任何处理
  *
- * __json_friend_black_added_array 示例 (Json Key  请参考 @ref FriendProfile)__
+ * __json_friend_black_added_array 示例 (Json Key 请参考 @ref FriendProfile)__
  * @code{.json}
  * [{
  *   "friend_profile_add_source": "",
@@ -280,7 +263,50 @@ typedef void(*TIMFriendBlackListAddedCallback)(const char* json_friend_black_add
 typedef void(*TIMFriendBlackListDeletedCallback)(const char* json_identifier_array, const void* user_data);
 
 /**
- * 2.9 订阅公众号的回调
+ * 2.9 好友分组被创建的通知
+ * 
+ * @param group_name 创建的好友分组名
+ * @param json_friend_info_array 指定进入该分组的好友信息列表，好友资料 Json Key 请参考 @ref FriendProfile
+ * @param user_data ImSDK负责透传的用户自定义数据，未做任何处理
+ */
+typedef void(*TIMFriendGroupCreatedCallback)(const char* group_name, const char* json_friend_info_array, const void* user_data);
+
+/**
+ * 2.10 好友分组被删除的通知
+ * 
+ * @param json_group_name_array 删除的好友分组名列表
+ */
+typedef void(*TIMFriendGroupDeletedCallback)(const char* json_group_name_array, const void* user_data);
+
+/**
+ * 2.11 好友分组名变更的通知
+ * 
+ * @param old_group_name 修改前的分组名
+ * @param new_group_name 修改后的分组名
+ * @param user_data ImSDK负责透传的用户自定义数据，未做任何处理
+ */
+typedef void(*TIMFriendGroupNameChangedCallback)(const char* old_group_name, const char* new_group_name, const void* user_data);
+
+/**
+ * 2.12 好友分组新增好友的通知
+ * 
+ * @param group_name 好友分组名
+ * @param json_friend_info_array 向该分组中添加的好友信息列表，好友资料 Json Key 请参考 @ref FriendProfile
+ * @param user_data ImSDK负责透传的用户自定义数据，未做任何处理
+ */
+typedef void(*TIMFriendsAddedToGroupCallback)(const char* group_name, const char* json_friend_info_array, const void* user_data);
+
+/**
+ * 2.13 好友分组删除好友的通知
+ * 
+ * @param group_name 好友分组名
+ * @param json_friend_id_array 从该分组中删除的好友 ID 列表
+ * @param user_data ImSDK负责透传的用户自定义数据，未做任何处理
+ */
+typedef void(*TIMFriendsDeletedFromGroupCallback)(const char* group_name, const char* json_friend_id_array, const void* user_data);
+
+/**
+ * 2.14 订阅公众号的回调
  *
  * @param json_official_account_info 公众号资料，Json Key 请参考 @ref OfficialAccountInfo
  * @param user_data ImSDK负责透传的用户自定义数据，未做任何处理
@@ -288,7 +314,7 @@ typedef void(*TIMFriendBlackListDeletedCallback)(const char* json_identifier_arr
 typedef void (*TIMOfficialAccountSubscribedCallback)(const char* json_official_account_info, const void* user_data);
 
 /**
- * 2.10 取消订阅公众号的回调
+ * 2.15 取消订阅公众号的回调
  *
  * @param official_account_id 公众号 ID
  * @param user_data ImSDK负责透传的用户自定义数据，未做任何处理
@@ -296,7 +322,7 @@ typedef void (*TIMOfficialAccountSubscribedCallback)(const char* json_official_a
 typedef void (*TIMOfficialAccountUnsubscribedCallback)(const char* official_account_id, const void* user_data);
 
 /**
- * 2.11 订阅的公众号被删除的回调
+ * 2.16 订阅的公众号被删除的回调
  *
  * @param official_account_id 公众号 ID
  * @param user_data ImSDK负责透传的用户自定义数据，未做任何处理
@@ -304,13 +330,39 @@ typedef void (*TIMOfficialAccountUnsubscribedCallback)(const char* official_acco
 typedef void (*TIMOfficialAccountDeletedCallback)(const char* official_account_id, const void* user_data);
 
 /**
- * 2.12 订阅的公众号资料更新的回调
+ * 2.17 订阅的公众号资料更新的回调
  *
  * @param json_official_account_info 公众号资料，Json Key 请参考 @ref OfficialAccountInfo
  * @param user_data ImSDK负责透传的用户自定义数据，未做任何处理
  */
 typedef void (*TIMOfficialAccountInfoChangedCallback)(const char* json_official_account_info, const void* user_data);
 
+/**
+ * 2.18 关注列表变更的回调
+ *
+ * @param json_user_info_list 变更的用户列表，Json Key 请参考 @ref UserInfo
+ * @param is_add 变更用户是否为新增
+ * @param user_data ImSDK负责透传的用户自定义数据，未做任何处理
+ */
+typedef void (*TIMMyFollowingListChangedCallback)(const char* json_user_info_list, bool is_add, const void* user_data);
+
+/**
+ * 2.19 粉丝列表变更的回调
+ *
+ * @param json_user_info_list 变更的用户列表，Json Key 请参考 @ref UserInfo
+ * @param is_add 变更用户是否为新增
+ * @param user_data ImSDK负责透传的用户自定义数据，未做任何处理
+ */
+typedef void (*TIMMyFollowersListChangedCallback)(const char* json_user_info_list, bool is_add, const void* user_data);
+
+/**
+ * 2.20 互关列表变更的回调
+ *
+ * @param json_user_info_list 变更的用户列表，Json Key 请参考 @ref UserInfo
+ * @param is_add 变更用户是否为新增
+ * @param user_data ImSDK负责透传的用户自定义数据，未做任何处理
+ */
+typedef void (*TIMMutualFollowersListChangedCallback)(const char* json_user_info_list, bool is_add, const void* user_data);
 
 /////////////////////////////////////////////////////////////////////////////////
 //
@@ -404,36 +456,100 @@ TIM_API void TIMSetFriendBlackListAddedCallback(TIMFriendBlackListAddedCallback 
 TIM_API void TIMSetFriendBlackListDeletedCallback(TIMFriendBlackListDeletedCallback cb, const void* user_data);
 
 /**
- * 3.9 设置公众号订阅的回调
+ * 3.9 设置好友分组被创建的回调
+ * 
+ * @param cb 好友分组新增回调，请参考 @ref TIMFriendGroupCreatedCallback
+ * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
+ */
+TIM_API void TIMSetFriendGroupCreatedCallback(TIMFriendGroupCreatedCallback cb, const void* user_data);
+
+/**
+ * 3.10 设置好友分组被删除的回调
+ * 
+ * @param cb 好友分组删除回调，请参考 @ref TIMFriendGroupDeletedCallback
+ * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
+ */
+TIM_API void TIMSetFriendGroupDeletedCallback(TIMFriendGroupDeletedCallback cb, const void* user_data);
+
+/**
+ * 3.11 好友分组名变更的回调
+ * 
+ * @param cb 好友分组名变更回调，请参考 @ref TIMFriendGroupNameChangedCallback
+ * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
+ */
+TIM_API void TIMSetFriendGroupNameChangedCallback(TIMFriendGroupNameChangedCallback cb, const void* user_data);
+
+/**
+ * 3.12 设置好友分组新增好友的回调
+ * 
+ * @param cb 好友分组新增好友回调，请参考 @ref TIMFriendsAddedToGroupCallback
+ * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
+ */
+TIM_API void TIMSetFriendsAddedToGroupCallback(TIMFriendsAddedToGroupCallback cb, const void* user_data);
+
+/**
+ * 3.13 设置好友分组删除好友的回调
+ * 
+ * @param cb 好友分组删除好友回调，请参考 @ref TIMFriendsDeletedFromGroupCallback
+ * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
+ */
+TIM_API void TIMSetFriendsDeletedFromGroupCallback(TIMFriendsDeletedFromGroupCallback cb, const void* user_data);
+
+/**
+ * 3.14 设置公众号订阅的回调
  *
  * @param cb 公众号订阅的回调，请参考 @ref TIMOfficialAccountSubscribedCallback
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
  */
-TIM_DECL void TIMSetOfficialAccountSubscribedCallback(TIMOfficialAccountSubscribedCallback cb, const void* user_data);
+TIM_API void TIMSetOfficialAccountSubscribedCallback(TIMOfficialAccountSubscribedCallback cb, const void* user_data);
 
 /**
- * 3.10 设置公众号取消订阅的回调
+ * 3.15 设置公众号取消订阅的回调
  *
  * @param cb 公众号取消订阅的回调，请参考 @ref TIMOfficialAccountUnsubscribedCallback
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
  */
-TIM_DECL void TIMSetOfficialAccountUnsubscribedCallback(TIMOfficialAccountUnsubscribedCallback cb, const void *user_data);
+TIM_API void TIMSetOfficialAccountUnsubscribedCallback(TIMOfficialAccountUnsubscribedCallback cb, const void *user_data);
 
 /**
- * 3.11 设置订阅的公众号被删除的回调
+ * 3.16 设置订阅的公众号被删除的回调
  *
  * @param cb 订阅的公众号被删除的回调，请参考 @ref TIMOfficialAccountDeletedCallback
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
  */
-TIM_DECL void TIMSetOfficialAccountDeletedCallback(TIMOfficialAccountDeletedCallback cb, const void *user_data);
+TIM_API void TIMSetOfficialAccountDeletedCallback(TIMOfficialAccountDeletedCallback cb, const void *user_data);
 
 /**
- * 3.12 设置订阅的公众号资料更新的回调
+ * 3.17 设置订阅的公众号资料更新的回调
  *
  * @param cb 订阅的公众号资料更新的回调，请参考 @ref TIMOfficialAccountInfoChangedCallback
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
  */
-TIM_DECL void TIMSetOfficialAccountInfoChangedCallback(TIMOfficialAccountInfoChangedCallback cb, const void *user_data);
+TIM_API void TIMSetOfficialAccountInfoChangedCallback(TIMOfficialAccountInfoChangedCallback cb, const void *user_data);
+
+/**
+ * 3.18 设置关注列表变更的回调
+ *
+ * @param cb 关注列表变更的回调，请参考 @ref TIMMyFollowingListChangedCallback
+ * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
+ */
+TIM_API void TIMSetMyFollowingListChangedCallback(TIMMyFollowingListChangedCallback cb, const void *user_data);
+
+/**
+ * 3.19 设置粉丝列表变更的回调
+ *
+ * @param cb 关注列表变更的回调，请参考 @ref TIMMyFollowersListChangedCallback
+ * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
+ */
+TIM_API void TIMSetMyFollowersListChangedCallback(TIMMyFollowersListChangedCallback cb, const void *user_data);
+
+/**
+ * 3.20 设置互关列表变更的回调
+ *
+ * @param cb 关注列表变更的回调，请参考 @ref TIMMutualFollowersListChangedCallback
+ * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
+ */
+TIM_API void TIMSetMutualFollowersListChangedCallback(TIMMutualFollowersListChangedCallback cb, const void *user_data);
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -583,7 +699,7 @@ TIM_API int TIMFriendshipModifyFriendProfile(const char* json_modify_friend_info
  *   }
  * @endcode
  *
- * __回调的 json_param 示例 (Json Key 请参考  @ref FriendProfile)__
+ * __回调的 json_param 示例 (Json Key 请参考 @ref FriendProfile)__
  * @code{.cpp}
  *  [
  *     {
@@ -945,18 +1061,19 @@ TIM_API int TIMFriendshipDeleteFriendGroup(const char* json_delete_friend_group_
  *
  * __示例__
  * @code{.cpp}
+ * // 优先级 new_name > add_ids > delete_ids, 每次只能修改其中的一个，如果填写多个，则按优先级执行
  * json::Object json_modify_friend_group_param;
  * json_modify_friend_group_param[kTIMFriendshipModifyFriendGroupParamName] = "Group123";
  * json_modify_friend_group_param[kTIMFriendshipModifyFriendGroupParamNewName] = "GroupNewName";
  *
- * json::Array json_friend_delete_array;
- * json_friend_delete_array.push_back("user4");
- * json_modify_friend_group_param[kTIMFriendshipModifyFriendGroupParamDeleteIdentifierArray] = json_friend_delete_array;
- *
  * json::Array json_friend_add_array;
- * json_friend_add_array.push_back("user5");
- * json_friend_add_array.push_back("user9");
+ * json_friend_add_array.push_back("user1");
  * json_modify_friend_group_param[kTIMFriendshipModifyFriendGroupParamAddIdentifierArray] = json_friend_add_array;
+ *
+ * json::Array json_friend_delete_array;
+ * json_friend_delete_array.push_back("user2");
+ * json_modify_friend_group_param[kTIMFriendshipModifyFriendGroupParamDeleteIdentifierArray] = json_friend_delete_array;
+ * 
  * int ret = TIMFriendshipModifyFriendGroup(json_modify_friend_group_param.toStyledString().c_str(), [](int32_t code, const char* desc, const char* json_params, const void* user_data) {
  *
  * }, nullptr);
@@ -964,56 +1081,231 @@ TIM_API int TIMFriendshipDeleteFriendGroup(const char* json_delete_friend_group_
  */
 TIM_API int TIMFriendshipModifyFriendGroup(const char* json_modify_friend_group_param, TIMCommCallback cb, const void* user_data);
 
+
 /////////////////////////////////////////////////////////////////////////////////
 //
 //                           八. 公众号相关接口
 //
 /////////////////////////////////////////////////////////////////////////////////
 /**
- * 8.1 订阅公众号
+ * 8.1 订阅公众号（7.6 及其以上版本支持）
  *
  * @param official_account_id 公众号 ID
- * @param cb 订阅公众号成功与否的回调。回调函数定义请参考 [TIMCommCallback](TIMCloudDef.h)
+ * @param cb 订阅公众号成功与否的回调。回调函数定义请参考 @ref TIMCommCallback
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
- * @return int 返回TIM_SUCC表示接口调用成功（接口只有返回TIM_SUCC，回调cb才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 [TIMResult](TIMCloudDef.h)
+ * @return int 返回TIM_SUCC表示接口调用成功（接口只有返回TIM_SUCC，回调cb才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
  */
-TIM_DECL int TIMSubscribeOfficialAccount(const char* official_account_id, TIMCommCallback cb, const void* user_data);
+TIM_API int TIMSubscribeOfficialAccount(const char* official_account_id, TIMCommCallback cb, const void* user_data);
 
 /**
- * 8.2 取消订阅公众号
+ * 8.2 取消订阅公众号（7.6 及其以上版本支持）
  *
  * @param unsubscribe_official_account_id 公众号 ID
- * @param cb 取消订阅公众号成功与否的回调。回调函数定义请参考 [TIMCommCallback](TIMCloudDef.h)
+ * @param cb 取消订阅公众号成功与否的回调。回调函数定义请参考 @ref TIMCommCallback
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
- * @return int 返回TIM_SUCC表示接口调用成功（接口只有返回TIM_SUCC，回调cb才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 [TIMResult](TIMCloudDef.h)
+ * @return int 返回TIM_SUCC表示接口调用成功（接口只有返回TIM_SUCC，回调cb才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
  */
-TIM_DECL int TIMUnsubscribeOfficialAccount(const char* unsubscribe_official_account_id, TIMCommCallback cb, const void* user_data);
+TIM_API int TIMUnsubscribeOfficialAccount(const char* unsubscribe_official_account_id, TIMCommCallback cb, const void* user_data);
 
 /**
- * 8.3 获取公众号列表
+ * 8.3 获取公众号列表（7.6 及其以上版本支持）
  *
- * @param json_get_official_accounts_info_param 获取公众号列表的参数Json字符串
- * @param cb 获取公众号列表成功与否的回调。回调函数定义请参考 [TIMCommCallback](TIMCloudDef.h)
+ * @param json_official_account_id_list 公众号 ID 列表，传入列表为空表示获取全部已订阅的公众号
+ * @param cb 获取公众号列表成功与否的回调。回调函数定义请参考 @ref TIMCommCallback
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
- * @return int 返回TIM_SUCC表示接口调用成功（接口只有返回TIM_SUCC，回调cb才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 [TIMResult](TIMCloudDef.h)
+ * @return int 返回TIM_SUCC表示接口调用成功（接口只有返回TIM_SUCC，回调cb才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
  */
-TIM_DECL int TIMGetOfficialAccountsInfo(const char* json_get_official_accounts_info_param, TIMCommCallback cb, const void* user_data);
+TIM_API int TIMGetOfficialAccountsInfo(const char* json_official_account_id_list, TIMCommCallback cb, const void* user_data);
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //
-//                     九. 好友资料 API 参数相关的 Json Key 定义
+//                           九. 关注/粉丝功能相关接口
+//
+/////////////////////////////////////////////////////////////////////////////////
+/**
+ * 9.1 关注用户 (7.8 及其以上版本支持，需要您购买旗舰版套餐)
+ *
+ * @param json_user_id_list 待关注的用户 ID 列表
+ * @param cb 关注用户成功与否的回调。回调函数定义请参考 @ref TIMCommCallback
+ * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
+ * @return int 返回 TIM_SUCC 表示接口调用成功（接口只有返回 TIM_SUCC，回调 cb 才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
+ *
+ * @note
+ * 一次最多支持关注 20 个用户
+ *
+ * __回调中返回的 json_params 示例 (Json Key 请参考 @ref FollowOperationResult)__
+ * @code{.json}
+ * [
+ *     {
+ *         "follow_operation_result_Info":"",
+ *         "follow_operation_result_code":0,
+ *         "follow_operation_result_user_id":"user1"
+ *     },
+ *     {
+ *         "follow_operation_result_Info":"",
+ *         "follow_operation_result_code":0,
+ *         "follow_operation_result_user_id":"user2"
+ *     }
+ * ]
+ * @endcode
+ */
+TIM_API int TIMFollowUser(const char* json_user_id_list, TIMCommCallback cb, const void* user_data);
+
+/**
+ * 9.2 取消关注用户 (7.8 及其以上版本支持，需要您购买旗舰版套餐)
+ *
+ * @param json_user_id_list 待取消关注的用户 ID 列表
+ * @param cb 取消关注用户成功与否的回调。回调函数定义请参考 @ref TIMCommCallback
+ * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
+ * @return int 返回 TIM_SUCC 表示接口调用成功（接口只有返回 TIM_SUCC，回调 cb 才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
+ *
+ * @note
+ * 一次最多支持取消关注 20 个用户
+ *
+ * __回调中返回的 json_params 示例 (Json Key 请参考 @ref FollowOperationResult)__
+ * @code{.json}
+ * [
+ *     {
+ *         "follow_operation_result_Info":"",
+ *         "follow_operation_result_code":0,
+ *         "follow_operation_result_user_id":"user1"
+ *     },
+ *     {
+ *         "follow_operation_result_Info":"",
+ *         "follow_operation_result_code":0,
+ *         "follow_operation_result_user_id":"user2"
+ *     }
+ * ]
+ * @endcode
+ */
+TIM_API int TIMUnfollowUser(const char* json_user_id_list, TIMCommCallback cb, const void* user_data);
+
+/**
+ * 9.3 获取我的关注列表 (7.8 及其以上版本支持，需要您购买旗舰版套餐)
+ *
+ * @param next_cursor 分页拉取标志，第一次拉取填 NULL 或者 ""，回调中返回的 next_cursor 不为 ""，则需要分页，可以传入该值再次拉取，直至返回为 ""
+ * @param cb 取消关注用户成功与否的回调。回调函数定义请参考 @ref TIMCommCallback
+ * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
+ * @return int 返回 TIM_SUCC 表示接口调用成功（接口只有返回 TIM_SUCC，回调 cb 才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
+ * 
+ * __回调中返回的 json_params 示例 (Json Key 请参考 @ref FollowListResult)__
+ * @code{.json}
+ * {
+ *     "follow_list_result_next_cursor":"",  // 分页拉取的标志
+ *     "follow_list_result_user_info_list":[
+ *         Object{...},  // 用户资料信息
+ *         Object{...}   // 用户资料信息
+ *     ]
+ * }
+ * @endcode
+ */
+TIM_API int TIMGetMyFollowingList(const char* next_cursor, TIMCommCallback cb, const void* user_data);
+
+/**
+ * 9.4 获取我的粉丝列表 (7.8 及其以上版本支持，需要您购买旗舰版套餐)
+ *
+ * @param next_cursor 分页拉取标志，第一次拉取填 NULL 或者 ""，回调中返回的 next_cursor 不为 ""，则需要分页，可以传入该值再次拉取，直至返回为 ""
+ * @param cb 取消关注用户成功与否的回调。回调函数定义请参考 @ref TIMCommCallback
+ * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
+ * @return int 返回 TIM_SUCC 表示接口调用成功（接口只有返回 TIM_SUCC，回调 cb 才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
+ *
+ * __回调中返回的 json_params 示例 (Json Key 请参考 @ref FollowListResult)__
+ * @code{.json}
+ * {
+ *     "follow_list_result_next_cursor":"",  // 分页拉取的标志
+ *     "follow_list_result_user_info_list":[
+ *         Object{...},  // 用户资料信息
+ *         Object{...}   // 用户资料信息
+ *     ]
+ * }
+ * @endcode
+ */
+TIM_API int TIMGetMyFollowersList(const char* next_cursor, TIMCommCallback cb, const void* user_data);
+
+/**
+ * 9.5 获取我的互关列表 (7.8 及其以上版本支持，需要您购买旗舰版套餐)
+ *
+ * @param next_cursor 分页拉取标志，第一次拉取填 NULL 或者 ""，回调中返回的 next_cursor 不为 ""，则需要分页，可以传入该值再次拉取，直至返回为 ""
+ * @param cb 取消关注用户成功与否的回调。回调函数定义请参考 @ref TIMCommCallback
+ * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
+ * @return int 返回 TIM_SUCC 表示接口调用成功（接口只有返回 TIM_SUCC，回调 cb 才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
+ * 
+ * __回调中返回的 json_params 示例 (Json Key 请参考 @ref FollowListResult)__
+ * @code{.json}
+ * {
+ *     "follow_list_result_next_cursor":"",  // 分页拉取的标志
+ *     "follow_list_result_user_info_list":[
+ *         Object{...},  // 用户资料信息
+ *         Object{...}   // 用户资料信息
+ *     ]
+ * }
+ * @endcode
+ */
+TIM_API int TIMGetMutualFollowersList(const char* next_cursor, TIMCommCallback cb, const void* user_data);
+
+/**
+ * 9.6 获取指定用户的 关注/粉丝/互关 数量信息 (7.8 及其以上版本支持，需要您购买旗舰版套餐)
+ *
+ * @param json_user_id_list 用户 ID 列表
+ * @param cb 取消关注用户成功与否的回调。回调函数定义请参考 @ref TIMCommCallback
+ * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
+ * @return int 返回 TIM_SUCC 表示接口调用成功（接口只有返回 TIM_SUCC，回调 cb 才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
+ * 
+ * __回调中返回的 json_params 示例 (Json Key 请参考 @ref FollowInfo)__
+ * @code{.json}
+ * [
+ *     {
+ *         "follow_info_followers_count":6,
+ *         "follow_info_following_count":6,
+ *         "follow_info_mutual_followers_count":2,
+ *         "follow_info_result_code":0,
+ *         "follow_info_result_info":"",
+ *         "follow_info_user_id":"user1"
+ *     }
+ * ]
+ * @endcode
+ */
+TIM_API int TIMGetUserFollowInfo(const char* json_user_id_list, TIMCommCallback cb, const void* user_data);
+
+/**
+ * 9.7 检查指定用户的关注类型 (7.8 及其以上版本支持，需要您购买旗舰版套餐)
+ *
+ * @param json_user_id_list 用户 ID 列表
+ * @param cb 取消关注用户成功与否的回调。回调函数定义请参考 @ref TIMCommCallback
+ * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
+ * @return int 返回 TIM_SUCC 表示接口调用成功（接口只有返回 TIM_SUCC，回调 cb 才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
+ * 
+ * __回调中返回的 json_params 示例 (Json Key 请参考 @ref FollowTypeCheckResult)__
+ * @code{.json}
+ * [
+ *     {
+ *         "follow_type_check_result_code":0,
+ *         "follow_type_check_result_follow_type":1,
+ *         "follow_type_check_result_info":"OK",
+ *         "follow_type_check_result_user_id":"user1"
+ *     }
+ * ]
+ * @endcode
+ */
+TIM_API int  TIMCheckFollowType(const char* json_user_id_list, TIMCommCallback cb, const void* user_data);
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//
+//                     十. 好友资料 API 参数相关的 Json Key 定义
 //
 /////////////////////////////////////////////////////////////////////////////////
 
 //------------------------------------------------------------------------------
-// 9.1 FriendProfileCustomStringInfo (好友自定义资料字段)
+// 10.1 FriendProfileCustomStringInfo (好友自定义资料字段)
 // string, 只写, 好友自定义资料字段key，首先要在 [控制台](https://console.cloud.tencent.com/im) (功能配置 -> 好友自定义字段) 配置好友自定义字段，key 可以添加 Tag_SNS_Custom_ 前缀，也可以不添加 Tag_SNS_Custom_ 前缀。
 static const char* kTIMFriendProfileCustomStringInfoKey = "friend_profile_custom_string_info_key";
 // string, 只写, 好友自定义资料字段value
 static const char* kTIMFriendProfileCustomStringInfoValue = "friend_profile_custom_string_info_value";
 
 //------------------------------------------------------------------------------
-// 9.2 FriendProfile (好友资料)
+// 10.2 FriendProfile (好友资料)
 // string, 只读, 好友UserID
 static const char* kTIMFriendProfileIdentifier = "friend_profile_identifier";
 // array string, 只读, 好友分组名称列表
@@ -1032,7 +1324,7 @@ static const char* kTIMFriendProfileUserProfile = "friend_profile_user_profile";
 static const char* kTIMFriendProfileCustomStringArray = "friend_profile_custom_string_array";
 
 //------------------------------------------------------------------------------
-// 9.3 FriendProfileItem (好友资料可修改的各个项)
+// 10.3 FriendProfileItem (好友资料可修改的各个项)
 // string, 只写, 修改好友备注
 static const char* kTIMFriendProfileItemRemark = "friend_profile_item_remark";
 // array string, 只写, 修改好友分组名称列表
@@ -1041,21 +1333,349 @@ static const char* kTIMFriendProfileItemGroupNameArray = "friend_profile_item_gr
 static const char* kTIMFriendProfileItemCustomStringArray = "friend_profile_item_custom_string_array";
 
 //------------------------------------------------------------------------------
-// 9.4 FriendshipModifyFriendProfileParam (修改好友资料接口的参数)
+// 10.4 FriendshipModifyFriendProfileParam (修改好友资料接口的参数)
 // string, 只写, 被修改的好友的UserID
 static const char* kTIMFriendshipModifyFriendProfileParamIdentifier = "friendship_modify_friend_profile_param_identifier";
 // object @ref FriendProfileItem, 只写, 修改的好友资料各个选项
 static const char* kTIMFriendshipModifyFriendProfileParamItem = "friendship_modify_friend_profile_param_item";
 
 //------------------------------------------------------------------------------
-// 9.5 FriendProfileUpdate (好友资料更新信息)
+// 10.5 FriendProfileUpdate (好友资料更新信息)
 // string, 只写, 资料更新的好友的UserID
 static const char* kTIMFriendProfileUpdateIdentifier = "friend_profile_update_identifier";
 // object @ref FriendProfileItem, 只写, 资料更新的Item
 static const char* kTIMFriendProfileUpdateItem = "friend_profile_update_item";
 
+
+/////////////////////////////////////////////////////////////////////////////////
+//
+//                       十一. 好友申请 API 参数相关的 Json Key 定义
+//
+/////////////////////////////////////////////////////////////////////////////////
+
 //------------------------------------------------------------------------------
-// 9.6 FriendChangeElem (好友变更通知)
+// 11.1 FriendshipAddFriendParam (添加好友接口的参数)
+// string, 只写, 请求加好友对应的UserID
+static const char* kTIMFriendshipAddFriendParamIdentifier = "friendship_add_friend_param_identifier";
+// uint @ref TIMFriendType, 只写, 请求添加好友的好友类型
+static const char* kTIMFriendshipAddFriendParamFriendType = "friendship_add_friend_param_friend_type";
+// string, 只写, 预备注
+static const char* kTIMFriendshipAddFriendParamRemark = "friendship_add_friend_param_remark";
+// string, 只写, 预分组名
+static const char* kTIMFriendshipAddFriendParamGroupName = "friendship_add_friend_param_group_name";
+// string, 只写, 加好友来源描述
+static const char* kTIMFriendshipAddFriendParamAddSource = "friendship_add_friend_param_add_source";
+// string, 只写, 加好友附言
+static const char* kTIMFriendshipAddFriendParamAddWording = "friendship_add_friend_param_add_wording";
+
+//------------------------------------------------------------------------------
+// 11.2 FriendshipDeleteFriendParam (删除好友接口的参数)
+// uint @ref TIMFriendType, 只写, 删除好友，指定删除的好友类型
+static const char* kTIMFriendshipDeleteFriendParamFriendType = "friendship_delete_friend_param_friend_type";
+// array string, 只写(选填), 删除好友UserID列表
+static const char* kTIMFriendshipDeleteFriendParamIdentifierArray = "friendship_delete_friend_param_identifier_array";
+
+//------------------------------------------------------------------------------
+// 11.3 FriendAddPendency (好友申请未决信息)
+// uint @ref TIMFriendPendencyType, 只读, 好友申请未决的类型
+static const char* kTIMFriendAddPendencyType = "friend_add_pendency_type";
+// string, 只读, 好友申请未决的 UserID
+static const char* kTIMFriendAddPendencyIdentifier = "friend_add_pendency_identifier";
+// string, 只读, 好友申请未决的用户昵称
+static const char* kTIMFriendAddPendencyNickName = "friend_add_pendency_nick_name";
+// string, 只读, 好友申请未决的用户头像
+static const char* kTIMFriendAddPendencyFaceUrl = "friend_add_pendency_face_url";
+// uint64, 只读, 发起好友申请的时间
+static const char* kTIMFriendAddPendencyAddTime = "friend_add_pendency_add_time";
+// string, 只读, 好友申请未决的来源
+static const char* kTIMFriendAddPendencyAddSource = "friend_add_pendency_add_source";
+// string, 只读, 好友申请未决的附言
+static const char* kTIMFriendAddPendencyAddWording = "friend_add_pendency_add_wording";
+
+//------------------------------------------------------------------------------
+// 11.4 FriendshipGetPendencyListParam (分页获取好友申请未决信息列表的参数)
+// uint @ref TIMFriendPendencyType, 只写, 添加好友的未决请求类型
+static const char* kTIMFriendshipGetPendencyListParamType = "friendship_get_pendency_list_param_type";
+// uint64, 只写, 分页获取未决请求的起始 seq，返回的结果包含最大 seq，作为获取下一页的起始 seq
+static const char* kTIMFriendshipGetPendencyListParamStartSeq = "friendship_get_pendency_list_param_start_seq";
+// uint64, 只写, 获取未决信息的开始时间戳
+static const char* kTIMFriendshipGetPendencyListParamStartTime = "friendship_get_pendency_list_param_start_time";
+// int, 只写, 获取未决信息列表，每页的数量
+static const char* kTIMFriendshipGetPendencyListParamLimitedSize = "friendship_get_pendency_list_param_limited_size";
+
+//------------------------------------------------------------------------------
+// 11.5 PendencyPage (好友申请未决信息页)
+// uint64, 只读, 未决请求信息页的起始时间
+static const char* kTIMPendencyPageStartTime = "pendency_page_start_time";
+// uint64, 只读, 未决请求信息页的未读数量
+static const char* kTIMPendencyPageUnReadNum = "pendency_page_unread_num";
+// uint64, 只读, 未决请求信息页的当前Seq
+static const char* kTIMPendencyPageCurrentSeq = "pendency_page_current_seq";
+// array @ref FriendAddPendencyInfo, 只读, 未决请求信息页的未决信息列表
+static const char* kTIMPendencyPagePendencyInfoArray = "pendency_page_pendency_info_array";
+
+//------------------------------------------------------------------------------
+// 11.6 FriendAddPendencyInfo (好友申请未决信息)
+// uint @ref TIMFriendPendencyType, 只读, 好友添加请求未决类型
+static const char* kTIMFriendAddPendencyInfoType = "friend_add_pendency_info_type";
+// string, 只读, 好友添加请求未决的 UserID
+static const char* kTIMFriendAddPendencyInfoIdentifier = "friend_add_pendency_info_identifier";
+// string, 只读, 好友添加请求未决的昵称
+static const char* kTIMFriendAddPendencyInfoNickName = "friend_add_pendency_info_nick_name";
+// string, 只读, 好友添加请求未决的头像
+static const char* kTIMFriendAddPendencyInfoFaceUrl = "friend_add_pendency_info_face_url";
+// uint64, 只读, 发起好友申请的时间
+static const char* kTIMFriendAddPendencyInfoAddTime = "friend_add_pendency_info_add_time";
+// string, 只读, 好友添加请求未决的添加来源
+static const char* kTIMFriendAddPendencyInfoAddSource = "friend_add_pendency_info_add_source";
+// string, 只读, 好友添加请求未决的添加附言
+static const char* kTIMFriendAddPendencyInfoAddWording = "friend_add_pendency_info_add_wording";
+
+//------------------------------------------------------------------------------
+// 11.7 FriendResponse (处理好友申请未决信息接口的参数)
+// string, 只写(必填), 响应好友添加的UserID
+static const char* kTIMFriendResponseIdentifier = "friend_response_identifier";
+// uint @ref TIMFriendResponseAction, 只写(必填), 响应好友添加的动作
+static const char* kTIMFriendResponseAction = "friend_response_action";
+// string, 只写(选填), 好友备注
+static const char* kTIMFriendResponseRemark = "friend_response_remark";
+// string, 只写(选填), 好友分组列表
+static const char* kTIMFriendResponseGroupName = "friend_response_group_name";
+
+//------------------------------------------------------------------------------
+// 11.8 FriendshipDeletePendencyParam (删除好友申请未决信息接口的参数)
+// uint @ref TIMFriendPendencyType, 只读, 添加好友的未决请求类型
+static const char* kTIMFriendshipDeletePendencyParamType = "friendship_delete_pendency_param_type";
+// array string, 只读, 删除好友未决请求的 UserID 列表
+static const char* kTIMFriendshipDeletePendencyParamIdentifierArray = "friendship_delete_pendency_param_identifier_array";
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//
+//                         十二. 检查好友关系 API 参数相关的 Json Key 定义
+//
+/////////////////////////////////////////////////////////////////////////////////
+
+//------------------------------------------------------------------------------
+// 12.1 FriendshipCheckFriendTypeParam (检测好友的类型接口的参数)
+// uint @ref TIMFriendType, 只写, 要检测的好友类型
+static const char* kTIMFriendshipCheckFriendTypeParamCheckType = "friendship_check_friendtype_param_check_type";
+// array string, 只写, 要检测的好友UserID列表
+static const char* kTIMFriendshipCheckFriendTypeParamIdentifierArray = "friendship_check_friendtype_param_identifier_array";
+
+//------------------------------------------------------------------------------
+// 12.2 FriendshipCheckFriendTypeResult (检测好友的类型接口返回)
+// string, 只读, 被检测的好友UserID
+static const char* kTIMFriendshipCheckFriendTypeResultIdentifier = "friendship_check_friendtype_result_identifier";
+// uint @ref TIMFriendCheckRelation, 只读, 检测成功时返回的好友的类型
+static const char* kTIMFriendshipCheckFriendTypeResultRelation = "friendship_check_friendtype_result_relation";
+// int [错误码](https://cloud.tencent.com/document/product/269/1671), 只读, 检测的结果
+static const char* kTIMFriendshipCheckFriendTypeResultCode = "friendship_check_friendtype_result_code";
+// string, 只读, 检测好友失败的描述信息
+static const char* kTIMFriendshipCheckFriendTypeResultDesc = "friendship_check_friendtype_result_desc";
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//
+//           十三. 好友操作（添加、删除、加黑名单等） API 参数相关的 Json Key 定义
+//
+/////////////////////////////////////////////////////////////////////////////////
+
+//------------------------------------------------------------------------------
+// 13.1 FriendResult (关系链操作接口的返回结果)
+// string, 只读, 关系链操作的用户ID
+static const char* kTIMFriendResultIdentifier = "friend_result_identifier";
+// int [错误码](https://cloud.tencent.com/document/product/269/1671), 只读, 关系链操作的结果
+static const char* kTIMFriendResultCode = "friend_result_code";
+// string, 只读, 关系链操作失败的详细描述
+static const char* kTIMFriendResultDesc = "friend_result_desc";
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//
+//                      十四. 好友分组 API 参数相关的 Json Key 定义
+//
+/////////////////////////////////////////////////////////////////////////////////
+
+//------------------------------------------------------------------------------
+// 14.1 CreateFriendGroupParam (创建好友分组接口参数)
+// array string, 只写, 创建分组的名称列表
+static const char* kTIMFriendshipCreateFriendGroupParamNameArray = "friendship_create_friend_group_param_name_array";
+// array string, 只写, 要放到创建的分组的好友UserID列表
+static const char* kTIMFriendshipCreateFriendGroupParamIdentifierArray = "friendship_create_friend_group_param_identifier_array";
+
+//------------------------------------------------------------------------------
+// 14.2 FriendGroupInfo (好友分组信息)
+// string, 只读, 分组名称
+static const char* kTIMFriendGroupInfoName = "friend_group_info_name";
+// uint64, 只读, 当前分组的好友个数
+static const char* kTIMFriendGroupInfoCount = "friend_group_info_count";
+// array string, 只读, 当前分组内好友UserID列表
+static const char* kTIMFriendGroupInfoIdentifierArray = "friend_group_info_identifier_array";
+
+//------------------------------------------------------------------------------
+// 14.3 FriendshipModifyFriendGroupParam (修改好友分组信息的接口参数)
+// string, 只写, 要修改的分组名称
+static const char* kTIMFriendshipModifyFriendGroupParamName = "friendship_modify_friend_group_param_name";
+// string, 只写(选填), 修改后的分组名称
+static const char* kTIMFriendshipModifyFriendGroupParamNewName = "friendship_modify_friend_group_param_new_name";
+// array string, 只写(选填), 要从当前分组删除的好友UserID列表
+static const char* kTIMFriendshipModifyFriendGroupParamDeleteIdentifierArray = "friendship_modify_friend_group_param_delete_identifier_array";
+// array string, 只写(选填), 当前分组要新增的好友UserID列表
+static const char* kTIMFriendshipModifyFriendGroupParamAddIdentifierArray = "friendship_modify_friend_group_param_add_identifier_array";
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//
+//                      十五. 好友搜索 API 参数相关的 Json Key 定义
+//
+/////////////////////////////////////////////////////////////////////////////////
+
+//------------------------------------------------------------------------------
+// 15.1 FriendSearchParam (搜索好友的参数)
+// array string, 只写, 搜索的关键字列表，关键字列表最多支持 5 个
+static const char* kTIMFriendshipSearchParamKeywordList = "friendship_search_param_keyword_list";
+// array uint @ref TIMFriendshipSearchFieldKey, 只写, 好友搜索类型
+static const char* kTIMFriendshipSearchParamSearchFieldList = "friendship_search_param_search_field_list";
+
+//------------------------------------------------------------------------------
+// 15.2 FriendInfoGetResult (搜索好友结果)
+// string, 只读, 好友 user_id
+static const char* kTIMFriendshipFriendInfoGetResultIdentifier = "friendship_friend_info_get_result_identifier";
+// uint @ref TIMFriendshipRelationType, 只读， 好友关系
+static const char* kTIMFriendshipFriendInfoGetResultRelationType = "friendship_friend_info_get_result_relation_type";
+// uint, 只读, 错误码
+static const char* kTIMFriendshipFriendInfoGetResultErrorCode = "friendship_friend_info_get_result_error_code";
+// string, 只读, 错误描述
+static const char* kTIMFriendshipFriendInfoGetResultErrorMessage = "friendship_friend_info_get_result_error_message";
+// array uint @ref FriendProfile, 只读, 好友资料
+static const char* kTIMFriendshipFriendInfoGetResultFriendInfo = "friendship_friend_info_get_result_field_info";
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//
+//                     十六. 公众号管理 API 参数相关的 Json Key 定义
+//
+/////////////////////////////////////////////////////////////////////////////////
+
+//------------------------------------------------------------------------------
+// 16.1 OfficialAccountInfo(公众号信息)
+// string, 只读, 公众号 ID
+static const char* kTIMOfficialAccountID = "official_account_id";
+// string, 只读, 公众号名称
+static const char* kTIMOfficialAccountName = "official_account_name";
+// string, 只读, 公众号头像 URL
+static const char* kTIMOfficialAccountFaceUrl = "official_account_face_url";
+// string, 只读, 公众号所有者
+static const char* kTIMOfficialAccountOwnerUserID = "official_account_owner_user_id";
+// string, 只读, 公众号介绍
+static const char* kTIMOfficialAccountIntroduction = "official_account_introduction";
+// string, 只读, 公众号组织
+static const char* kTIMOfficialAccountOrganization = "official_account_organization";
+// uint64, 只读, 公众号创建时间，单位：秒
+static const char* kTIMOfficialAccountCreateTime = "official_account_create_time";
+// uint64, 只读, 公众号订阅者数量
+static const char* kTIMOfficialAccountSubscriberCount = "official_account_subscriber_count";
+// uint64, 只读, 公众号订阅时间，单位：秒
+static const char* kTIMOfficialAccountSubscribeTime = "official_account_subscribe_time";
+// string, 只读, 公众号自定义字段
+static const char* kTIMOfficialAccountCustomData = "official_account_custom_data";
+
+//------------------------------------------------------------------------------
+// 16.2 GetOfficialAccountInfoResult(获取公众号信息列表接口的返回)
+// int [错误码](https://cloud.tencent.com/document/product/269/1671), 只读, 获取公众号详细资料的结果
+static const char* kTIMGetOfficialAccountInfoResultCode = "get_official_accounts_info_result_code";
+// string, 只读, 获取公众号详细资料失败的描述信息
+static const char* kTIMGetOfficialAccountInfoResultDesc = "get_official_accounts_info_result_desc";
+// object @ref OfficialAccountInfo, 只读, 公众号详细信息
+static const char* kTIMGetOfficialAccountInfo = "get_official_accounts_info";
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//
+//                  十七. 关注/粉丝 API 参数相关的 Json Key 定义
+//
+/////////////////////////////////////////////////////////////////////////////////
+
+//------------------------------------------------------------------------------
+// 17.1 FollowOperationResult (关注/取关操作接口的返回结果)
+// string, 只读, 关注/取关操作的用户 ID
+static const char* kTIMFollowOperationResultUserID = "follow_operation_result_user_id";
+// int [错误码](https://cloud.tencent.com/document/product/269/1671), 只读, 关注/取关的操作返回码
+static const char* kTIMFollowOperationResultCode = "follow_operation_result_code";
+// string, 只读, 关注/取关操作的返回结果描述
+static const char* kTIMFollowOperationResultInfo = "follow_operation_result_Info";
+
+//------------------------------------------------------------------------------
+// 17.2 FollowListResult (获取 关注/粉丝/互关 列表的结果)
+// string, 只读, 下一次拉要取列表的起始位置
+static const char* kTIMFollowListResultNextCursor = "follow_list_result_next_cursor";
+// array @ref UserProfile, 只读, 用户资料列表
+static const char* kTIMFollowListResultUerInfoList = "follow_list_result_user_info_list";
+
+//------------------------------------------------------------------------------
+// 17.3 FollowInfo (用户关注信息)
+// int [错误码](https://cloud.tencent.com/document/product/269/1671), 只读, 获取用户关注数量信息的返回码
+static const char* kTIMFollowInfoResultCode = "follow_info_result_code";
+// string, 只读, 获取用户关注数量信息的返回结果描述
+static const char* kTIMFollowInfoResultInfo = "follow_info_result_info";
+// string, 只读, 用户 ID
+static const char* kTIMFollowInfoUserID = "follow_info_user_id";
+// uint64, 只读, 用户的关注数量
+static const char* kTIMFollowInfoFollowingCount = "follow_info_following_count";
+// uint64, 只读, 用户的粉丝数量
+static const char* kTIMFollowInfoFollowersCount = "follow_info_followers_count";
+// uint64, 只读, 用户的互关数量
+static const char* kTIMFollowInfoMutualFollowersCount = "follow_info_mutual_followers_count";
+
+//------------------------------------------------------------------------------
+// 17.4 FollowTypeCheckResult (指定用户关注类型的检查结果)
+// string, 只读, 用户 ID
+static const char* kTIMFollowTypeCheckResultUserID = "follow_type_check_result_user_id";
+// int [错误码](https://cloud.tencent.com/document/product/269/1671), 只读, 关注类型的检查的返回码
+static const char* kTIMFollowTypeCheckResultCode = "follow_type_check_result_code";
+// string, 只读, 关注类型的检查的返回结果描述
+static const char* kTIMFollowTypeCheckResultInfo = "follow_type_check_result_info";
+// uint @ref TIMFollowType, 只读, 关注类型
+static const char* kTIMFollowTypeCheckResultFollowType = "follow_type_check_result_follow_type";
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//
+//                              十八. 废弃字段
+//
+/////////////////////////////////////////////////////////////////////////////////
+
+// 18.1 好友变更类型
+enum TIMFriendChangeType {
+    // 未知类型
+    kTIMFriendChange_None,
+    // 新增好友
+    kTIMFriendChange_FriendAdd,
+    // 删除好友
+    kTIMFriendChange_FriendDel,
+    // 新增好友申请的未决
+    kTIMFriendChange_PendencyAdd,
+    // 删除好友申请的未决
+    kTIMFriendChange_PendencyDel,
+    // 加入黑名单
+    kTIMFriendChange_BlackListAdd,
+    // 从黑名单移除
+    kTIMFriendChange_BlackListDel,
+    // 未决已读上报
+    kTIMFriendChange_PendencyReadedReport,
+    // 好友数据更新
+    kTIMFriendChange_FriendProfileUpdate,
+    // 分组增加
+    kTIMFriendChange_FriendGroupAdd,
+    // 分组删除
+    kTIMFriendChange_FriendGroupDel,
+    // 分组修改
+    kTIMFriendChange_FriendGroupModify,
+};
+
+//------------------------------------------------------------------------------
+// 18.2 FriendChangeElem (好友变更通知)
 // uint @ref TIMFriendChangeType, 只读, 资料变更类型
 static const char* kTIMFriendChangeElemChangeType = "friend_change_elem_change_type";
 // array string, 只读, 新增的好友UserID列表，只有当 change_type 为 kTIMFriendChange_FriendAdd 时有效
@@ -1081,251 +1701,8 @@ static const char* kTIMFriendChangeElemFriendGroupDelIdentifierArray = "friend_c
 // array string, 只读, 修改的好友分组名称列表， 只有当 change_type 为 kTIMFriendChange_FriendGroupModify 时有效
 static const char* kTIMFriendChangeElemFriendGroupModifyIdentifierArray = "friend_change_elem_friend_group_update_array";
 
-
-/////////////////////////////////////////////////////////////////////////////////
-//
-//                       十. 好友申请 API 参数相关的 Json Key 定义
-//
-/////////////////////////////////////////////////////////////////////////////////
-
 //------------------------------------------------------------------------------
-// 10.1 FriendshipAddFriendParam (添加好友接口的参数)
-// string, 只写, 请求加好友对应的UserID
-static const char* kTIMFriendshipAddFriendParamIdentifier = "friendship_add_friend_param_identifier";
-// uint @ref TIMFriendType, 只写, 请求添加好友的好友类型
-static const char* kTIMFriendshipAddFriendParamFriendType = "friendship_add_friend_param_friend_type";
-// string, 只写, 预备注
-static const char* kTIMFriendshipAddFriendParamRemark = "friendship_add_friend_param_remark";
-// string, 只写, 预分组名
-static const char* kTIMFriendshipAddFriendParamGroupName = "friendship_add_friend_param_group_name";
-// string, 只写, 加好友来源描述
-static const char* kTIMFriendshipAddFriendParamAddSource = "friendship_add_friend_param_add_source";
-// string, 只写, 加好友附言
-static const char* kTIMFriendshipAddFriendParamAddWording = "friendship_add_friend_param_add_wording";
-
-//------------------------------------------------------------------------------
-// 10.2 FriendshipDeleteFriendParam (删除好友接口的参数)
-// uint @ref TIMFriendType, 只写, 删除好友，指定删除的好友类型
-static const char* kTIMFriendshipDeleteFriendParamFriendType = "friendship_delete_friend_param_friend_type";
-// array string, 只写(选填), 删除好友UserID列表
-static const char* kTIMFriendshipDeleteFriendParamIdentifierArray = "friendship_delete_friend_param_identifier_array";
-
-//------------------------------------------------------------------------------
-// 10.3 FriendAddPendency (好友申请未决信息)
-// string, 只读, 添加好友请求方的UserID
-static const char* kTIMFriendAddPendencyIdentifier = "friend_add_pendency_identifier";
-// string, 只读, 添加好友请求方的昵称
-static const char* kTIMFriendAddPendencyNickName = "friend_add_pendency_nick_name";
-// string, 只读, 添加好友请求方的来源
-static const char* kTIMFriendAddPendencyAddSource = "friend_add_pendency_add_source";
-// string, 只读, 添加好友请求方的附言
-static const char* kTIMFriendAddPendencyAddWording = "friend_add_pendency_add_wording";
-
-//------------------------------------------------------------------------------
-// 10.4 FriendshipGetPendencyListParam (分页获取好友申请未决信息列表的参数)
-// uint @ref TIMFriendPendencyType, 只写, 添加好友的未决请求类型
-static const char* kTIMFriendshipGetPendencyListParamType = "friendship_get_pendency_list_param_type";
-// uint64, 只写, 分页获取未决请求的起始 seq，返回的结果包含最大 seq，作为获取下一页的起始 seq
-static const char* kTIMFriendshipGetPendencyListParamStartSeq = "friendship_get_pendency_list_param_start_seq";
-// uint64, 只写, 获取未决信息的开始时间戳
-static const char* kTIMFriendshipGetPendencyListParamStartTime = "friendship_get_pendency_list_param_start_time";
-// int, 只写, 获取未决信息列表，每页的数量
-static const char* kTIMFriendshipGetPendencyListParamLimitedSize = "friendship_get_pendency_list_param_limited_size";
-
-//------------------------------------------------------------------------------
-// 10.5 PendencyPage (好友申请未决信息页)
-// uint64, 只读, 未决请求信息页的起始时间
-static const char* kTIMPendencyPageStartTime = "pendency_page_start_time";
-// uint64, 只读, 未决请求信息页的未读数量
-static const char* kTIMPendencyPageUnReadNum = "pendency_page_unread_num";
-// uint64, 只读, 未决请求信息页的当前Seq
-static const char* kTIMPendencyPageCurrentSeq = "pendency_page_current_seq";
-// array @ref FriendAddPendencyInfo, 只读, 未决请求信息页的未决信息列表
-static const char* kTIMPendencyPagePendencyInfoArray = "pendency_page_pendency_info_array";
-
-//------------------------------------------------------------------------------
-// 10.6 FriendAddPendencyInfo (好友申请未决信息)
-// uint @ref TIMFriendPendencyType, 只读, 好友添加请求未决类型
-static const char* kTIMFriendAddPendencyInfoType = "friend_add_pendency_info_type";
-// string, 只读, 好友添加请求未决的UserID
-static const char* kTIMFriendAddPendencyInfoIdentifier = "friend_add_pendency_info_identifier";
-// string, 只读, 好友添加请求未决的昵称
-static const char* kTIMFriendAddPendencyInfoNickName = "friend_add_pendency_info_nick_name";
-// uint64, 只读, 发起好友申请的时间
-static const char* kTIMFriendAddPendencyInfoAddTime = "friend_add_pendency_info_add_time";
-// string, 只读, 好友添加请求未决的添加来源
-static const char* kTIMFriendAddPendencyInfoAddSource = "friend_add_pendency_info_add_source";
-// string, 只读, 好友添加请求未决的添加附言
-static const char* kTIMFriendAddPendencyInfoAddWording = "friend_add_pendency_info_add_wording";
-
-//------------------------------------------------------------------------------
-// 10.7 FriendResponse (处理好友申请未决信息接口的参数)
-// string, 只写(必填), 响应好友添加的UserID
-static const char* kTIMFriendResponseIdentifier = "friend_response_identifier";
-// uint @ref TIMFriendResponseAction, 只写(必填), 响应好友添加的动作
-static const char* kTIMFriendResponseAction = "friend_response_action";
-// string, 只写(选填), 好友备注
-static const char* kTIMFriendResponseRemark = "friend_response_remark";
-// string, 只写(选填), 好友分组列表
-static const char* kTIMFriendResponseGroupName = "friend_response_group_name";
-
-//------------------------------------------------------------------------------
-// 10.8 FriendshipDeletePendencyParam (删除好友申请未决信息接口的参数)
-// uint @ref TIMFriendPendencyType, 只读, 添加好友的未决请求类型
-static const char* kTIMFriendshipDeletePendencyParamType = "friendship_delete_pendency_param_type";
-// array string, 只读, 删除好友未决请求的 UserID 列表
-static const char* kTIMFriendshipDeletePendencyParamIdentifierArray = "friendship_delete_pendency_param_identifier_array";
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//
-//                         十一. 检查好友关系 API 参数相关的 Json Key 定义
-//
-/////////////////////////////////////////////////////////////////////////////////
-
-//------------------------------------------------------------------------------
-// 11.1 FriendshipCheckFriendTypeParam (检测好友的类型接口的参数)
-// uint @ref TIMFriendType, 只写, 要检测的好友类型
-static const char* kTIMFriendshipCheckFriendTypeParamCheckType = "friendship_check_friendtype_param_check_type";
-// array string, 只写, 要检测的好友UserID列表
-static const char* kTIMFriendshipCheckFriendTypeParamIdentifierArray = "friendship_check_friendtype_param_identifier_array";
-
-//------------------------------------------------------------------------------
-// 11.2 FriendshipCheckFriendTypeResult (检测好友的类型接口返回)
-// string, 只读, 被检测的好友UserID
-static const char* kTIMFriendshipCheckFriendTypeResultIdentifier = "friendship_check_friendtype_result_identifier";
-// uint @ref TIMFriendCheckRelation, 只读, 检测成功时返回的好友的类型
-static const char* kTIMFriendshipCheckFriendTypeResultRelation = "friendship_check_friendtype_result_relation";
-// int [错误码](https://cloud.tencent.com/document/product/269/1671), 只读, 检测的结果
-static const char* kTIMFriendshipCheckFriendTypeResultCode = "friendship_check_friendtype_result_code";
-// string, 只读, 检测好友失败的描述信息
-static const char* kTIMFriendshipCheckFriendTypeResultDesc = "friendship_check_friendtype_result_desc";
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//
-//           十一. 好友操作（添加、删除、加黑名单等） API 参数相关的 Json Key 定义
-//
-/////////////////////////////////////////////////////////////////////////////////
-
-//------------------------------------------------------------------------------
-// 12.1 FriendResult (关系链操作接口的返回结果)
-// string, 只读, 关系链操作的用户ID
-static const char* kTIMFriendResultIdentifier = "friend_result_identifier";
-// int [错误码](https://cloud.tencent.com/document/product/269/1671), 只读, 关系链操作的结果
-static const char* kTIMFriendResultCode = "friend_result_code";
-// string, 只读, 关系链操作失败的详细描述
-static const char* kTIMFriendResultDesc = "friend_result_desc";
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//
-//                      十三. 好友分组 API 参数相关的 Json Key 定义
-//
-/////////////////////////////////////////////////////////////////////////////////
-
-//------------------------------------------------------------------------------
-// 13.1 CreateFriendGroupParam (创建好友分组接口参数)
-// array string, 只写, 创建分组的名称列表
-static const char* kTIMFriendshipCreateFriendGroupParamNameArray = "friendship_create_friend_group_param_name_array";
-// array string, 只写, 要放到创建的分组的好友UserID列表
-static const char* kTIMFriendshipCreateFriendGroupParamIdentifierArray = "friendship_create_friend_group_param_identifier_array";
-
-//------------------------------------------------------------------------------
-// 13.2 FriendGroupInfo (好友分组信息)
-// string, 只读, 分组名称
-static const char* kTIMFriendGroupInfoName = "friend_group_info_name";
-// uint64, 只读, 当前分组的好友个数
-static const char* kTIMFriendGroupInfoCount = "friend_group_info_count";
-// array string, 只读, 当前分组内好友UserID列表
-static const char* kTIMFriendGroupInfoIdentifierArray = "friend_group_info_identifier_array";
-
-//------------------------------------------------------------------------------
-// 13.3 FriendshipModifyFriendGroupParam (修改好友分组信息的接口参数)
-// string, 只写, 要修改的分组名称
-static const char* kTIMFriendshipModifyFriendGroupParamName = "friendship_modify_friend_group_param_name";
-// string, 只写(选填), 修改后的分组名称
-static const char* kTIMFriendshipModifyFriendGroupParamNewName = "friendship_modify_friend_group_param_new_name";
-// array string, 只写(选填), 要从当前分组删除的好友UserID列表
-static const char* kTIMFriendshipModifyFriendGroupParamDeleteIdentifierArray = "friendship_modify_friend_group_param_delete_identifier_array";
-// array string, 只写(选填), 当前分组要新增的好友UserID列表
-static const char* kTIMFriendshipModifyFriendGroupParamAddIdentifierArray = "friendship_modify_friend_group_param_add_identifier_array";
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//
-//                      十四. 好友搜索 API 参数相关的 Json Key 定义
-//
-/////////////////////////////////////////////////////////////////////////////////
-
-//------------------------------------------------------------------------------
-// 14.1 FriendSearchParam (搜索好友的参数)
-// array string, 只写, 搜索的关键字列表，关键字列表最多支持 5 个
-static const char* kTIMFriendshipSearchParamKeywordList = "friendship_search_param_keyword_list";
-// array uint @ref TIMFriendshipSearchFieldKey, 只写, 好友搜索类型
-static const char* kTIMFriendshipSearchParamSearchFieldList = "friendship_search_param_search_field_list";
-
-//------------------------------------------------------------------------------
-// 14.2 FriendInfoGetResult (搜索好友结果)
-// string, 只读, 好友 user_id
-static const char* kTIMFriendshipFriendInfoGetResultIdentifier = "friendship_friend_info_get_result_identifier";
-// uint @ref TIMFriendshipRelationType, 只读， 好友关系
-static const char* kTIMFriendshipFriendInfoGetResultRelationType = "friendship_friend_info_get_result_relation_type";
-// uint, 只读, 错误码
-static const char* kTIMFriendshipFriendInfoGetResultErrorCode = "friendship_friend_info_get_result_error_code";
-// string, 只读, 错误描述
-static const char* kTIMFriendshipFriendInfoGetResultErrorMessage = "friendship_friend_info_get_result_error_message";
-// array uint @ref FriendProfile, 只读, 好友资料
-static const char* kTIMFriendshipFriendInfoGetResultFriendInfo = "friendship_friend_info_get_result_field_info";
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//
-//                       十五. 公众号管理 API 参数相关的 Json Key 定义
-//
-/////////////////////////////////////////////////////////////////////////////////
-
-//------------------------------------------------------------------------------
-// 15.1 OfficialAccountInfo(公众号信息)
-// string, 只读, 公众号 ID
-static const char* kTIMOfficialAccountID = "official_account_id";
-// string, 只读, 公众号名称
-static const char* kTIMOfficialAccountName = "official_account_name";
-// string, 只读, 公众号头像 URL
-static const char* kTIMOfficialAccountFaceUrl = "official_account_face_url";
-// string, 只读, 公众号所有者
-static const char* kTIMOfficialAccountOwnerUserID = "official_account_owner_user_id";
-// string, 只读, 公众号介绍
-static const char* kTIMOfficialAccountIntroduction = "official_account_introduction";
-// string, 只读, 公众号组织
-static const char* kTIMOfficialAccountOrganization = "official_account_organization";
-// uint64, 只读, 公众号创建时间，单位：秒
-static const char* kTIMOfficialAccountCreateTime = "official_account_create_time";
-// uint64, 只读, 公众号订阅者数量
-static const char* kTIMOfficialAccountSubscriberCount = "official_account_subscriber_count";
-// uint64, 只读, 公众号订阅时间，单位：秒
-static const char* kTIMOfficialAccountSubscribeTime = "official_account_subscribe_time";
-// string, 只读, 公众号自定义字段
-static const char* kTIMOfficialAccountCustomData = "official_account_custom_data";
-
-//------------------------------------------------------------------------------
-// 15.2 GetOfficialAccountInfoResult(获取公众号信息列表接口的返回)
-// int [错误码](https://cloud.tencent.com/document/product/269/1671), 只读, 获取公众号详细资料的结果
-static const char* kTIMGetOfficialAccountInfoResultCode = "get_official_accounts_info_result_code";
-// string, 只读, 获取公众号详细资料失败的描述信息
-static const char* kTIMGetOfficialAccountInfoResultDesc = "get_official_accounts_info_result_desc";
-// object @ref OfficialAccountInfo, 只读, 公众号详细信息
-static const char* kTIMGetOfficialAccountInfo = "get_official_accounts_info";
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//
-//                              十六. 废弃字段
-//
-/////////////////////////////////////////////////////////////////////////////////
-
-//------------------------------------------------------------------------------
-// 16.1以下为老版本拼写错误，为了兼容老版本而保留的宏定义
+// 18.3 以下为老版本拼写错误，为了兼容老版本而保留的宏定义
 // enum TIMFriendType
 #define FriendTypeSignle  FriendTypeSingle
 // enum TIMFriendshipSearchFieldKey
@@ -1340,6 +1717,9 @@ static const char* kTIMGetOfficialAccountInfo = "get_official_accounts_info";
 #define kTIMFriendResponeAction      kTIMFriendResponseAction
 #define kTIMFriendResponeRemark      kTIMFriendResponseRemark
 #define kTIMFriendResponeGroupName   kTIMFriendResponseGroupName
+// FollowListResult JsonKey
+#define KTIMFollowListResultNextCursor   kTIMFollowListResultNextCursor
+#define KTIMFollowListResultUerInfoList  kTIMFollowListResultUerInfoList
 
 #ifdef __cplusplus
 }

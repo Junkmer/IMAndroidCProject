@@ -83,7 +83,7 @@ static const char* kTIMInternalOperationSetIPv6Prior = "internal_operation_set_i
 static const char* kTIMInternalOperationSetMaxRetryCount = "internal_operation_set_max_retry_count";
 static const char* kTIMInternalOperationSetPacketRequestTimeout = "internal_operation_set_packet_request_timeout";
 static const char* kTIMInternalOperationSetCustomServerInfo = "internal_operation_set_custom_server_info";
-static const char* kTIMInternalOperationSetQuicChannelInfo = "internal_operation_set_quic_channel_info";
+static const char* kTIMInternalOperationEnableQuicChannel = "internal_operation_enable_quic_channel";
 static const char* kTIMInternalOperationSetSM4GCMCallback = "internal_operation_set_sm4_gcm_callback";
 static const char* kTIMInternalOperationInitLocalStorage = "internal_operation_init_local_storage";
 static const char* kTIMInternalOperationSetCosSaveRegionForConversation = "internal_operation_set_cos_save_region_for_conversation";
@@ -100,6 +100,12 @@ static const char* kTIMInternalOperationReportTUIComponentUsage = "internal_oper
 static const char* kTIMInternalOperationSendTRTCCustomData = "internal_operation_send_trtc_custom_data";
 static const char* kTIMInternalOperationSendRoomCustomData = "internal_operation_send_room_custom_data";
 static const char* kTIMInternalOperationSetApplicationID = "internal_operation_set_application_id";
+static const char* kTIMInternalOperationGetServerConfig = "internal_operation_get_server_config";
+static const char* kTIMInternalOperationSetIgnoreRepeatLogin = "internal_operation_set_ignore_repeat_login";
+static const char* kTIMInternalOperationStartMessageLongPolling = "internal_operation_start_message_long_polling";
+static const char* kTIMInternalOperationStopMessageLongPolling = "internal_operation_stop_message_long_polling";
+static const char* kTIMInternalOperationFindMergerMessages = "internal_operation_find_merger_messages";
+static const char* kTIMInternalOperationGetBriefGroupMemberList = "internal_operation_get_brief_group_member_list";
 
 //------------------------------------------------------------------------------
 // 4.2 SSODataParam(发送 sso data 的参数)
@@ -144,8 +150,8 @@ static const char* kTIMCustomServerInfoServerPublicKey = "server_public_key";
 
 //------------------------------------------------------------------------------
 // 4.7 QuicChannelInfo(Quic 通道信息)
-// bool, 只写(必填), 是否强制打开 Quic 通道，true：打开，false：不打开
-static const char* kTIMQuicChannelInfoForceUseQuicChannel = "quic_channel_info_force_use_quic_channel";
+// bool, 只写(必填), 是否启用 Quic 通道，true：打开，false：不打开
+static const char* kTIMQuicChannelInfoEnableQuic = "quic_channel_info_enable_quic";
 
 //------------------------------------------------------------------------------
 // 4.8 SM4GCMCallbackParam(国密 SM4 GCM 回调函数地址的参数)
@@ -193,8 +199,8 @@ static const char* kTIMRequestSetMaxRetryCountParam = "request_set_max_retry_cou
 static const char* kTIMRequestSetPacketRequestTimeoutParam = "request_set_packet_request_timeout_param";
 // object @ref CustomServerInfo, 只写(选填), 自定义服务器信息, 当 kTIMRequestInternalOperation 为 kTIMInternalOperationSetCustomServerInfo 时需要设置
 static const char* kTIMRequestSetCustomServerInfoParam = "request_set_custom_server_info_param";
-// bool, 只写(选填), true 表示设置 Quic 通道信息, 当 kTIMRequestInternalOperation 为 kTIMInternalOperationSetQuicChannelInfo 时需要设置
-static const char* kTIMRequestSetQuicChannelInfoParam = "request_set_quic_channel_info_param";
+// bool, 只写(选填), true 表示设置 Quic 通道信息, 当 kTIMRequestInternalOperation 为 kTIMInternalOperationEnableQuicChannel 时需要设置
+static const char* kTIMRequestEnableQuicChannelParam = "request_enable_quic_channel_param";
 // object @ref SM4GCMCallbackParam, 只写(选填), 国密 SM4 GCM 回调函数地址的参数, 当 kTIMRequestInternalOperation 为 kTIMInternalOperationSetSM4GCMCallback 时需要设置
 static const char* kTIMRequestSetSM4GCMCallbackParam = "request_set_sm4_gcm_callback_param";
 // string, 只写(选填), 初始化 Database 的用户 ID, 当 kTIMRequestInternalOperation 为 kTIMInternalOperationInitLocalStorage 时需要设置
@@ -237,7 +243,27 @@ static const char* kTIMRequestSendRoomCustomDataServiceCommandParam = "request_s
 static const char* kTIMRequestSendRoomCustomDataRequestContentParam = "request_send_room_custom_data_request_content_param";
 // uint8, 只写(选填), 当 kTIMRequestInternalOperation 为 kTIMInternalOperationSetApplicationID 时需要设置
 static const char* kTIMRequestSetApplicationIDParam = "request_set_application_id_param";
-
+// string, 只写(必填), 当 kTIMRequestInternalOperation 为 kTIMInternalOperationGetServerConfig 时需要设置
+static const char* kTIMRequestGetServerConfigKeyParam = "request_get_server_config_key_param";
+// string, 只写(必填), 当 kTIMRequestInternalOperation 为 kTIMInternalOperationGetServerConfig 时需要设置
+// 0或不填: 无效， 1:数值类型  2:字符串类型
+static const char* kTIMRequestGetServerConfigValueTypeParam = "request_get_server_config_value_type_param";
+// bool, 只写(选填), 设置「SDK 是否忽略重复登录请求」, 当 kTIMRequestInternalOperation 为 kTIMInternalOperationSetIgnoreRepeatLogin 时有效
+static const char* kTIMRequestSetIgnoreRepeatLoginParam = "request_set_ignore_repeat_login_param";
+// string, 只写(必填)，直播群 ID, 当 kTIMRequestInternalOperation 为 kTIMInternalOperationStartMessageLongPolling 时需要设置
+static const char* kTIMRequestStartMessageLongPollingIDParam = "request_start_message_long_polling_id_param";
+// string, 只写(必填)，直播群长轮询的 key, 当 kTIMRequestInternalOperation 为 kTIMInternalOperationStartMessageLongPolling 时需要设置
+static const char* kTIMRequestStartMessageLongPollingKeyParam = "request_start_message_long_polling_key_param";
+// string, 只写(必填)，长轮询起始的 sequence, 当 kTIMRequestInternalOperation 为 kTIMInternalOperationStartMessageLongPolling 时需要设置
+static const char* kTIMRequestStartMessageLongPollingSequenceParam = "request_start_message_long_polling_sequence_param";
+// string, 只写(必填)，直播群 ID, 当 kTIMRequestInternalOperation 为 kTIMInternalOperationStopMessageLongPolling 时需要设置
+static const char* kTIMRequestStopMessageLongPollingIDParam = "request_stop_message_long_polling_id_param";
+// string, 只写(必填)，消息 ID，当 kTIMRequestInternalOperation 为 kTIMInternalOperationFindMergerMessages 时需要设置
+static const char* kTIMRequestFindMergerMessagesMessageIDParam = "request_find_merger_messages_message_id_param";
+// array, 只写(必填)，合并消息 ID 列表，当 kTIMRequestInternalOperation 为 kTIMInternalOperationFindMergerMessages 时需要设置
+static const char* kTIMRequestFindMergerMessagesMergerMessageIDListParam = "request_find_merger_messages_merger_message_id_list_param";
+// string, 只写(选填)，群 ID, 当 kTIMRequestInternalOperation 为 kTIMInternalOperationGetBriefGroupMemberList 时需要设置
+static const char* kTIMRequestGetBriefGroupMemberListGroupIDParam = "request_get_brief_group_member_list_group_id_param";
 
 //------------------------------------------------------------------------------
 // 4.13 ResponseInfo(callExperimentalAPI 接口回调返回的数据)

@@ -132,8 +132,8 @@ enum TIMProfileChangeType {
  * @param desc 错误描述字符串
  * @param user_data ImSDK负责透传的用户自定义数据，未做任何处理
  *
- * __感知网络状态的回调处理__
- * @code{.json}示例
+ * __感知网络状态的回调处理示例__
+ * @code{.json}
  * void NetworkStatusListenerCallback(TIMNetworkStatus status, int32_t code, const char* desc, const void* user_data) {
  *     switch(status) {
  *     case kTIMConnected: {
@@ -567,7 +567,7 @@ TIM_API int TIMProfileModifySelfUserProfile(const char* json_modify_self_user_pr
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
  * @return int 返回TIM_SUCC表示接口调用成功（接口只有返回TIM_SUCC，回调cb才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
  *
- * @note 请注意：
+ * @note
  *  - 该接口用于订阅陌生人的资料变更事件，订阅成功后，当订阅用户资料发生变更，您可以通过监听 @ref TIMSetUserInfoChangedCallback 回调来感知
  *  - 订阅列表最多允许订阅 200 个，超过限制后，会自动淘汰最先订阅的用户
  *  - 自己的资料变更通知不需要订阅，默认会通过  @ref TIMSetSelfInfoUpdatedCallback 回调通知给您
@@ -593,7 +593,7 @@ TIM_API int TIMSubscribeUserInfo(const char *json_user_id_list, TIMCommCallback 
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
  * @return int 返回TIM_SUCC表示接口调用成功（接口只有返回TIM_SUCC，回调cb才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
  * 
- * @note 请注意：
+ * @note
  * - 当 json_user_id_list 为空 或 nullptr 时，取消当前所有的订阅
  *
  * __示例__
@@ -616,7 +616,7 @@ TIM_API int TIMUnsubscribeUserInfo(const char *json_user_id_list, TIMCommCallbac
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
  * @return int 返回TIM_SUCC表示接口调用成功（接口只有返回TIM_SUCC，回调cb才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
  *
- * @note 请注意：
+ * @note
  * - 如果您想查询自己的自定义状态，您只需要传入自己的 userID 即可
  * 
  * __示例__
@@ -639,7 +639,7 @@ TIM_API int TIMGetUserStatus(const char *json_identifier_array, TIMCommCallback 
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
  * @return int 返回TIM_SUCC表示接口调用成功（接口只有返回TIM_SUCC，回调cb才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
  *
- * @note 请注意：
+ * @note
  * 该接口只支持设置自己的自定义状态，即 kTIMUserStatusCustomStatus 字段，请参考 @ref TIMUserStatus
  *
  * __示例__
@@ -661,7 +661,7 @@ TIM_API int TIMSetSelfStatus(const char *json_current_user_status, TIMCommCallba
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
  * @return int 返回TIM_SUCC表示接口调用成功（接口只有返回TIM_SUCC，回调cb才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
  *
- * @note 请注意：
+ * @note
  * - 当成功订阅用户状态后，当对方的状态（包含在线状态、自定义状态）发生变更后，您可以监听 @ref TIMSetUserStatusChangedCallback 回调来感知
  * - 如果您需要订阅好友列表的状态，您只需要在控制台上打开开关即可，无需调用该接口
  * - 该接口不支持订阅自己，您可以通过监听 @ref TIMSetUserStatusChangedCallback 回调来感知自身的自定义状态的变更
@@ -687,7 +687,7 @@ TIM_API int TIMSubscribeUserStatus(const char *json_identifier_array, TIMCommCal
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
  * @return int 返回TIM_SUCC表示接口调用成功（接口只有返回TIM_SUCC，回调cb才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
  *
- * @note 请注意：
+ * @note
  * - 当 json_identifier_array 为空或 nullptr 时，取消当前所有的订阅
  *
  * __示例__
@@ -717,6 +717,8 @@ TIM_API int TIMUnsubscribeUserStatus(const char *json_identifier_array, TIMCommC
 static const char* kTIMSdkConfigConfigFilePath = "sdk_config_config_file_path";
 // string, 只写(选填), 日志文件路径,默认路径为"/"
 static const char* kTIMSdkConfigLogFilePath = "sdk_config_log_file_path";
+// int64, 只写(选填), 主线程 ID
+static const char* kTIMSdkConfigMainThreadID = "sdk_config_main_thread_id";
 
 //------------------------------------------------------------------------------
 // 7.2 UserConfig(用户配置信息)
@@ -801,7 +803,7 @@ static const char* kTIMUserStatusStatusType = "user_status_status_type";
 // string, 读写, 用户的自定义状态
 static const char* kTIMUserStatusCustomStatus = "user_status_custom_status";
 // array, 只读， 用户在线终端
-static const char* KTIMUserStatusOnlineDevices      = "user_status_online_devices";
+static const char* kTIMUserStatusOnlineDevices = "user_status_online_devices";
 
 //------------------------------------------------------------------------------
 // 8.3 UserProfile (用户个人资料)
@@ -943,41 +945,20 @@ enum TIMGroupMemberInfoFlag {
     kTIMGroupMemberInfoFlag_NameCard = 0x01 << 5,
 };
 
-// 9.3 群组成员角色标识
-enum TIMGroupMemberRoleFlag {
-    // 获取全部角色类型
-    kTIMGroupMemberRoleFlag_All = 0x00,
-    // 获取所有者(群主)
-    kTIMGroupMemberRoleFlag_Owner = 0x01,
-    // 获取管理员，不包括群主
-    kTIMGroupMemberRoleFlag_Admin = 0x01 << 1,
-    // 获取普通群成员，不包括群主和管理员
-    kTIMGroupMemberRoleFlag_Member = 0x01 << 2,
-};
-
 //------------------------------------------------------------------------------
-// 9.4 GroupGetInfoOption(获取群组信息的选项)
+// 9.3 GroupGetInfoOption(获取群组信息的选项)
 // uint64 @ref TIMGroupGetInfoFlag, 读写(选填), 根据想要获取的信息过滤，默认值为0xffffffff(获取全部信息)
 static const char* kTIMGroupGetInfoOptionInfoFlag = "group_get_info_option_info_flag";
 // array string, 只写(选填), 想要获取的群组自定义字段列表，请参考 [群组自定义字段](https://cloud.tencent.com/document/product/269/1502#.E8.87.AA.E5.AE.9A.E4.B9.89.E5.AD.97.E6.AE.B5)
 static const char* kTIMGroupGetInfoOptionCustomArray = "group_get_info_option_custom_array";
 
 //------------------------------------------------------------------------------
-// 9.5 GroupMemberGetInfoOption(获取群组成员信息的选项)
-// uint64 @ref TIMGroupMemberInfoFlag, 读写(选填), 根据想要获取的信息过滤，默认值为0xffffffff(获取全部信息)
-static const char* kTIMGroupMemberGetInfoOptionInfoFlag = "group_member_get_info_option_info_flag";
-// uint64 @ref TIMGroupMemberRoleFlag, 读写(选填), 根据成员角色过滤，默认值为kTIMGroupMemberRoleFlag_All，获取所有角色
-static const char* kTIMGroupMemberGetInfoOptionRoleFlag = "group_member_get_info_option_role_flag";
-// array string, 只写(选填), 请参考 [自定义字段](https://cloud.tencent.com/document/product/269/1502#.E8.87.AA.E5.AE.9A.E4.B9.89.E5.AD.97.E6.AE.B5)
-static const char* kTIMGroupMemberGetInfoOptionCustomArray = "group_member_get_info_option_custom_array";
-
-//------------------------------------------------------------------------------
-// 9.6 SdKConfig(初始化ImSDK的配置, 已废弃的部分)
+// 9.4 SdKConfig(初始化ImSDK的配置, 已废弃的部分)
 // uint64, 只写(选填), 配置Android平台的Java虚拟机指针
 static const char* kTIMSdkConfigJavaVM = "sdk_config_java_vm";
 
 //------------------------------------------------------------------------------
-// 9.7 UserConfig(用户配置信息，已废弃的部分)
+// 9.5 UserConfig(用户配置信息，已废弃的部分)
 // bool, 只写(选填), true表示要收已读回执事件
 static const char* kTIMUserConfigIsReadReceipt = "user_config_is_read_receipt";
 // bool, 只写(选填), true表示群tips不计入群消息已读计数
@@ -990,12 +971,12 @@ static const char* kTIMUserConfigGroupGetInfoOption = "user_config_group_getinfo
 static const char* kTIMUserConfigGroupMemberGetInfoOption = "user_config_group_member_getinfo_option";
 
 //------------------------------------------------------------------------------
-// 9.8 FriendShipGetProfileListParam (获取指定用户列表的个人资料的参数，已废弃的部分)
+// 9.6 FriendShipGetProfileListParam (获取指定用户列表的个人资料的参数，已废弃的部分)
 // bool, 只写, 是否强制更新。false表示优先从本地缓存获取，获取不到则去网络上拉取。true表示直接去网络上拉取资料。默认为false
 static const char* kTIMFriendShipGetProfileListParamForceUpdate = "friendship_getprofilelist_param_force_update";
 
 //------------------------------------------------------------------------------
-// 9.9 以下为老版本拼写错误，为了兼容老版本而保留的宏定义
+// 9.7 以下为老版本拼写错误，为了兼容老版本而保留的宏定义
 // enum TIMGroupGetInfoFlag
 #define kTIMGroupInfoFlag_AddOpton  kTIMGroupInfoFlag_AddOption
 // enum TIMGenderType
@@ -1013,6 +994,8 @@ static const char* kTIMFriendShipGetProfileListParamForceUpdate = "friendship_ge
 #define kTIMUserProfileItemLoaction  kTIMUserProfileItemLocation
 // GroupMemberInfo JsonKey
 #define kTIMGroupMemberInfoRemark  kTIMGroupMemberInfoFriendRemark
+// TIMUserStatus JsonKey
+#define KTIMUserStatusOnlineDevices kTIMUserStatusOnlineDevices
 
 #ifdef __cplusplus
 }

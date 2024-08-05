@@ -126,11 +126,11 @@ namespace tim {
             ScopedJEnv scopedJEnv;
             auto *env = scopedJEnv.GetEnv();
 
-            json_param[kTIMRequestInternalOperation] = kTIMInternalOperationSetQuicChannelInfo;
+            json_param[kTIMRequestInternalOperation] = kTIMInternalOperationEnableQuicChannel;
             bool j_isUseQuicChannel = JSONObjectJNI::optJsonBoolean(env, param, "forceUseQuicChannel");
 
             // bool, 只写(选填), true 表示设置 Quic 通道信息, 当 kTIMRequestInternalOperation 为 kTIMInternalOperationSetQuicChannelInfo 时需要设置
-            json_param[kTIMRequestSetQuicChannelInfoParam] = j_isUseQuicChannel;
+            json_param[kTIMRequestEnableQuicChannelParam] = j_isUseQuicChannel;
         }
 
         void CallExperimentalAPIJni::setProxyInfo(jobject const &param, json::Object &json_param) {

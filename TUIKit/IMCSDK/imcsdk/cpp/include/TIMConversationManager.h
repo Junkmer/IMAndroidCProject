@@ -71,7 +71,6 @@ enum TIMGroupAtType {
     kTIMGroup_At_All_At_ME,
 };
 
-
 /////////////////////////////////////////////////////////////////////////////////
 //
 //                        二. 会话事件及会话未读数相关回调定义
@@ -227,8 +226,13 @@ typedef void (*TIMConvConversationsAddedToGroupCallback)(const char* group_name,
  * @param group_name 分组名
  * @param conversation_array 会话列表
  * @param user_data ImSDK负责透传的用户自定义数据，未做任何处理
+ *
+ * @note
+ * - reason 表示会话从所在分组删除的原因，其取值有：
+ * - 当 reason 为 0 时，表示由用户主动调用 deleteConversationsFromGroup 触发
+ * - 当 reason 为 1 时，表示添加到分组的会话数量超过 1000，最早添加进分组的会话被淘汰
  */
-typedef void (*TIMConvConversationsDeletedFromGroupCallback)(const char* group_name, const char* conversation_array, const void* user_data);
+typedef void (*TIMConvConversationsDeletedFromGroupCallback)(const char* group_name, const char* conversation_array, uint32_t reason, const void* user_data);
 
 /////////////////////////////////////////////////////////////////////////////////
 //
@@ -262,7 +266,7 @@ TIM_API void TIMSetConvEventCallback(TIMConvEventCallback cb, const void* user_d
  *
  * @note
  *  - 当您调用 @ref TIMConvGetTotalUnreadMessageCount 获取全部会话未读总数以后，任意会话的未读数发生变化时，SDK 都会通过该回调把最新的未读总数通知给您。
- *  - 未读总数会减去设置为免打扰的会话的未读数，即消息接收选项设置为 kTIMRecvMsgOpt_Not_Receive 或 kTIMRecvMsgOpt_Not_Notify 的会话。
+ *  - 未读总数会减去设置为免打扰的会话的未读数，即消息接收选项设置为 kTIMRecvMsgOpt_Not_Receive 或 kTIMRecvMsgOpt_Not_Notify 或 kTIMRecvMsgOpt_Not_Notify_Except_At 的会话。
  */
 TIM_API void TIMSetConvTotalUnreadMessageCountChangedCallback(TIMConvTotalUnreadMessageCountChangedCallback cb, const void* user_data);
 
@@ -275,7 +279,7 @@ TIM_API void TIMSetConvTotalUnreadMessageCountChangedCallback(TIMConvTotalUnread
  * @note
  *  - 您可以调用 @ref TIMConvSubscribeUnreadMessageCountByFilter 注册监听指定 filter 下的未读总数变化，SDK 通过这个回调把最新的未读总数通知给您。
  *  - 您可以注册监听多个不同 filter 下的未读总数变更，这个回调的 filter 参数就是注册监听时指定的 filter，该 filter 携带了 kTIMConversationListFilterConvType、kTIMConversationListFilterMarkType、kTIMConversationListFilterGroupName 三个字段，通过判断这三字段是不是都相同，来区分出不同的 filter。
- *  - 未读总数会减去设置为免打扰的会话的未读数，即消息接收选项设置为 kTIMRecvMsgOpt_Not_Receive 或 kTIMRecvMsgOpt_Not_Notify 的会话。
+ *  - 未读总数会减去设置为免打扰的会话的未读数，即消息接收选项设置为 kTIMRecvMsgOpt_Not_Receive 或 kTIMRecvMsgOpt_Not_Notify 或 kTIMRecvMsgOpt_Not_Notify_Except_At 的会话。
  */
 TIM_API void TIMSetConvUnreadMessageCountChangedByFilterCallback(TIMConvTotalUnreadMessageCountChangedByFilterCallback cb, const void* user_data);
 
@@ -286,7 +290,7 @@ TIM_API void TIMSetConvUnreadMessageCountChangedByFilterCallback(TIMConvTotalUnr
 //
 /////////////////////////////////////////////////////////////////////////////////
 /**
- * 5.1 会话分组被创建
+ * 5.1 设置会话分组被创建回调
  * 
  * @param cb 会话未读消息总数变更的回调，请参考 @ref TIMConvConversationGroupCreatedCallback
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
@@ -294,37 +298,36 @@ TIM_API void TIMSetConvUnreadMessageCountChangedByFilterCallback(TIMConvTotalUnr
 TIM_API void TIMSetConvConversationGroupCreatedCallback(TIMConvConversationGroupCreatedCallback cb, const void* user_data);
 
 /**
- * 5.2 会话分组被删除
+ * 5.2 设置会话分组被删除的回调
  * 
- * @param cb 会话未读消息总数变更的回调，请参考 @ref TIMConvConversationGroupDeletedCallback
+ * @param cb 会话分组被删除的回调，请参考 @ref TIMConvConversationGroupDeletedCallback
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
  */
 TIM_API void TIMSetConvConversationGroupDeletedCallback(TIMConvConversationGroupDeletedCallback cb, const void* user_data);
 
 /**
- * 5.3 会话分组名变更
+ * 5.3 设置会话分组命名变更回调
  * 
- * @param cb 会话未读消息总数变更的回调，请参考 @ref TIMConvConversationGroupNameChangedCallback
+ * @param cb 会话分组命名变更回调，请参考 @ref TIMConvConversationGroupNameChangedCallback
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
  */
 TIM_API void TIMSetConvConversationGroupNameChangedCallback(TIMConvConversationGroupNameChangedCallback cb, const void* user_data);
 
 /**
- * 5.4 会话分组新增会话
+ * 5.4 设置会话分组新增会话的回调
  * 
- * @param cb 会话未读消息总数变更的回调，请参考 @ref TIMConvConversationsAddedToGroupCallback
+ * @param cb 会话分组新增会话的回调，请参考 @ref TIMConvConversationsAddedToGroupCallback
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
  */
 TIM_API void TIMSetConvConversationsAddedToGroupCallback(TIMConvConversationsAddedToGroupCallback cb, const void* user_data);
 
 /**
- * 5.5 会话分组删除会话
- * 
- * @param cb 会话未读消息总数变更的回调，请参考 @ref TIMConvConversationsDeletedFromGroupCallback
+ * 5.5 设置会话分组删除会话的回调
+ *
+ * @param cb 会话分组删除会话的回调，请参考 @ref TIMConvConversationsDeletedFromGroupCallback
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理
  */
 TIM_API void TIMSetConvConversationsDeletedFromGroupCallback(TIMConvConversationsDeletedFromGroupCallback cb, const void* user_data);
-
 
 /////////////////////////////////////////////////////////////////////////////////
 //
@@ -475,12 +478,12 @@ TIM_API int TIMConvDelete(const char* conv_id, enum TIMConvType conv_type, TIMCo
  * 6.5 删除会话列表（从 7.1 版本开始支持）
  *
  * @param conversation_id_array 会话 ID 列表
- * @param clearMessage 是否删除会话中的消息；设置为 false 时，保留会话消息；设置为 true 时，本地和服务器的消息会一起删除，并且不可恢复
+ * @param clear_message 是否删除会话中的消息；设置为 false 时，保留会话消息；设置为 true 时，本地和服务器的消息会一起删除，并且不可恢复
  * @param cb 删除会话列表的回调。回调函数定义和参数解析请参考 @ref TIMCommCallback
  * @param user_data 用户自定义数据，ImSDK 只负责传回给回调函数 cb，不做任何处理
  * @return int 返回 TIM_SUCC 表示接口调用成功（接口只有返回 TIM_SUCC，回调 cb 才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
  *
- * @note 请注意: 每次最多支持删除 100 个会话
+ * @note 每次最多支持删除 100 个会话
  *
  * __示例(回调结果中 json_param 使用的 Json Key 请参考 @ref TIMConversationOperationResult)__
  * @code{.cpp}
@@ -488,16 +491,16 @@ TIM_API int TIMConvDelete(const char* conv_id, enum TIMConvType conv_type, TIMCo
  *   conversation_id_array.push_back("c2c_conversation_id1");
  *   conversation_id_array.push_back("group_conversation_id2");
  *
- *   bool clearMessage = true;
+ *   bool clear_message = true;
  *
- *   TIMConvDeleteConversationList(json::Serialize(conversation_id_array).c_str(), clearMessage, [](int32_t code, const char* desc, const char* json_param, const void* user_data) {
+ *   TIMConvDeleteConversationList(json::Serialize(conversation_id_array).c_str(), clear_message, [](int32_t code, const char* desc, const char* json_param, const void* user_data) {
  *       printf("TIMConvDeleteConversationList code:%d|desc:%s|json_param %s\r\n", code, desc, json_param);
  *
  *       // 遍历读取 json_param 存放的操作结果，参见 TIMConversationOperationResult 的定义
  *   }, nullptr);
  * @endcode
  */
-TIM_API int TIMConvDeleteConversationList(const char* conversation_id_array, bool clearMessage, TIMCommCallback cb, const void* user_data);
+TIM_API int TIMConvDeleteConversationList(const char* conversation_id_array, bool clear_message, TIMCommCallback cb, const void* user_data);
 
 /**
  * 6.6 设置指定会话的草稿
@@ -644,8 +647,8 @@ TIM_API int TIMConvMarkConversation(const char* conversation_id_array, uint64_t 
  *
  * @note
  *  - 调用该接口以后，任意会话的未读数发生变化时，SDK 都会给您抛 @ref TIMSetConvTotalUnreadMessageCountChangedCallback 回调。
- *  - 未读总数会减去设置为免打扰的会话的未读数，即消息接收选项设置为 kTIMRecvMsgOpt_Not_Receive 或 kTIMRecvMsgOpt_Not_Notify 的会话。
- * 
+ *  - 未读总数会减去设置为免打扰的会话的未读数，即消息接收选项设置为 kTIMRecvMsgOpt_Not_Receive 或 kTIMRecvMsgOpt_Not_Notify 或 kTIMRecvMsgOpt_Not_Notify_Except_At 的会话。
+ *
  * __示例 (回调结果中 json_param 使用的 Json Key 请参考 @ref GetTotalUnreadNumberResult)__
  * @code{.cpp}
  *  TIMConvGetTotalUnreadMessageCount(
@@ -666,7 +669,7 @@ TIM_API int TIMConvGetTotalUnreadMessageCount(TIMCommCallback cb, const void* us
  * @return int 返回TIM_SUCC表示接口调用成功（接口只有返回TIM_SUCC，回调cb才会被调用），其他值表示接口调用失败。每个返回值的定义请参考 @ref TIMResult
  *
  * @note
- *  - 未读总数会减去设置为免打扰的会话的未读数，即消息接收选项设置为 kTIMRecvMsgOpt_Not_Receive 或 kTIMRecvMsgOpt_Not_Notify 的会话。
+ *  - 未读总数会减去设置为免打扰的会话的未读数，即消息接收选项设置为 kTIMRecvMsgOpt_Not_Receive 或 kTIMRecvMsgOpt_Not_Notify 或 kTIMRecvMsgOpt_Not_Notify_Except_At 的会话。
  *
  * __示例 (回调结果中 json_param 使用的 Json Key 请参考 @ref GetTotalUnreadNumberResult)__
  * @code{.cpp}
@@ -975,13 +978,13 @@ static const char* kTIMConvGroupReadSequence = "conv_group_read_sequence";
 // 8.4 TIMConversationListFilter(获取会话列表高级接口的 filter)
 // uint @ref TIMConvType, 只写, 会话类型
 static const char* kTIMConversationListFilterConvType = "conversation_list_filter_conv_type";
-// string, 只写, 会话分组名称
+// string, 只写, 会话分组名称（不设置表示不过滤此项，设置为 "" 代表过滤不属于任何分组的会话）
 static const char* kTIMConversationListFilterConversationGroup = "conversation_list_filter_conversation_group";
-// uint @ref TIMConversationMarkType, 只写, 标记类型
+// uint @ref TIMConversationMarkType, 只写, 会话标记类型（不设置表示不过滤此项，设置为 0 代表过滤不含任何标记的会话）
 static const char* kTIMConversationListFilterMarkType = "conversation_list_filter_mark_type";
-// bool, 只写, true:返回包含未读数的会话；false:返回所有会话 (default:false)
+// bool, 只写, 会话是否含有未读数（不设置表示不过滤此项，设置为 true 代表过滤含未读数的会话；设置为 false 代表过滤不含未读数的会话）
 static const char* kTIMConversationListFilterHasUnreadCount = "conversation_list_filter_has_unread_count";
-// bool, 只写, true:返回包含群 @ 消息的会话；false:返回所有会话 (default:false)
+// bool, 只写, 会话是否含有群 @ 信息（不设置表示不过滤此项，设置为 true 代表过滤含群 @ 消息的会话；设置为 false 代表过滤不含群 @ 消息的会话）
 static const char* kTIMConversationListFilterHasGroupAtInfo = "conversation_list_filter_has_group_at_info";
 
 //------------------------------------------------------------------------------
