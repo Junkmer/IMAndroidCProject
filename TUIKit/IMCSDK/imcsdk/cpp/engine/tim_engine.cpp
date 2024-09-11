@@ -24,7 +24,9 @@ namespace tim {
 
     void ImplTIMCommCallback(int32_t code, const char *desc, const char *json_params, const void *user_data) {
         auto _callbackImpl_ = (TIMCallbackIMpl *) user_data;
-        _callbackImpl_->defaultCallBack(code, desc, json_params, user_data);
+        if (_callbackImpl_){
+            _callbackImpl_->defaultCallBack(code, desc, json_params, user_data);
+        }
     }
 
     void ErrorCallBack(int ret, TIMCallbackIMpl *callbackImpl) {
@@ -323,7 +325,7 @@ namespace tim {
     }
 
     //仅用于jni层使用，不对外公开
-    void TIMEngine::GetFriendsInfo(const char *json_get_friends_info_param, TIMCommCallback cb, const void* user_data) {
+    void TIMEngine::GetFriendsInfo(const char *json_get_friends_info_param, TIMCommCallback cb, const void *user_data) {
         TIMFriendshipGetFriendsInfo(json_get_friends_info_param, cb, user_data);
     }
 
@@ -522,7 +524,6 @@ namespace tim {
 
     void TIMEngine::ModifyMessage(const char *json_msg_param, TIMCommCallback cb, const jobject &callback) {
         int ret = TIMMsgModifyMessage(json_msg_param, cb, callback);
-        ErrorCallBack(ret, callback);
     }
 
     void
@@ -552,6 +553,10 @@ namespace tim {
     void TIMEngine::ClearHistoryMessage(const char *conv_id, enum TIMConvType conv_type, TIMCallbackIMpl *callbackImpl) {
         int ret = TIMMsgClearHistoryMessage(conv_id, conv_type, ImplTIMCommCallback, callbackImpl);
         ErrorCallBack(ret, callbackImpl);
+    }
+
+    void TIMEngine::SetMsgLocalCustomData(const char *json_msg_param) {
+        int ret = TIMMsgSetLocalCustomData(json_msg_param, ImplTIMCommCallback, nullptr);
     }
 
     void TIMEngine::SetC2CReceiveMessageOpt(const char *json_identifier_array, TIMReceiveMessageOpt opt, TIMCallbackIMpl *callbackImpl) {
@@ -608,7 +613,7 @@ namespace tim {
     }
 
     void TIMEngine::ConvertVoiceToText(const char *url, const char *language, TIMCommCallback cb, const jobject &callback) {
-        int ret = TIMMsgConvertVoiceToText(url,language,cb,callback);
+        int ret = TIMMsgConvertVoiceToText(url, language, cb, callback);
         ErrorCallBack(ret, callback);
     }
 
@@ -721,73 +726,73 @@ namespace tim {
     }
 
     void TIMEngine::SetAllReceiveMessageOpt(enum TIMReceiveMessageOpt opt, int32_t start_hour, int32_t start_minute, int32_t start_second,
-                                               uint32_t duration, TIMCallbackIMpl *callbackImpl) {
-        int ret = TIMMsgSetAllReceiveMessageOpt(opt,start_hour,start_minute,start_second,duration,ImplTIMCommCallback,callbackImpl);
+                                            uint32_t duration, TIMCallbackIMpl *callbackImpl) {
+        int ret = TIMMsgSetAllReceiveMessageOpt(opt, start_hour, start_minute, start_second, duration, ImplTIMCommCallback, callbackImpl);
         ErrorCallBack(ret, callbackImpl);
     }
 
     void TIMEngine::SetAllReceiveMessageOpt2(enum TIMReceiveMessageOpt opt, uint32_t start_time_stamp, uint32_t duration,
-                                                TIMCallbackIMpl *callbackImpl) {
-        int ret = TIMMsgSetAllReceiveMessageOpt2(opt,start_time_stamp,duration,ImplTIMCommCallback,callbackImpl);
+                                             TIMCallbackIMpl *callbackImpl) {
+        int ret = TIMMsgSetAllReceiveMessageOpt2(opt, start_time_stamp, duration, ImplTIMCommCallback, callbackImpl);
         ErrorCallBack(ret, callbackImpl);
     }
 
     void TIMEngine::GetAllReceiveMessageOpt(TIMCommCallback cb, jobject const &callback) {
-        int ret = TIMMsgGetAllReceiveMessageOpt(cb,callback);
+        int ret = TIMMsgGetAllReceiveMessageOpt(cb, callback);
         ErrorCallBack(ret, callback);
     }
 
     void TIMEngine::SearchCloudMessages(const char *json_search_message_param, TIMCommCallback cb, jobject const &callback) {
-        int ret = TIMMsgSearchCloudMessages(json_search_message_param,cb,callback);
+        int ret = TIMMsgSearchCloudMessages(json_search_message_param, cb, callback);
         ErrorCallBack(ret, callback);
     }
 
     void TIMEngine::SetMessageExtensions(const char *json_msg, const char *json_extension_array, TIMCommCallback cb, jobject const &callback) {
-        int ret = TIMMsgSetMessageExtensions(json_msg,json_extension_array,cb,callback);
+        int ret = TIMMsgSetMessageExtensions(json_msg, json_extension_array, cb, callback);
         ErrorCallBack(ret, callback);
     }
 
     void TIMEngine::GetMessageExtensions(const char *json_msg, TIMCommCallback cb, jobject const &callback) {
-        int ret = TIMMsgGetMessageExtensions(json_msg,cb,callback);
+        int ret = TIMMsgGetMessageExtensions(json_msg, cb, callback);
         ErrorCallBack(ret, callback);
     }
 
     void
     TIMEngine::DeleteMessageExtensions(const char *json_msg, const char *json_extension_key_array, TIMCommCallback cb, jobject const &callback) {
-        int ret = TIMMsgDeleteMessageExtensions(json_msg,json_extension_key_array,cb,callback);
+        int ret = TIMMsgDeleteMessageExtensions(json_msg, json_extension_key_array, cb, callback);
         ErrorCallBack(ret, callback);
     }
 
     void TIMEngine::AddMessageReaction(const char *json_msg, const char *reaction_id, TIMCallbackIMpl *callbackImpl) {
-        int ret = TIMMsgAddMessageReaction(json_msg,reaction_id,ImplTIMCommCallback,callbackImpl);
+        int ret = TIMMsgAddMessageReaction(json_msg, reaction_id, ImplTIMCommCallback, callbackImpl);
         ErrorCallBack(ret, callbackImpl);
     }
 
     void TIMEngine::RemoveMessageReaction(const char *json_msg, const char *reaction_id, TIMCallbackIMpl *callbackImpl) {
-        int ret = TIMMsgRemoveMessageReaction(json_msg,reaction_id,ImplTIMCommCallback,callbackImpl);
+        int ret = TIMMsgRemoveMessageReaction(json_msg, reaction_id, ImplTIMCommCallback, callbackImpl);
         ErrorCallBack(ret, callbackImpl);
     }
 
     void TIMEngine::GetMessageReactions(const char *json_msg_array, uint32_t max_user_count_per_reaction, TIMCommCallback cb, jobject const
     &callback) {
-        int ret = TIMMsgGetMessageReactions(json_msg_array,max_user_count_per_reaction,cb,callback);
+        int ret = TIMMsgGetMessageReactions(json_msg_array, max_user_count_per_reaction, cb, callback);
         ErrorCallBack(ret, callback);
     }
 
     void TIMEngine::GetAllUserListOfMessageReaction(const char *json_msg, const char *reaction_id, uint32_t next_seq, uint32_t count,
-                                                       TIMCommCallback cb, jobject const &callback) {
-        int ret = TIMMsgGetAllUserListOfMessageReaction(json_msg,reaction_id,next_seq,count,cb,callback);
+                                                    TIMCommCallback cb, jobject const &callback) {
+        int ret = TIMMsgGetAllUserListOfMessageReaction(json_msg, reaction_id, next_seq, count, cb, callback);
         ErrorCallBack(ret, callback);
     }
 
     void TIMEngine::TranslateText(const char *json_source_text_array, const char *source_language, const char *target_language, TIMCommCallback cb,
-                                     jobject const &callback) {
-        int ret = TIMMsgTranslateText(json_source_text_array,source_language,target_language,cb,callback);
+                                  jobject const &callback) {
+        int ret = TIMMsgTranslateText(json_source_text_array, source_language, target_language, cb, callback);
         ErrorCallBack(ret, callback);
     }
 
     void TIMEngine::ModifyInvitation(const char *invite_id, const char *data, TIMCallbackIMpl *callbackImpl) {
-        int ret = TIMSignalingModifyInvitation(invite_id,data,ImplTIMCommCallback,callbackImpl);
+        int ret = TIMSignalingModifyInvitation(invite_id, data, ImplTIMCommCallback, callbackImpl);
         ErrorCallBack(ret, callbackImpl);
     }
 

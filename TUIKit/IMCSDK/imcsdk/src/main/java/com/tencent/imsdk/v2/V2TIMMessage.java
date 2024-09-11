@@ -284,6 +284,7 @@ public class V2TIMMessage implements Serializable {
 
     public void setLocalCustomInt(int localCustomInt) {
         this.localCustomInt = localCustomInt;
+        V2TIMManager.getMessageManager().nativeSetMsgLocalCustomData(this);
     }
 
     public String getLocalCustomData() {
@@ -292,6 +293,8 @@ public class V2TIMMessage implements Serializable {
 
     public void setLocalCustomData(String localCustomData) {
         this.localCustomData = localCustomData;
+        //更新本地消息缓存
+        V2TIMManager.getMessageManager().nativeSetMsgLocalCustomData(this);
     }
 
     public String getCloudCustomData() {
