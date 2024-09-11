@@ -518,7 +518,7 @@ DEFINE_NATIVE_FUNC(void, NativeGetGroupMembersInfo, jstring group_id, jobject me
     std::string groupIDStr = tim::jni::StringJni::Jstring2Cstring(env, group_id);
 
     json::Object get_member_info_opt;
-    get_member_info_opt[kTIMGroupGetMemberInfoListParamGroupId] = group_id;
+    get_member_info_opt[kTIMGroupGetMemberInfoListParamGroupId] = groupIDStr;
     json::Array identifiers;
     int size = tim::jni::ArrayListJni::Size(member_list);
     for (int i = 0; i < size; ++i) {
