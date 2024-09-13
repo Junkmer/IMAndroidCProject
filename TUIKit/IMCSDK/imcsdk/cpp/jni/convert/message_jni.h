@@ -29,7 +29,6 @@ namespace tim {
         private:
             enum FieldID {
                 FieldIDMsgID = 0,
-                FieldIDTimestamp,
                 FieldIDSender,
                 FieldIDNickName,
                 FieldIDFriendRemark,
@@ -38,6 +37,11 @@ namespace tim {
                 FieldIDGroupID,
                 FieldIDUserID,
                 FieldIDStatus,
+                FieldIDClientTime,
+                FieldIDServerTime,
+                FieldIDSenderTinyId,
+                FieldIDReceiverTinyId,
+
                 FieldIDElemList,
 
                 FieldIDLocalCustomInt,

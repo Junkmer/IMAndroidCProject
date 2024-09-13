@@ -122,6 +122,8 @@ public abstract class V2TIMMessageManager {
 
     native String nativeSendMessage(V2TIMMessage message, String receiver, String groupID, int priority, boolean onlineUserOnly, V2TIMOfflinePushInfo offlinePushInfo, IMCallback<V2TIMMessage> callback);
 
+    native void nativeSetMsgLocalCustomData(V2TIMMessage message);
+
     native void nativeSetC2CReceiveMessageOpt(List<String> userIDList, int opt, IMCallback callback);
 
     native void nativeGetC2CReceiveMessageOpt(List<String> userIDList, IMCallback<List<V2TIMReceiveMessageOptInfo>> callback);

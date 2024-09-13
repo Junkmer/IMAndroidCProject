@@ -2297,6 +2297,10 @@ static const char* kTIMMsgConvId = "message_conv_id";
 static const char* kTIMMsgConvType = "message_conv_type";
 // string, 读写(选填), 消息的发送者
 static const char* kTIMMsgSender = "message_sender";
+// uint64, 只读, 注意：这个字段是内部字段，不推荐使用
+static const char* kTIMMsgSenderTinyId = "message_sender_tiny_id";
+// uint64, 只读, 注意：这个字段是内部字段，不推荐使用
+static const char* kTIMMsgReceiverTinyId = "message_receiver_tiny_id";
 // uint @ref TIMMsgPriority, 读写(选填), 消息优先级
 static const char* kTIMMsgPriority = "message_priority";
 // uint64, 读写(选填), 客户端时间

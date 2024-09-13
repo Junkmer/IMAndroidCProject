@@ -78,6 +78,11 @@ DEFINE_NATIVE_FUNC(jstring, NativeSendMessage, jobject message, jstring receiver
     return tim::jni::StringJni::Cstring2Jstring(env, message_id_buffer);
 }
 
+DEFINE_NATIVE_FUNC(void, NativeSetMsgLocalCustomData,jobject message) {
+    std::unique_ptr<json::Object> json_msg = tim::jni::MessageJni::Convert2CoreObject(message);
+    tim::TIMEngine::GetInstance()->SetMsgLocalCustomData(json::Serialize(*json_msg).c_str());
+}
+
 DEFINE_NATIVE_FUNC(void, NativeSetC2CReceiveMessageOpt, jobject userIdList, jint opt, jobject callback) {
     json::Array userIdArray;
     int size = tim::jni::ArrayListJni::Size(userIdList);
@@ -839,6 +844,7 @@ static JNINativeMethod gMethods[] = {
         {"nativeSendMessage",
                                                   "(Lcom/tencent/imsdk/v2/V2TIMMessage;Ljava/lang/String;Ljava/lang/String;"
                                                   "IZLcom/tencent/imsdk/v2/V2TIMOfflinePushInfo;Lcom/tencent/imsdk/common/IMCallback;)Ljava/lang/String;", (jstring *) NativeSendMessage},
+        {"nativeSetMsgLocalCustomData",           "(Lcom/tencent/imsdk/v2/V2TIMMessage;)V",                                             (void *) NativeSetMsgLocalCustomData},
         {"nativeSetC2CReceiveMessageOpt",         "(Ljava/util/List;ILcom/tencent/imsdk/common/IMCallback;)V",                                             (void *) NativeSetC2CReceiveMessageOpt},
         {"nativeGetC2CReceiveMessageOpt",         "(Ljava/util/List;Lcom/tencent/imsdk/common/IMCallback;)V",                                              (void *) NativeGetC2CReceiveMessageOpt},
         {"nativeSetGroupReceiveMessageOpt",       "(Ljava/lang/String;ILcom/tencent/imsdk/common/IMCallback;)V",                                           (void *) NativeSetGroupReceiveMessageOpt},

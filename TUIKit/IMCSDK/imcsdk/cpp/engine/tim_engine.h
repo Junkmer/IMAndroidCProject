@@ -270,6 +270,8 @@ namespace tim {
 
         void ClearHistoryMessage(const char *conv_id, enum TIMConvType conv_type, TIMCallbackIMpl *callbackImpl);
 
+        void SetMsgLocalCustomData(const char* json_msg_param);
+
         void SetC2CReceiveMessageOpt(const char *json_identifier_array, TIMReceiveMessageOpt opt, TIMCallbackIMpl *callbackImpl);
 
         void GetC2CReceiveMessageOpt(const char *json_identifier_array, TIMCommCallback cb, const jobject &callback);
