@@ -36,7 +36,6 @@ public class V2TIMMessage implements Serializable {
     public static final int V2TIM_GROUP_MESSAGE_READ_MEMBERS_FILTER_UNREAD = 1;
 
     private String msgID;
-    private long timestamp;
     private String sender;
     private String nickName;
     private String friendRemark;
@@ -45,6 +44,11 @@ public class V2TIMMessage implements Serializable {
     private String groupID;
     private String userID;
     private int status;
+
+    private long clientTime;
+    private long serverTime;
+    private long senderTinyId ;
+    private long receiverTinyId;
 
     private List<V2TIMElem> elemList = new ArrayList<>();
 
@@ -80,7 +84,10 @@ public class V2TIMMessage implements Serializable {
     }
 
     public long getTimestamp() {
-        return timestamp;
+        if (serverTime > 0){
+            return serverTime;
+        }
+        return clientTime;
     }
 
     public String getSender() {
@@ -532,7 +539,7 @@ public class V2TIMMessage implements Serializable {
     public String toString() {
         return "V2TIMMessage{" +
                 "msgID='" + msgID + '\'' +
-                ", timestamp=" + timestamp +
+                ", timestamp=" + getTimestamp() +
                 ", sender='" + sender + '\'' +
                 ", nickName='" + nickName + '\'' +
                 ", friendRemark='" + friendRemark + '\'' +

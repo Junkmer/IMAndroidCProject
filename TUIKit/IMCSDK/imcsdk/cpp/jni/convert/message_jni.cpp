@@ -50,12 +50,6 @@ namespace tim {
             }
             j_filed_id_array[FieldIDMsgID] = jfield;
 
-            jfield = env->GetFieldID(j_cls_, "timestamp", "J");
-            if (nullptr == jfield) {
-                return false;
-            }
-            j_filed_id_array[FieldIDTimestamp] = jfield;
-
             jfield = env->GetFieldID(j_cls_, "sender", "Ljava/lang/String;");
             if (nullptr == jfield) {
                 return false;
@@ -103,6 +97,30 @@ namespace tim {
                 return false;
             }
             j_filed_id_array[FieldIDStatus] = jfield;
+
+            jfield = env->GetFieldID(j_cls_, "serverTime", "J" );
+            if (nullptr == jfield) {
+                return false;
+            }
+            j_filed_id_array[FieldIDServerTime] = jfield;
+
+            jfield = env->GetFieldID(j_cls_, "clientTime", "J");
+            if (nullptr == jfield) {
+                return false;
+            }
+            j_filed_id_array[FieldIDClientTime] = jfield;
+
+            jfield = env->GetFieldID(j_cls_, "senderTinyId", "J");
+            if (nullptr == jfield) {
+                return false;
+            }
+            j_filed_id_array[FieldIDSenderTinyId] = jfield;
+
+            jfield = env->GetFieldID(j_cls_, "receiverTinyId", "J");
+            if (nullptr == jfield) {
+                return false;
+            }
+            j_filed_id_array[FieldIDReceiverTinyId] = jfield;
 
             jfield = env->GetFieldID(j_cls_, "elemList", "Ljava/util/List;");
             if (nullptr == jfield) {
@@ -242,9 +260,11 @@ namespace tim {
 
             env->SetObjectField(j_obj_message, j_filed_id_array[FieldIDMsgID],
                                 StringJni::Cstring2Jstring(env, message_json_obj[kTIMMsgMsgId].ToString()));
-            env->SetLongField(j_obj_message, j_filed_id_array[FieldIDTimestamp], message_json_obj[kTIMMsgServerTime].ToInt64());
+            env->SetLongField(j_obj_message, j_filed_id_array[FieldIDServerTime], message_json_obj[kTIMMsgServerTime].ToInt64());
+            env->SetLongField(j_obj_message, j_filed_id_array[FieldIDClientTime], message_json_obj[kTIMMsgClientTime].ToInt64());
             env->SetObjectField(j_obj_message, j_filed_id_array[FieldIDSender],
                                 StringJni::Cstring2Jstring(env, message_json_obj[kTIMMsgSender].ToString()));
+            env->SetLongField(j_obj_message, j_filed_id_array[FieldIDSenderTinyId],message_json_obj[kTIMMsgSenderTinyId].ToInt64());
 
             if (message_json_obj.HasKey(kTIMMsgSenderProfile)) {
                 json::Object sender_profile = message_json_obj[kTIMMsgSenderProfile];
@@ -268,10 +288,13 @@ namespace tim {
             if (convType == TIMConvType::kTIMConv_C2C) {
                 env->SetObjectField(j_obj_message, j_filed_id_array[FieldIDGroupID], StringJni::Cstring2Jstring(env, ""));
                 env->SetObjectField(j_obj_message, j_filed_id_array[FieldIDUserID], StringJni::Cstring2Jstring(env, message_json_obj[kTIMMsgConvId]));
+                env->SetLongField(j_obj_message, j_filed_id_array[FieldIDReceiverTinyId],message_json_obj[kTIMMsgReceiverTinyId].ToInt64());
             } else if (convType == TIMConvType::kTIMConv_Group) {
                 env->SetObjectField(j_obj_message, j_filed_id_array[FieldIDGroupID],
                                     StringJni::Cstring2Jstring(env, message_json_obj[kTIMMsgConvId]));
                 env->SetObjectField(j_obj_message, j_filed_id_array[FieldIDUserID], StringJni::Cstring2Jstring(env, ""));
+                env->SetObjectField(j_obj_message, j_filed_id_array[FieldIDReceiverTinyId],
+                                    StringJni::Cstring2Jstring(env, ""));
             }
 
             env->SetIntField(j_obj_message, j_filed_id_array[FieldIDStatus], message_json_obj[kTIMMsgStatus]);
@@ -344,13 +367,18 @@ namespace tim {
                 env->DeleteLocalRef(msgIDStr);
             }
 
-            message[kTIMMsgServerTime] = (long long) env->GetLongField(messageObj, j_filed_id_array[FieldIDTimestamp]);
+            message[kTIMMsgServerTime] = (long long) env->GetLongField(messageObj, j_filed_id_array[FieldIDServerTime]);
+            message[kTIMMsgClientTime] = (long long) env->GetLongField(messageObj, j_filed_id_array[FieldIDClientTime]);
 
             auto senderStr = (jstring) env->GetObjectField(messageObj, j_filed_id_array[FieldIDSender]);
             if (nullptr != senderStr) {
                 message[kTIMMsgSender] = StringJni::Jstring2Cstring(env, senderStr).c_str();
                 env->DeleteLocalRef(senderStr);
             }
+
+            message[kTIMMsgSenderTinyId] = (long long) env->GetLongField(messageObj, j_filed_id_array[FieldIDSenderTinyId]);
+            message[kTIMMsgReceiverTinyId] = (long long) env->GetLongField(messageObj, j_filed_id_array[FieldIDReceiverTinyId]);
+
 //------------------ 发送者用户资料 - start ------------------------//
             json::Object senderUserInfo_json;
 
@@ -534,13 +562,18 @@ namespace tim {
                 env->DeleteLocalRef(msgIDStr);
             }
 
-            message[kTIMMsgServerTime] = (long long) env->GetLongField(messageObj, j_filed_id_array[FieldIDTimestamp]);
+            message[kTIMMsgServerTime] = (long long) env->GetLongField(messageObj, j_filed_id_array[FieldIDServerTime]);
+            message[kTIMMsgClientTime] = (long long) env->GetLongField(messageObj, j_filed_id_array[FieldIDClientTime]);
 
             auto senderStr = (jstring) env->GetObjectField(messageObj, j_filed_id_array[FieldIDSender]);
             if (nullptr != senderStr) {
                 message[kTIMMsgSender] = StringJni::Jstring2Cstring(env, senderStr).c_str();
                 env->DeleteLocalRef(senderStr);
             }
+
+            message[kTIMMsgSenderTinyId] = (long long) env->GetLongField(messageObj, j_filed_id_array[FieldIDSenderTinyId]);
+            message[kTIMMsgReceiverTinyId] = (long long) env->GetLongField(messageObj, j_filed_id_array[FieldIDReceiverTinyId]);
+
 //------------------ 发送者用户资料 - start ------------------------//
             json::Object senderUserInfo_json;
 
