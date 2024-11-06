@@ -601,7 +601,7 @@ TIM_API int TIMConvSetConversationCustomData(const char* conversation_id_array, 
  * }, nullptr);
  * @endcode
  */
-TIM_API int TIMConvPinConversation(const char* conv_id, TIMConvType conv_type, bool is_pinned, TIMCommCallback cb, const void* user_data);
+TIM_API int TIMConvPinConversation(const char* conv_id, enum TIMConvType conv_type, bool is_pinned, TIMCommCallback cb, const void* user_data);
 
 /**
  * 6.10 标记会话（从 6.5 版本开始支持，需要您购买旗舰版套餐）
