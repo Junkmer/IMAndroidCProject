@@ -293,8 +293,7 @@ namespace tim {
                 env->SetObjectField(j_obj_message, j_filed_id_array[FieldIDGroupID],
                                     StringJni::Cstring2Jstring(env, message_json_obj[kTIMMsgConvId]));
                 env->SetObjectField(j_obj_message, j_filed_id_array[FieldIDUserID], StringJni::Cstring2Jstring(env, ""));
-                env->SetObjectField(j_obj_message, j_filed_id_array[FieldIDReceiverTinyId],
-                                    StringJni::Cstring2Jstring(env, ""));
+                env->SetLongField(j_obj_message, j_filed_id_array[FieldIDReceiverTinyId],0);
             }
 
             env->SetIntField(j_obj_message, j_filed_id_array[FieldIDStatus], message_json_obj[kTIMMsgStatus]);

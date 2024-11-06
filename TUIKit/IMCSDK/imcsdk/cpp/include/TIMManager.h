@@ -492,7 +492,7 @@ TIM_API int TIMGetLoginUserID(char* user_id_buffer);
  * @note
  * 如果用户已经处于已登录和登录中状态，请勿再频繁调用登录接口登录
  */
-TIM_API TIMLoginStatus TIMGetLoginStatus();
+TIM_API enum TIMLoginStatus TIMGetLoginStatus();
 
 
 /////////////////////////////////////////////////////////////////////////////////

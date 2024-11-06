@@ -995,7 +995,7 @@ TIM_API int TIMMsgSetLocalCustomData(const char* json_msg_param, TIMCommCallback
  * }, this);
  * @endcode
  */
-TIM_API int TIMMsgSetC2CReceiveMessageOpt(const char* json_identifier_array, TIMReceiveMessageOpt opt, TIMCommCallback cb, const void* user_data);
+TIM_API int TIMMsgSetC2CReceiveMessageOpt(const char* json_identifier_array, enum TIMReceiveMessageOpt opt, TIMCommCallback cb, const void* user_data);
 
 /**
  * 5.2 查询针对某个用户的 C2C 消息接收选项
@@ -1051,7 +1051,7 @@ TIM_API int TIMMsgGetC2CReceiveMessageOpt(const char* json_identifier_array, TIM
  * }, this);
  * @endcode
  */
-TIM_API int TIMMsgSetGroupReceiveMessageOpt(const char* group_id, TIMReceiveMessageOpt opt, TIMCommCallback cb, const void* user_data);
+TIM_API int TIMMsgSetGroupReceiveMessageOpt(const char* group_id, enum TIMReceiveMessageOpt opt, TIMCommCallback cb, const void* user_data);
 
 /**
  * 5.4 设置登录用户全局消息接收选项，从 7.4 版本开始支持
@@ -1076,7 +1076,7 @@ TIM_API int TIMMsgSetGroupReceiveMessageOpt(const char* group_id, TIMReceiveMess
  * }, this);
  * @endcode
  */
-TIM_API int TIMMsgSetAllReceiveMessageOpt(TIMReceiveMessageOpt opt, int32_t start_hour, int32_t start_minute, int32_t start_second, uint32_t duration, TIMCommCallback cb, const void* user_data);
+TIM_API int TIMMsgSetAllReceiveMessageOpt(enum TIMReceiveMessageOpt opt, int32_t start_hour, int32_t start_minute, int32_t start_second, uint32_t duration, TIMCommCallback cb, const void* user_data);
 
 /**
  * 5.5设置登录用户全局消息接收选项，从 7.4 版本开始支持
@@ -1095,7 +1095,7 @@ TIM_API int TIMMsgSetAllReceiveMessageOpt(TIMReceiveMessageOpt opt, int32_t star
  * }, this);
  * @endcode
  */
-TIM_API int TIMMsgSetAllReceiveMessageOpt2(TIMReceiveMessageOpt opt, uint32_t start_time_stamp, uint32_t duration, TIMCommCallback cb, const void* user_data);
+TIM_API int TIMMsgSetAllReceiveMessageOpt2(enum TIMReceiveMessageOpt opt, uint32_t start_time_stamp, uint32_t duration, TIMCommCallback cb, const void* user_data);
 
 /**
  * 5.6 获取登录用户全局消息接收选项，从 7.4 版本开始支持
@@ -1697,7 +1697,7 @@ TIM_API int TIMMsgGetMessageReadReceipts(const char* json_msg_array, TIMCommCall
  * }, this);
  * @endcode
  */
-TIM_API int TIMMsgGetGroupMessageReadMemberList(const char* json_msg, TIMGroupMessageReadMembersFilter filter, uint64_t next_seq, uint32_t count, TIMMsgGroupMessageReadMemberListCallback cb, const void* user_data);
+TIM_API int TIMMsgGetGroupMessageReadMemberList(const char* json_msg, enum TIMGroupMessageReadMembersFilter filter, uint64_t next_seq, uint32_t count, TIMMsgGroupMessageReadMemberListCallback cb, const void* user_data);
 
 /**
  * 6.16 设置消息扩展 （6.7 及其以上版本支持，需要您购买旗舰版套餐）
@@ -2125,8 +2125,7 @@ static const char* kTIMImageElemOrigUrl = "image_elem_orig_url";
 static const char* kTIMImageElemThumbUrl = "image_elem_thumb_url";
 // string, 只读, 大图片URL
 static const char* kTIMImageElemLargeUrl = "image_elem_large_url";
-// int, 只读, 任务ID，已废弃
-static const char* kTIMImageElemTaskId = "image_elem_task_id";
+
 
 //------------------------------------------------------------------------------
 // 7.5 SoundElem (音频元素)
@@ -2145,8 +2144,6 @@ static const char* kTIMSoundElemFileId = "sound_elem_file_id";
 static const char* kTIMSoundElemBusinessId = "sound_elem_business_id";
 // string, 只读, 下载的URL
 static const char* kTIMSoundElemUrl = "sound_elem_url";
-// int, 只读, 任务ID，已废弃
-static const char* kTIMSoundElemTaskId = "sound_elem_task_id";
 
 //------------------------------------------------------------------------------
 // 7.6 VideoElem (视频元素)
@@ -2178,8 +2175,6 @@ static const char* kTIMVideoElemImagePath = "video_elem_image_path";
 static const char* kTIMVideoElemImageId = "video_elem_image_id";
 // string, 只读, 截图文件下载的URL
 static const char* kTIMVideoElemImageUrl = "video_elem_image_url";
-// uint, 只读, 任务ID，已废弃
-static const char* kTIMVideoElemTaskId = "video_elem_task_id";
 
 //------------------------------------------------------------------------------
 // 7.7 FileElem (文件元素)
@@ -2195,8 +2190,6 @@ static const char* kTIMFileElemFileId = "file_elem_file_id";
 static const char* kTIMFileElemBusinessId = "file_elem_business_id";
 // string, 只读, 文件下载的URL
 static const char* kTIMFileElemUrl = "file_elem_url";
-// int, 只读, 任务ID，已废弃
-static const char* kTIMFileElemTaskId = "file_elem_task_id";
 
 //------------------------------------------------------------------------------
 // 7.8 LocationElem (位置元素)
@@ -2254,8 +2247,6 @@ static const char* kImSDK_MessageAtALL = "__kImSDK_MessageAtALL__";
 static const char* kTIMGroupReportElemReportType = "group_report_elem_report_type";
 // string, 只读, 群组ID
 static const char* kTIMGroupReportElemGroupId = "group_report_elem_group_id";
-// string, 只读, 群组名称（已废弃）
-static const char* kTIMGroupReportElemGroupName = "group_report_elem_group_name";
 // string, 只读, 操作者ID
 static const char* kTIMGroupReportElemOpUser = "group_report_elem_op_user";
 // string, 只读, 操作理由
@@ -2297,10 +2288,6 @@ static const char* kTIMMsgConvId = "message_conv_id";
 static const char* kTIMMsgConvType = "message_conv_type";
 // string, 读写(选填), 消息的发送者
 static const char* kTIMMsgSender = "message_sender";
-// uint64, 只读, 注意：这个字段是内部字段，不推荐使用
-static const char* kTIMMsgSenderTinyId = "message_sender_tiny_id";
-// uint64, 只读, 注意：这个字段是内部字段，不推荐使用
-static const char* kTIMMsgReceiverTinyId = "message_receiver_tiny_id";
 // uint @ref TIMMsgPriority, 读写(选填), 消息优先级
 static const char* kTIMMsgPriority = "message_priority";
 // uint64, 读写(选填), 客户端时间
@@ -2327,12 +2314,6 @@ static const char* kTIMMsgSupportMessageExtension = "message_support_message_ext
 static const char* kTIMMsgIsBroadcastMessage = "message_is_broadcast_message";
 // bool, 只读, 是否已经发送了已读回执（只有Group 消息有效）
 static const char* kTIMMsgHasSentReceipt = "message_has_sent_receipt";
-// int32, 只读, 注意：这个字段是内部字段，不推荐使用，推荐调用 TIMMsgGetMessageReadReceipts 获取群消息已读回执
-static const char* kTIMMsgGroupReceiptReadCount = "message_group_receipt_read_count";
-// int32, 只读, 注意：这个字段是内部字段，不推荐使用，推荐调用 TIMMsgGetMessageReadReceipts 获取群消息已读回执
-static const char* kTIMMsgGroupReceiptUnreadCount = "message_group_receipt_unread_count";
-// uint64, 只读, 注意：这个字段是内部字段，不推荐使用
-static const char* kTIMMsgVersion = "message_version";
 // uint @ref TIMMsgStatus, 读写(选填), 消息当前状态
 static const char* kTIMMsgStatus = "message_status";
 // uint64, 只读, 消息的唯一标识，推荐使用 kTIMMsgMsgId
@@ -2370,8 +2351,6 @@ static const char* kTIMMsgExcludedFromContentModeration = "message_excluded_from
 static const char* kTIMMsgCustomModerationConfigurationID= "message_custom_moderation_configuration_id";
 // bool, 只读（选填），是否被标记为有安全风险的消息（暂时只支持语音和视频消息），只有在开通【云端审核】功能后才生效，如果您发送的语音或视频消息内容不合规，云端异步审核后会触发 SDK 的 TIMMsgMessageModifiedCallback 回调，回调里的 message 对象该字段值为 true，从 7.4 版本开始支持
 static const char* kTIMMsgHasRiskContent = "message_has_risk_content";
-// 该字段为内部使用字段
-static const char* kTIMMsgRiskTypeIdentified = "message_risk_type_identified";
 /// bool, 读写, 是否禁用消息发送前云端回调，true: 禁用，false: 不禁用（从 8.1 版本开始支持）
 static const char* kTIMMsgDisableCloudMessagePreHook = "message_disable_cloud_message_pre_hook";
 /// bool, 读写, 是否禁用消息发送后云端回调，true: 禁用，false: 不禁用（从 8.1 版本开始支持）
@@ -2661,12 +2640,59 @@ static const char* kTIMMsgReactionChangeInfoReactionList = "message_reaction_cha
 
 /////////////////////////////////////////////////////////////////////////////////
 //
-//                            十一. 废弃字段
+//                    十一. SDK 内部字段（本部分所有字段均为只读，不推荐使用）
 //
 /////////////////////////////////////////////////////////////////////////////////
 
 //------------------------------------------------------------------------------
-// 11.1 以下为老版本拼写错误，为了兼容老版本而保留的宏定义
+// 11.1 MessageInternalField (消息内部字段)
+// uint64, 只读, 注意：该字段是内部字段，不推荐使用
+static const char* kTIMMsgSenderTinyId = "message_sender_tiny_id";
+// uint64, 只读, 注意：该字段是内部字段，不推荐使用
+static const char* kTIMMsgReceiverTinyId = "message_receiver_tiny_id";
+// int32, 只读, 注意：该字段是内部字段，不推荐使用，推荐调用 TIMMsgGetMessageReadReceipts 获取群消息已读回执
+static const char* kTIMMsgGroupReceiptReadCount = "message_group_receipt_read_count";
+// int32, 只读, 注意：该字段是内部字段，不推荐使用，推荐调用 TIMMsgGetMessageReadReceipts 获取群消息已读回执
+static const char* kTIMMsgGroupReceiptUnreadCount = "message_group_receipt_unread_count";
+// uint64, 只读, 注意：该字段是内部字段，不推荐使用
+static const char* kTIMMsgVersion = "message_version";
+// uint32, 只读, 注意：该字段是内部字段，不推荐使用
+static const char* kTIMMsgRiskTypeIdentified = "message_risk_type_identified";
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//
+//                            十二. 废弃字段
+//
+/////////////////////////////////////////////////////////////////////////////////
+
+//------------------------------------------------------------------------------
+// 12.1 ImageElem (图片元素, 已废弃的部分)
+// int, 只读, 任务ID
+static const char* kTIMImageElemTaskId = "image_elem_task_id";
+
+//------------------------------------------------------------------------------
+// 12.2 SoundElem (音频元素, 已废弃的部分)
+// int, 只读, 任务ID
+static const char* kTIMSoundElemTaskId = "sound_elem_task_id";
+
+//------------------------------------------------------------------------------
+// 12.3 VideoElem (视频元素, 已废弃的部分)
+// uint, 只读, 任务ID
+static const char* kTIMVideoElemTaskId = "video_elem_task_id";
+
+//------------------------------------------------------------------------------
+// 12.4 FileElem (文件元素, 已废弃的部分)
+// int, 只读, 任务ID
+static const char* kTIMFileElemTaskId = "file_elem_task_id";
+
+//------------------------------------------------------------------------------
+// 12.5 GroupReportElem (群组系统通知元素, 已废弃的部分)
+// string, 只读, 群组名称
+static const char* kTIMGroupReportElemGroupName = "group_report_elem_group_name";
+
+//------------------------------------------------------------------------------
+// 12.6 以下为老版本拼写错误，为了兼容老版本而保留的宏定义
 // 若在消息 kTIMMsgGroupAtUserArray 字段中填入，表示当前消息需要 @ 群里所有人
 #define kImSDK_MesssageAtALL  kImSDK_MessageAtALL
 // LocationElem (位置元素) JsonKey
@@ -2674,11 +2700,11 @@ static const char* kTIMMsgReactionChangeInfoReactionList = "message_reaction_cha
 
 /////////////////////////////////////////////////////////////////////////////////
 //
-//                            十二. 废弃接口
+//                            十三. 废弃接口
 //
 /////////////////////////////////////////////////////////////////////////////////
 /**
- * 12.1 发送新消息（待废弃接口，请使用 TIMMsgSendMessage 接口）
+ * 13.1 发送新消息（待废弃接口，请使用 TIMMsgSendMessage 接口）
  *
  * @param conv_id   会话的ID
  * @param conv_type 会话类型，请参考 @ref TIMConvType
@@ -2738,7 +2764,7 @@ static const char* kTIMMsgReactionChangeInfoReactionList = "message_reaction_cha
 TIM_API int TIMMsgSendNewMsg(const char* conv_id, enum TIMConvType conv_type, const char* json_msg_param, TIMCommCallback cb, const void* user_data);
 
 /**
- * 12.2 发送新消息（待废弃接口，请使用 TIMMsgSendMessage 接口）
+ * 13.2 发送新消息（待废弃接口，请使用 TIMMsgSendMessage 接口）
  *
  * @param conv_id   会话的ID
  * @param conv_type 会话类型，请参考 @ref TIMConvType
@@ -2803,7 +2829,7 @@ TIM_API int TIMMsgSendNewMsg(const char* conv_id, enum TIMConvType conv_type, co
 TIM_API int TIMMsgSendNewMsgEx(const char* conv_id, enum TIMConvType conv_type, const char* json_msg_param, TIMCommCallback msgid_cb, TIMCommCallback res_cb, const void* user_data);
 
 /**
- * 12.3 消息上报已读（待废弃接口，请使用 TIMConvCleanConversationUnreadMessageCount 接口, 详见 TIMConversationManager.h 文件）
+ * 13.3 消息上报已读（待废弃接口，请使用 TIMConvCleanConversationUnreadMessageCount 接口, 详见 TIMConversationManager.h 文件）
  *
  * @param conv_id   会话的ID，从 5.8 版本开始，当 conv_id 为 NULL 空字符串指针或者 "" 空字符串时，标记 conv_type 表示的所有单聊消息或者群组消息为已读状态
  * @param conv_type 会话类型，请参考 @ref TIMConvType
@@ -2818,7 +2844,7 @@ TIM_API int TIMMsgSendNewMsgEx(const char* conv_id, enum TIMConvType conv_type, 
 TIM_API int TIMMsgReportReaded(const char* conv_id, enum TIMConvType conv_type, const char* json_msg_param, TIMCommCallback cb, const void* user_data);
 
 /**
- * 12.4 标记所有消息为已读（待废弃接口，请使用 TIMConvCleanConversationUnreadMessageCount 接口，详见 TIMConversationManager.h 文件）
+ * 13.4 标记所有消息为已读（待废弃接口，请使用 TIMConvCleanConversationUnreadMessageCount 接口，详见 TIMConversationManager.h 文件）
  *
  * @param cb 成功与否的回调。回调函数定义请参考 @ref TIMCommCallback
  * @param user_data 用户自定义数据，ImSDK只负责传回给回调函数cb，不做任何处理

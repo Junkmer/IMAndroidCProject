@@ -1547,7 +1547,7 @@ static const char* kTIMGroupMemberInfoOnlineDevices = "group_member_info_online_
 
 //------------------------------------------------------------------------------
 // 10.2 CreateGroupParam(创建群组接口的参数)
-// string, 只写(必填), 群组名称
+// string, 只写(必填)，群组名称，最长 100 字节，使用 UTF-8 编码，1 个汉字占 3 个字节。
 static const char* kTIMCreateGroupParamGroupName = "create_group_param_group_name";
 // string, 只写(选填), 群组ID,不填时创建成功回调会返回一个后台分配的群ID，如果创建社群（Community）需要自定义群组 ID ，那必须以 "@TGS#_" 作为前缀。
 static const char* kTIMCreateGroupParamGroupId = "create_group_param_group_id";
@@ -1573,7 +1573,7 @@ static const char* kTIMCreateGroupParamMaxMemberCount = "create_group_param_max_
 static const char* kTIMCreateGroupParamCustomInfo = "create_group_param_custom_info";
 // bool, 只写(选填), 开启权限组功能, 仅支持社群, 7.8 版本开始支持。开启后，管理员角色的权限失效，用群权限、话题权限和权限组能力来对社群、话题进行管理。
 static const char* kTIMCreateGroupParamEnablePermissionGroup = "create_group_param_enable_permission_group";
-// uint64, 只写(选填), 群默认权限, 仅支持社群, 7.8 版本开始支持。群成员在没有加入任何权限组时的默认权限，仅在 enablePermissionGroup = true 打开权限组之后生效
+// uint64, 只写(选填), 群默认权限, 仅支持社群, 7.8 版本开始支持。群成员在没有加入任何权限组时的默认权限，仅在 kTIMCreateGroupParamEnablePermissionGroup 为 true 时生效
 static const char* kTIMCreateGroupParamDefaultPermissions = "create_group_param_default_permissions";
 
 //------------------------------------------------------------------------------

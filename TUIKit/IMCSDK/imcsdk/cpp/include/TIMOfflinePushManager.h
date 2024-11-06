@@ -174,9 +174,7 @@ static const char* kTIMAndroidOfflinePushConfigTitle = "android_offline_push_con
 static const char* kTIMAndroidOfflinePushConfigSound = "android_offline_push_config_sound";
 // uint @ref TIMAndroidOfflinePushNotifyMode, 读写, 当前消息的通知模式
 static const char* kTIMAndroidOfflinePushConfigNotifyMode = "android_offline_push_config_notify_mode";
-// uint32, 读写，离线推送设置 VIVO 推送消息分类 (待废弃接口，VIVO 推送服务于 2023 年 4 月 3 日优化消息分类规则，推荐使用 kTIMAndroidOfflinePushConfigVIVOCategory 设置消息类别) ，VIVO 手机离线推送消息分类，0：运营消息，1：系统消息。默认取值为 1 。
-static const char* kTIMAndroidOfflinePushConfigVIVOClassification = "android_offline_push_config_vivo_classification";
-// string, 读写, 离线推送设置 VIVO 推送消息类别，详见 [官网]( https://dev.vivo.com.cn/documentCenter/doc/359)。(VIVO 推送服务于 2023 年 4 月 3 日优化消息分类规则，推荐使用 kTIMAndroidOfflinePushConfigVIVOCategory 设置消息类别，不需要再关注和设置 kTIMAndroidOfflinePushConfigVIVOClassification)
+// string, 读写, 离线推送设置 VIVO 推送消息类别，详见 [官网](https://dev.vivo.com.cn/documentCenter/doc/359)。
 static const char* kTIMAndroidOfflinePushConfigVIVOCategory = "android_offline_push_config_vivo_category";
 // string, 读写, 离线推送设置 OPPO 手机 8.0 系统及以上的渠道 ID（仅对 Android 生效）。
 static const char* kTIMAndroidOfflinePushConfigOPPOChannelID = "android_offline_push_config_oppo_channel_id";
@@ -198,6 +196,15 @@ static const char* kTIMAndroidOfflinePushConfigHonorImage = "android_offline_pus
 // @note
 // 图标文件大小须小于 1 MB，超出规格大小的图标会存在图片压缩或显示不全的情况。
 static const char* kTIMAndroidOfflinePushConfigFCMImage = "android_offline_push_config_fcm_image";
+// string, 读写, 设置鸿蒙设备离线推送的通知图片，URL使用的协议必须是HTTPS协议，取值样例：https://example.com/image.png。
+// @note
+// 支持图片格式为png、jpg、jpeg、heif、gif、bmp，图片长*宽 < 25000像素。
+static const char* kTIMHarmonyOfflinePushConfigImage = "harmony_offline_push_config_image";
+// string, 读写, 设置鸿蒙设备离线推送通知消息类别，详见：https://developer.huawei.com/consumer/cn/doc/HMSCore-Guides/message-classification-0000001149358835
+static const char* kTIMHarmonyOfflinePushConfigCategory = "harmony_offline_push_config_category";
+// uint32, 读写，离线推送忽略 badge 计数（仅对 Harmony 生效），
+// 如果设置为 YES，在 Harmony 接收端，这条消息不会使 APP 的应用图标未读计数增加。
+static const char* kTIMHarmonyOfflinePushConfigIgnoreBadge = "harmony_offline_push_config_ignore_badge";
 
 //------------------------------------------------------------------------------
 // 3.4 OfflinePushConfig(消息离线推送配置)
@@ -211,6 +218,20 @@ static const char* kTIMOfflinePushConfigFlag = "offline_push_config_flag";
 static const char* kTIMOfflinePushConfigIOSConfig = "offline_push_config_ios_config";
 // object @ref AndroidOfflinePushConfig, 读写, Android离线推送配置
 static const char* kTIMOfflinePushConfigAndroidConfig = "offline_push_config_android_config";
+// object @ref HarmonyOfflinePushConfig, 读写, Harmony离线推送配置
+static const char* kTIMOfflinePushConfigHarmonyConfig = "offline_push_config_harmony_config";
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//
+//                            四. 废弃字段
+//
+/////////////////////////////////////////////////////////////////////////////////
+
+//------------------------------------------------------------------------------
+// 4.1 AndroidOfflinePushConfig(消息在 Android 系统上的离线推送配置,  已废弃的部分)
+// uint32, 读写，离线推送设置 VIVO 推送消息分类 (待废弃字段，VIVO 推送服务于 2023 年 4 月 3 日优化消息分类规则，推荐使用 kTIMAndroidOfflinePushConfigVIVOCategory 设置消息类别) ，VIVO 手机离线推送消息分类，0：运营消息，1：系统消息。默认取值为 1 。
+static const char* kTIMAndroidOfflinePushConfigVIVOClassification = "android_offline_push_config_vivo_classification";
  
 #ifdef __cplusplus
 }
